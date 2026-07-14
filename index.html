@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>移动端H5 Demo - 会员券核销SN绑定</title>
+<title>移动端H5 Demo - 会员券核销SN/IMEI绑定</title>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <style>
 :root {
@@ -387,7 +387,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <div class="step-item" :class="stepStatus(1)">
                 <div class="step-line" :class="{done:currentStep>1}"></div>
                 <div class="step-circle">{{currentStep>1?'&#10003;':'1'}}</div>
-                <div class="step-label">SN校验</div>
+                <div class="step-label">SN/IMEI校验</div>
               </div>
               <div class="step-item" :class="stepStatus(2)">
                 <div class="step-line" :class="{done:currentStep>2}"></div>
@@ -405,11 +405,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
           <div class="input-card">
             <div class="card-head">
               <div class="num">1</div>
-              <div class="title">SN/IMEI1编码录入</div>
+              <div class="title">SN/IMEI编码录入</div>
               <div class="status-tag" :class="snStatus">{{snStatusText}}</div>
             </div>
             <div class="input-row">
-              <input v-model="snInput" placeholder="点击手动录入SN/IMEI1" @click="openManualDialog('sn')" readonly :disabled="snStatus==='pass'" />
+              <input v-model="snInput" placeholder="点击手动录入SN/IMEI" @click="openManualDialog('sn')" readonly :disabled="snStatus==='pass'" />
               <button class="scan-btn" @click="mockScanSn" :disabled="snStatus==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
             </div>
 
@@ -441,10 +441,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
             <span class="icon">&#9432;</span>
             <div>
               <div><b>操作指南：</b></div>
-              <div>1. 扫码/手动输入SN/IMEI1编码并校验</div>
+              <div>1. 扫码/手动输入SN/IMEI编码并校验</div>
               <div>2. 扫码/手动输入会员券码并校验</div>
               <div>3. 两项均通过后点击"提交核销（自动上报机码）"</div>
-              <div style="margin-top:4px;color:var(--sub);">备注：提交核销后，如该SN未上报过机码，系统将自动上报</div>
+              <div style="margin-top:4px;color:var(--sub);">备注：提交核销后，如该SN/IMEI未上报过机码，系统将自动上报</div>
             </div>
           </div>
 
@@ -508,12 +508,12 @@ const RecordsView = defineComponent({
     const searchKey = ref('');
     const activeFilter = ref('all');
     const records = ref([
-      { id:'R001', couponCode:'MC20260701001', couponName:'会员专享满减券', time:'2026-07-13 10:23:15', amount:200, sn:'SN123456789', pn:'PN202605001', category:'拯救者', product:'拯救者R9000P 2024', staff:'张三' },
-      { id:'R002', couponCode:'MC20260701002', couponName:'会员生日特惠券', time:'2026-07-13 09:15:42', amount:500, sn:'SN987654321', pn:'PN202604008', category:'ThinkPad', product:'ThinkPad X1 Carbon', staff:'李四' },
-      { id:'R003', couponCode:'MC20260701003', couponName:'会员新人立减券', time:'2026-07-12 16:48:30', amount:100, sn:'SN567890123', pn:'PN202603015', category:'小新', product:'小新Pro 16 2024', staff:'张三' },
-      { id:'R004', couponCode:'MC20260701004', couponName:'会员专享满减券', time:'2026-07-12 14:20:08', amount:200, sn:'SN345678901', pn:'PN202605002', category:'拯救者', product:'拯救者Y9000X', staff:'王五' },
-      { id:'R005', couponCode:'MC20260701005', couponName:'会员生日特惠券', time:'2026-07-11 11:05:55', amount:500, sn:'SN234567890', pn:'PN202604009', category:'ThinkPad', product:'ThinkPad T14s', staff:'李四' },
-      { id:'R006', couponCode:'MC20260701006', couponName:'会员折扣券8折', time:'2026-07-11 09:30:12', amount:350, sn:'SN890123456', pn:'PN202603020', category:'YOGA', product:'YOGA Air 14', staff:'张三' },
+      { id:'R001', couponCode:'MC20260701001', couponName:'会员专享满减券', time:'2026-07-13 10:23:15', amount:200, sn:'SN/IMEI123456789', pn:'PN202605001', category:'拯救者', product:'拯救者R9000P 2024', staff:'张三' },
+      { id:'R002', couponCode:'MC20260701002', couponName:'会员生日特惠券', time:'2026-07-13 09:15:42', amount:500, sn:'SN/IMEI987654321', pn:'PN202604008', category:'ThinkPad', product:'ThinkPad X1 Carbon', staff:'李四' },
+      { id:'R003', couponCode:'MC20260701003', couponName:'会员新人立减券', time:'2026-07-12 16:48:30', amount:100, sn:'SN/IMEI567890123', pn:'PN202603015', category:'小新', product:'小新Pro 16 2024', staff:'张三' },
+      { id:'R004', couponCode:'MC20260701004', couponName:'会员专享满减券', time:'2026-07-12 14:20:08', amount:200, sn:'SN/IMEI345678901', pn:'PN202605002', category:'拯救者', product:'拯救者Y9000X', staff:'王五' },
+      { id:'R005', couponCode:'MC20260701005', couponName:'会员生日特惠券', time:'2026-07-11 11:05:55', amount:500, sn:'SN/IMEI234567890', pn:'PN202604009', category:'ThinkPad', product:'ThinkPad T14s', staff:'李四' },
+      { id:'R006', couponCode:'MC20260701006', couponName:'会员折扣券8折', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', category:'YOGA', product:'YOGA Air 14', staff:'张三' },
     ]);
     const filters = [
       { key:'all', label:'全部' },
@@ -537,7 +537,7 @@ const RecordsView = defineComponent({
       <div class="records-search">
         <div class="search-wrap">
           <span class="search-icon">&#128269;</span>
-          <input class="search-input" v-model="searchKey" placeholder="搜索券码/券名称/SN" />
+          <input class="search-input" v-model="searchKey" placeholder="搜索券码/券名称/SN/IMEI" />
         </div>
       </div>
       <div class="filter-row">
@@ -556,7 +556,7 @@ const RecordsView = defineComponent({
           <div class="rc-grid">
             <div class="rc-item"><span class="lbl">券码:</span><span class="val">{{r.couponCode}}</span></div>
             <div class="rc-item"><span class="lbl">核销时间:</span><span class="val">{{r.time}}</span></div>
-            <div class="rc-item"><span class="lbl">SN:</span><span class="val">{{r.sn}}</span></div>
+            <div class="rc-item"><span class="lbl">SN/IMEI:</span><span class="val">{{r.sn}}</span></div>
             <div class="rc-item"><span class="lbl">PN:</span><span class="val">{{r.pn}}</span></div>
             <div class="rc-item"><span class="lbl">商品:</span><span class="val">{{r.product}}</span></div>
             <div class="rc-item"><span class="lbl">店员:</span><span class="val">{{r.staff}}</span></div>
@@ -647,8 +647,8 @@ createApp({
       if (field === 'sn' && snStatus.value === 'pass') return;
       if (field === 'coupon' && couponStatus.value === 'pass') return;
       manualDialog.field = field;
-      manualDialog.title = field === 'sn' ? '输入SN/IMEI1编码' : '输入顾客的券码';
-      manualDialog.subtitle = field === 'sn' ? '输入机器编码' : '券码在条码下方';
+      manualDialog.title = field === 'sn' ? '输入SN/IMEI编码' : '输入顾客的券码';
+      manualDialog.subtitle = field === 'sn' ? '输入SN/IMEI编码' : '券码在条码下方';
       manualDialog.value = field === 'sn' ? snInput.value : couponInput.value;
       manualDialog.show = true;
       nextTick(() => { if (manualInputRef.value) manualInputRef.value.focus(); });
@@ -664,21 +664,21 @@ createApp({
     function validateSn() {
       if (!snInput.value || snStatus.value==='pass' || snValidating.value) return;
       snValidating.value = true;
-      snFeedback.value = { type:'info', msg:'正在校验SN，检查锁定/首销/未机码/未PO状态...' };
+      snFeedback.value = { type:'info', msg:'正在校验SN/IMEI，检查锁定/首销/未机码/未PO状态...' };
       setTimeout(() => {
         snValidating.value = false;
         if (snInput.value.toLowerCase().includes('fail')) {
           snStatus.value = 'fail';
-          snFeedback.value = { type:'error', msg:'校验失败：该SN未首销，无法进行核销。请确认SN状态后重试。' };
+          snFeedback.value = { type:'error', msg:'校验失败：该SN/IMEI未首销，无法进行核销。请确认SN/IMEI状态后重试。' };
         } else {
           snStatus.value = 'pass';
-          snFeedback.value = { type:'success', msg:'SN/IMEI1校验通过！' };
+          snFeedback.value = { type:'success', msg:'SN/IMEI校验通过！' };
         }
       }, 1200);
     }
 
     function mockScanSn() {
-      snInput.value = 'SN' + Math.floor(Math.random()*900000+100000);
+      snInput.value = 'SN/IMEI' + Math.floor(Math.random()*900000+100000);
       toast('扫码成功');
       validateSn();
     }
