@@ -210,6 +210,20 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .export-btn { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); display:flex; align-items:center; justify-content:center; z-index:100; }
 .export-btn button { width:calc(100% - 32px); height:40px; border:1.5px solid var(--primary); background:rgba(37,99,235,.05); color:var(--primary); border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
 
+/* ===== LandingPage ===== */
+.landing-page { min-height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:24px; background:linear-gradient(180deg,#F5F7FA 0%,#EDF4FF 100%); }
+.landing-title { font-size:22px; font-weight:700; color:var(--title); text-align:center; margin-bottom:8px; }
+.landing-subtitle { font-size:13px; color:var(--sub); text-align:center; margin-bottom:36px; line-height:1.5; }
+.landing-card { width:100%; background:var(--white); border-radius:16px; padding:20px; margin-bottom:16px; box-shadow:0 4px 16px rgba(0,0,0,0.08); cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:16px; }
+.landing-card:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(37,99,235,0.12); }
+.landing-card .icon { width:56px; height:56px; border-radius:14px; background:linear-gradient(135deg,var(--primary),#4F8CFF); color:#fff; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+.landing-card.pc .icon { background:linear-gradient(135deg,#6A6A6A,#9A9A9A); }
+.landing-card .info { flex:1; }
+.landing-card .info .name { font-size:16px; font-weight:600; color:var(--title); margin-bottom:4px; }
+.landing-card .info .desc { font-size:12px; color:var(--sub); line-height:1.5; }
+.landing-card .arrow { font-size:20px; color:var(--tertiary); }
+.landing-footer { margin-top:24px; font-size:12px; color:var(--tertiary); text-align:center; }
+
 /* Toast */
 .toast { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,.75); color:#fff; padding:12px 20px; border-radius:8px; font-size:13px; z-index:300; white-space:nowrap; }
 </style>
@@ -218,6 +232,32 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 <div id="app">
   <div class="phone-frame">
     <div class="phone-screen">
+      <!-- LandingPage -->
+      <div class="page landing-page" v-if="currentPage==='landing'">
+        <div class="landing-title">会员券核销SN绑定</div>
+        <div class="landing-subtitle">不用POS开单核销会员券链路增强<br>SN绑定 · Demo原型</div>
+
+        <div class="landing-card" @click="enterMobileDemo">
+          <div class="icon">&#128241;</div>
+          <div class="info">
+            <div class="name">移动端H5 Demo</div>
+            <div class="desc">APP首页金刚区入口、会员券核销、核销记录等完整交互流程</div>
+          </div>
+          <div class="arrow">&#8250;</div>
+        </div>
+
+        <div class="landing-card pc" @click="openPcDemo">
+          <div class="icon">&#128187;</div>
+          <div class="info">
+            <div class="name">PC后台 Demo</div>
+            <div class="desc">会员券核销历史记录报表、筛选、表格、分页等管理后台功能</div>
+          </div>
+          <div class="arrow">&#8250;</div>
+        </div>
+
+        <div class="landing-footer">零售通 / 会员营销能力 Demo</div>
+      </div>
+
       <!-- HomePage -->
       <div class="page" v-if="currentPage==='home'">
         <!-- Top: Status bar + Store info -->
@@ -542,7 +582,7 @@ const RecordsView = defineComponent({
 createApp({
   components: { RecordsView },
   setup() {
-    const currentPage = ref('home');
+    const currentPage = ref('landing');
     const activeTab = ref('redeem');
     const dashTime = ref('day');
     const toastMsg = ref('');
@@ -553,6 +593,8 @@ createApp({
       toastTimer = setTimeout(() => toastMsg.value = '', 1500);
     }
     function goHome() { currentPage.value = 'home'; activeTab.value = 'redeem'; resetForm(); }
+    function enterMobileDemo() { currentPage.value = 'home'; }
+    function openPcDemo() { window.open('pc.html', '_blank'); }
 
     // Kingkong items
     const kingkongItems = ref([
@@ -668,7 +710,7 @@ createApp({
     }
 
     return {
-      currentPage, activeTab, dashTime, toastMsg, toast, goHome,
+      currentPage, activeTab, dashTime, toastMsg, toast, goHome, enterMobileDemo, openPcDemo,
       kingkongItems, onKkClick,
       snInput, snStatus, snValidating, snFeedback, snStatusText, validateSn, mockScanSn,
       couponInput, couponStatus, couponValidating, couponFeedback, couponStatusText, validateCoupon, mockScanCoupon,
