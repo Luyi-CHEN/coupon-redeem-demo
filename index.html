@@ -412,9 +412,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <input v-model="snInput" placeholder="点击手动录入SN/IMEI1" @click="openManualDialog('sn')" readonly :disabled="snStatus==='pass'" />
               <button class="scan-btn" @click="mockScanSn" :disabled="snStatus==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
             </div>
-            <button class="validate-btn" @click="validateSn" :disabled="!snInput||snStatus==='pass'||snValidating">
-              {{snValidating?'校验中...':(snStatus==='pass'?'已校验通过':'校验SN')}}
-            </button>
+
             <div class="feedback" :class="snFeedback.type" v-if="snFeedback.msg">
               <span v-if="snFeedback.type==='info'" class="loading-spin"></span>
               <span>{{snFeedback.msg}}</span>
@@ -432,9 +430,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <input v-model="couponInput" placeholder="点击手动录入券码" @click="openManualDialog('coupon')" readonly :disabled="couponStatus==='pass'||snStatus!=='pass'" />
               <button class="scan-btn" @click="mockScanCoupon" :disabled="couponStatus==='pass'||snStatus!=='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
             </div>
-            <button class="validate-btn" @click="validateCoupon" :disabled="!couponInput||couponStatus==='pass'||snStatus!=='pass'||couponValidating">
-              {{couponValidating?'校验中...':(couponStatus==='pass'?'已校验通过':'校验券码')}}
-            </button>
+
             <div class="feedback" :class="couponFeedback.type" v-if="couponFeedback.msg">
               <span v-if="couponFeedback.type==='info'" class="loading-spin"></span>
               <span>{{couponFeedback.msg}}</span>
@@ -652,7 +648,7 @@ createApp({
       if (field === 'coupon' && (couponStatus.value === 'pass' || snStatus.value !== 'pass')) return;
       manualDialog.field = field;
       manualDialog.title = field === 'sn' ? '输入SN/IMEI1编码' : '输入顾客的券码';
-      manualDialog.subtitle = field === 'sn' ? '编码在条码下方' : '券码在条码下方';
+      manualDialog.subtitle = field === 'sn' ? '输入机器编码' : '券码在条码下方';
       manualDialog.value = field === 'sn' ? snInput.value : couponInput.value;
       manualDialog.show = true;
       nextTick(() => { if (manualInputRef.value) manualInputRef.value.focus(); });
@@ -676,7 +672,7 @@ createApp({
           snFeedback.value = { type:'error', msg:'校验失败：该SN未首销，无法进行核销。请确认SN状态后重试。' };
         } else {
           snStatus.value = 'pass';
-          snFeedback.value = { type:'success', msg:'SN校验通过！该SN状态为：已锁定、已首销、已机码、已PO，符合核销条件。' };
+          snFeedback.value = { type:'success', msg:'SN/IMEI1校验通过！' };
         }
       }, 1200);
     }
@@ -698,7 +694,7 @@ createApp({
           couponFeedback.value = { type:'error', msg:'券码校验失败：该券码已过期或已被使用，请确认后重试。' };
         } else {
           couponStatus.value = 'pass';
-          couponFeedback.value = { type:'success', msg:'券码校验通过！券名称：会员专享满减券，面额：¥200，有效期至2026-12-31。' };
+          couponFeedback.value = { type:'success', msg:'券码校验通过！' };
         }
       }, 1200);
     }
