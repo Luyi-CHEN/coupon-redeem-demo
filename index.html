@@ -209,25 +209,64 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .manual-dialog-ft button:active { background:var(--box); }
 
 /* ===== Records Page ===== */
-.records-search { padding:8px 12px; background:var(--white); }
+.records-search { padding:8px 12px; background:var(--white); display:flex; gap:8px; align-items:center; }
+.records-search .search-wrap { flex:1; position:relative; }
 .records-search .search-input { width:100%; height:36px; background:var(--box); border:none; border-radius:18px; padding:0 16px 0 36px; font-size:14px; color:var(--text); outline:none; position:relative; }
-.search-wrap { position:relative; }
 .search-wrap .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:16px; color:var(--sub); z-index:1; }
 .filter-row { display:flex; gap:8px; padding:8px 12px; background:var(--white); border-bottom:1px solid var(--divider); overflow-x:auto; }
 .filter-row::-webkit-scrollbar { display:none; }
 .filter-chip { flex-shrink:0; padding:6px 12px; border-radius:16px; background:var(--box); font-size:12px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:4px; }
 .filter-chip.active { background:rgba(37,99,235,.1); color:var(--primary); }
+.filter-chip.has-filter { background:rgba(37,99,235,.1); color:var(--primary); }
 .records-list { padding:8px 12px 80px; }
 .record-card { background:var(--white); border-radius:12px; padding:14px; margin-bottom:10px; box-shadow:var(--shadow-card); }
 .record-card .rc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-.record-card .rc-name { font-size:14px; font-weight:600; color:var(--title); }
-.record-card .rc-amount { font-size:18px; font-weight:700; color:var(--danger); }
+.record-card .rc-name { font-size:14px; font-weight:600; color:var(--title); flex:1; }
+.record-card .rc-amount { font-size:18px; font-weight:700; color:var(--danger); margin-left:8px; }
 .record-card .rc-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 12px; }
-.record-card .rc-item { font-size:12px; }
+.record-card .rc-item { font-size:12px; line-height:1.4; }
+.record-card .rc-item.full { grid-column:1 / -1; }
 .record-card .rc-item .lbl { color:var(--sub); }
 .record-card .rc-item .val { color:var(--text); margin-left:4px; }
 .export-btn { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); display:flex; align-items:center; justify-content:center; z-index:100; }
 .export-btn button { width:calc(100% - 32px); height:40px; border:1.5px solid var(--primary); background:rgba(37,99,235,.05); color:var(--primary); border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
+
+/* Filter panel */
+.filter-panel-mask { position:absolute; inset:0; background:rgba(0,0,0,0.4); z-index:220; }
+.filter-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:16px 16px 0 0; max-height:80%; overflow-y:auto; z-index:221; padding:16px; padding-bottom:calc(56px + env(safe-area-inset-bottom)); }
+.filter-panel-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.filter-panel-hd .title { font-size:16px; font-weight:600; color:var(--title); }
+.filter-panel-hd .reset { font-size:14px; color:var(--sub); cursor:pointer; }
+.filter-form { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.filter-form .form-item.full { grid-column:1 / -1; }
+.filter-form .form-item.half { grid-column:span 1; }
+.filter-form .form-item label { display:block; font-size:12px; color:var(--sub); margin-bottom:6px; }
+.filter-form .form-item input, .filter-form .form-item .category-trigger { width:100%; height:40px; border:1.5px solid var(--divider); border-radius:8px; padding:0 12px; font-size:14px; color:var(--text); outline:none; background:var(--white); }
+.filter-form .form-item input:focus { border-color:var(--primary); }
+.filter-form .form-item .category-trigger { display:flex; align-items:center; justify-content:space-between; cursor:pointer; color:var(--text); }
+.filter-form .form-item .category-trigger.placeholder { color:var(--placeholder); }
+.filter-form .form-item .range-row { display:flex; align-items:center; gap:8px; }
+.filter-form .form-item .range-row input { flex:1; }
+.filter-form .form-item .range-row span { color:var(--sub); font-size:12px; }
+.filter-panel-ft { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); display:flex; align-items:center; padding:0 16px; gap:12px; }
+.filter-panel-ft button { flex:1; height:40px; border-radius:8px; font-size:15px; font-weight:500; cursor:pointer; border:none; }
+.filter-panel-ft .cancel { background:var(--box); color:var(--text); }
+.filter-panel-ft .confirm { background:var(--primary); color:#fff; }
+
+/* Cascader */
+.cascader-mask { position:absolute; inset:0; background:rgba(0,0,0,0.4); z-index:230; }
+.cascader-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:16px 16px 0 0; max-height:70%; z-index:231; display:flex; flex-direction:column; }
+.cascader-hd { padding:16px; border-bottom:1px solid var(--divider); display:flex; align-items:center; justify-content:space-between; }
+.cascader-hd .title { font-size:16px; font-weight:600; color:var(--title); }
+.cascader-hd .close { font-size:20px; color:var(--sub); cursor:pointer; }
+.cascader-body { display:flex; height:300px; overflow:hidden; }
+.cascader-col { flex:1; overflow-y:auto; border-right:1px solid var(--divider); }
+.cascader-col:last-child { border-right:none; }
+.cascader-item { padding:12px 16px; font-size:14px; color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
+.cascader-item.active { background:rgba(37,99,235,.08); color:var(--primary); font-weight:500; }
+.cascader-item .arrow { color:var(--sub); font-size:12px; }
+.cascader-ft { padding:12px 16px; border-top:1px solid var(--divider); }
+.cascader-ft button { width:100%; height:40px; border:none; border-radius:8px; background:var(--primary); color:#fff; font-size:15px; font-weight:500; cursor:pointer; }
 
 /* Toast */
 .toast { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,.75); color:#fff; padding:12px 20px; border-radius:8px; font-size:13px; z-index:300; white-space:nowrap; }
@@ -508,45 +547,200 @@ const RecordsView = defineComponent({
   setup() {
     const searchKey = ref('');
     const activeFilter = ref('all');
-    const records = ref([
-      { id:'R001', couponCode:'MC20260701001', couponName:'会员专享满减券', time:'2026-07-13 10:23:15', amount:200, sn:'SN/IMEI123456789', pn:'PN202605001', category:'拯救者', product:'拯救者R9000P 2024', staff:'张三' },
-      { id:'R002', couponCode:'MC20260701002', couponName:'会员生日特惠券', time:'2026-07-13 09:15:42', amount:500, sn:'SN/IMEI987654321', pn:'PN202604008', category:'ThinkPad', product:'ThinkPad X1 Carbon', staff:'李四' },
-      { id:'R003', couponCode:'MC20260701003', couponName:'会员新人立减券', time:'2026-07-12 16:48:30', amount:100, sn:'SN/IMEI567890123', pn:'PN202603015', category:'小新', product:'小新Pro 16 2024', staff:'张三' },
-      { id:'R004', couponCode:'MC20260701004', couponName:'会员专享满减券', time:'2026-07-12 14:20:08', amount:200, sn:'SN/IMEI345678901', pn:'PN202605002', category:'拯救者', product:'拯救者Y9000X', staff:'王五' },
-      { id:'R005', couponCode:'MC20260701005', couponName:'会员生日特惠券', time:'2026-07-11 11:05:55', amount:500, sn:'SN/IMEI234567890', pn:'PN202604009', category:'ThinkPad', product:'ThinkPad T14s', staff:'李四' },
-      { id:'R006', couponCode:'MC20260701006', couponName:'会员折扣券8折', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', category:'YOGA', product:'YOGA Air 14', staff:'张三' },
-    ]);
+    const showFilterPanel = ref(false);
+    const showCascader = ref(false);
+
     const filters = [
       { key:'all', label:'全部' },
       { key:'today', label:'今日' },
       { key:'week', label:'本周' },
       { key:'month', label:'本月' },
     ];
-    const filteredRecords = computed(() => {
-      if (!searchKey.value) return records.value;
-      const k = searchKey.value.toLowerCase();
-      return records.value.filter(r =>
-        r.couponCode.toLowerCase().includes(k) ||
-        r.couponName.includes(searchKey.value) ||
-        r.sn.toLowerCase().includes(k)
-      );
+
+    const filterForm = reactive({
+      id: '',
+      couponCode: '',
+      couponName: '',
+      timeStart: '',
+      timeEnd: '',
+      amountMin: '',
+      amountMax: '',
+      sn: '',
+      pn: '',
+      category: [],
+      product: ''
     });
-    return { searchKey, activeFilter, filters, filteredRecords };
+
+    const categoryOptions = [
+      {
+        label: 'PC',
+        children: [
+          { label: '笔记本', children: [{ label: '拯救者' }, { label: 'ThinkPad' }, { label: '小新' }, { label: 'YOGA' }] },
+          { label: '台式机', children: [{ label: '刃系列' }, { label: '天逸' }] }
+        ]
+      },
+      {
+        label: '手机',
+        children: [
+          { label: 'MOTO手机', children: [{ label: '折叠机' }, { label: 'edge系列' }] },
+          { label: '联想手机', children: [{ label: '拯救者手机' }] }
+        ]
+      }
+    ];
+
+    const cascaderSelection = ref([]);
+    const cascaderColumns = ref([categoryOptions]);
+
+    const records = ref([
+      { id:'R001', couponCode:'MC20260701001', couponName:'会员专享满减券', time:'2026-07-13 10:23:15', amount:200, sn:'SN/IMEI123456789', pn:'PN202605001', categoryPath:['PC','笔记本','拯救者'], product:'拯救者R9000P 2024', staff:'张三' },
+      { id:'R002', couponCode:'MC20260701002', couponName:'会员生日特惠券', time:'2026-07-13 09:15:42', amount:500, sn:'SN/IMEI987654321', pn:'PN202604008', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad X1 Carbon', staff:'李四' },
+      { id:'R003', couponCode:'MC20260701003', couponName:'会员新人立减券', time:'2026-07-12 16:48:30', amount:100, sn:'SN/IMEI567890123', pn:'PN202603015', categoryPath:['PC','笔记本','小新'], product:'小新Pro 16 2024', staff:'张三' },
+      { id:'R004', couponCode:'MC20260701004', couponName:'会员专享满减券', time:'2026-07-12 14:20:08', amount:200, sn:'SN/IMEI345678901', pn:'PN202605002', categoryPath:['PC','笔记本','拯救者'], product:'拯救者Y9000X', staff:'王五' },
+      { id:'R005', couponCode:'MC20260701005', couponName:'会员生日特惠券', time:'2026-07-11 11:05:55', amount:500, sn:'SN/IMEI234567890', pn:'PN202604009', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad T14s', staff:'李四' },
+      { id:'R006', couponCode:'MC20260701006', couponName:'会员折扣券8折', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', categoryPath:['PC','笔记本','YOGA'], product:'YOGA Air 14', staff:'张三' },
+    ]);
+
+    function timeMatch(r) {
+      if (activeFilter.value === 'all') return true;
+      const t = new Date(r.time);
+      const now = new Date('2026-07-13');
+      if (activeFilter.value === 'today') {
+        return t.toDateString() === now.toDateString();
+      }
+      if (activeFilter.value === 'week') {
+        const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate()-7);
+        return t >= weekAgo && t <= now;
+      }
+      if (activeFilter.value === 'month') {
+        return t.getMonth() === now.getMonth() && t.getFullYear() === now.getFullYear();
+      }
+      return true;
+    }
+
+    const filteredRecords = computed(() => {
+      return records.value.filter(r => {
+        if (!timeMatch(r)) return false;
+        const k = searchKey.value.trim().toLowerCase();
+        if (k) {
+          const fields = [r.id, r.couponCode, r.couponName, r.sn, r.pn, r.product, r.staff, r.categoryPath.join('/')];
+          if (!fields.some(f => f.toLowerCase().includes(k))) return false;
+        }
+        if (filterForm.id && !r.id.toLowerCase().includes(filterForm.id.toLowerCase())) return false;
+        if (filterForm.couponCode && !r.couponCode.toLowerCase().includes(filterForm.couponCode.toLowerCase())) return false;
+        if (filterForm.couponName && !r.couponName.includes(filterForm.couponName)) return false;
+        if (filterForm.timeStart && r.time < filterForm.timeStart + ' 00:00:00') return false;
+        if (filterForm.timeEnd && r.time > filterForm.timeEnd + ' 23:59:59') return false;
+        if (filterForm.amountMin && r.amount < Number(filterForm.amountMin)) return false;
+        if (filterForm.amountMax && r.amount > Number(filterForm.amountMax)) return false;
+        if (filterForm.sn && !r.sn.toLowerCase().includes(filterForm.sn.toLowerCase())) return false;
+        if (filterForm.pn && !r.pn.toLowerCase().includes(filterForm.pn.toLowerCase())) return false;
+        if (filterForm.product && !r.product.includes(filterForm.product)) return false;
+        if (filterForm.category.length) {
+          const catStr = filterForm.category.join('/');
+          const rCatStr = r.categoryPath.slice(0, filterForm.category.length).join('/');
+          if (catStr !== rCatStr) return false;
+        }
+        return true;
+      });
+    });
+
+    const hasFilter = computed(() => {
+      return filterForm.id || filterForm.couponCode || filterForm.couponName || filterForm.timeStart || filterForm.timeEnd || filterForm.amountMin || filterForm.amountMax || filterForm.sn || filterForm.pn || filterForm.product || filterForm.category.length;
+    });
+
+    function resetFilters() {
+      filterForm.id = '';
+      filterForm.couponCode = '';
+      filterForm.couponName = '';
+      filterForm.timeStart = '';
+      filterForm.timeEnd = '';
+      filterForm.amountMin = '';
+      filterForm.amountMax = '';
+      filterForm.sn = '';
+      filterForm.pn = '';
+      filterForm.category = [];
+      filterForm.product = '';
+      activeFilter.value = 'all';
+    }
+
+    function openCascader() {
+      cascaderSelection.value = [...filterForm.category];
+      const cols = [categoryOptions];
+      let opts = categoryOptions;
+      for (let i = 0; i < cascaderSelection.value.length; i++) {
+        const found = opts.find(o => o.label === cascaderSelection.value[i]);
+        if (found && found.children) {
+          opts = found.children;
+          cols.push(opts);
+        } else {
+          break;
+        }
+      }
+      cascaderColumns.value = cols;
+      showCascader.value = true;
+    }
+
+    function onCascaderSelect(level, item) {
+      cascaderSelection.value = cascaderSelection.value.slice(0, level);
+      cascaderSelection.value[level] = item.label;
+      const cols = [categoryOptions];
+      let opts = categoryOptions;
+      for (let i = 0; i < cascaderSelection.value.length; i++) {
+        const found = opts.find(o => o.label === cascaderSelection.value[i]);
+        if (found && found.children) {
+          opts = found.children;
+          cols.push(opts);
+        } else {
+          break;
+        }
+      }
+      cascaderColumns.value = cols;
+    }
+
+    function confirmCascader() {
+      filterForm.category = [...cascaderSelection.value];
+      showCascader.value = false;
+    }
+
+    function categoryText() {
+      return filterForm.category.length ? filterForm.category.join(' / ') : '请选择商品分类';
+    }
+
+    function exportRecords() {
+      const list = filteredRecords.value;
+      const headers = ['核销券id','核销券码','券名称','核销时间','核销金额','核销SN/IMEI','核销PN','商品分类','商品名称','核销店员'];
+      const rows = list.map(r => [
+        r.id, r.couponCode, r.couponName, r.time, r.amount, r.sn, r.pn, r.categoryPath.join('/'), r.product, r.staff
+      ]);
+      const csvContent = '\ufeff' + [headers, ...rows].map(row => row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = '会员券核销记录_' + new Date().toISOString().slice(0,10) + '.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    return { searchKey, activeFilter, filters, filterForm, filteredRecords, showFilterPanel, showCascader, hasFilter, resetFilters, openCascader, onCascaderSelect, confirmCascader, categoryText, cascaderColumns, categoryOptions, exportRecords };
   },
   template: `
     <div>
       <div class="records-search">
         <div class="search-wrap">
           <span class="search-icon">&#128269;</span>
-          <input class="search-input" v-model="searchKey" placeholder="搜索券码/券名称/SN/IMEI" />
+          <input class="search-input" v-model="searchKey" placeholder="搜索券码/券名称/SN/IMEI/商品等" />
+        </div>
+        <div class="filter-chip" :class="{active:showFilterPanel,'has-filter':hasFilter}" @click="showFilterPanel=true">
+          &#9881; 筛选
         </div>
       </div>
       <div class="filter-row">
         <div class="filter-chip" v-for="f in filters" :key="f.key" :class="{active:activeFilter===f.key}" @click="activeFilter=f.key">
           {{f.label}}
         </div>
-        <div class="filter-chip">&#128197; 核销时间 &#9662;</div>
-        <div class="filter-chip">&#128230; 商品分类 &#9662;</div>
       </div>
       <div class="records-list">
         <div class="record-card" v-for="r in filteredRecords" :key="r.id">
@@ -555,18 +749,102 @@ const RecordsView = defineComponent({
             <div class="rc-amount">&#165;{{r.amount}}</div>
           </div>
           <div class="rc-grid">
-            <div class="rc-item"><span class="lbl">券码:</span><span class="val">{{r.couponCode}}</span></div>
+            <div class="rc-item"><span class="lbl">核销券id:</span><span class="val">{{r.id}}</span></div>
+            <div class="rc-item"><span class="lbl">核销券码:</span><span class="val">{{r.couponCode}}</span></div>
             <div class="rc-item"><span class="lbl">核销时间:</span><span class="val">{{r.time}}</span></div>
-            <div class="rc-item"><span class="lbl">SN/IMEI:</span><span class="val">{{r.sn}}</span></div>
-            <div class="rc-item"><span class="lbl">PN:</span><span class="val">{{r.pn}}</span></div>
-            <div class="rc-item"><span class="lbl">商品:</span><span class="val">{{r.product}}</span></div>
-            <div class="rc-item"><span class="lbl">店员:</span><span class="val">{{r.staff}}</span></div>
+            <div class="rc-item"><span class="lbl">核销店员:</span><span class="val">{{r.staff}}</span></div>
+            <div class="rc-item"><span class="lbl">核销SN/IMEI:</span><span class="val">{{r.sn}}</span></div>
+            <div class="rc-item"><span class="lbl">核销PN:</span><span class="val">{{r.pn}}</span></div>
+            <div class="rc-item full"><span class="lbl">商品分类:</span><span class="val">{{r.categoryPath.join(' / ')}}</span></div>
+            <div class="rc-item full"><span class="lbl">商品名称:</span><span class="val">{{r.product}}</span></div>
           </div>
         </div>
         <div v-if="filteredRecords.length===0" style="text-align:center;padding:40px 0;color:var(--sub);font-size:14px;">暂无核销记录</div>
       </div>
       <div class="export-btn">
-        <button>&#11015; 全量导出核销记录</button>
+        <button @click="exportRecords">&#11015; 全量导出核销记录</button>
+      </div>
+
+      <!-- Filter Panel -->
+      <div class="filter-panel-mask" v-if="showFilterPanel" @click.self="showFilterPanel=false"></div>
+      <div class="filter-panel" v-if="showFilterPanel">
+        <div class="filter-panel-hd">
+          <div class="title">筛选条件</div>
+          <div class="reset" @click="resetFilters">重置</div>
+        </div>
+        <div class="filter-form">
+          <div class="form-item half">
+            <label>核销券id</label>
+            <input v-model="filterForm.id" placeholder="请输入" />
+          </div>
+          <div class="form-item half">
+            <label>核销券码</label>
+            <input v-model="filterForm.couponCode" placeholder="请输入" />
+          </div>
+          <div class="form-item full">
+            <label>券名称</label>
+            <input v-model="filterForm.couponName" placeholder="请输入券名称" />
+          </div>
+          <div class="form-item full">
+            <label>核销时间</label>
+            <div class="range-row">
+              <input type="date" v-model="filterForm.timeStart" placeholder="开始日期" />
+              <span>至</span>
+              <input type="date" v-model="filterForm.timeEnd" placeholder="结束日期" />
+            </div>
+          </div>
+          <div class="form-item full">
+            <label>核销金额</label>
+            <div class="range-row">
+              <input type="number" v-model="filterForm.amountMin" placeholder="最小金额" />
+              <span>至</span>
+              <input type="number" v-model="filterForm.amountMax" placeholder="最大金额" />
+            </div>
+          </div>
+          <div class="form-item half">
+            <label>核销SN/IMEI</label>
+            <input v-model="filterForm.sn" placeholder="请输入" />
+          </div>
+          <div class="form-item half">
+            <label>核销PN</label>
+            <input v-model="filterForm.pn" placeholder="请输入" />
+          </div>
+          <div class="form-item full">
+            <label>商品分类</label>
+            <div class="category-trigger" :class="{placeholder:!filterForm.category.length}" @click="openCascader">
+              <span>{{categoryText()}}</span>
+              <span>&#9654;</span>
+            </div>
+          </div>
+          <div class="form-item full">
+            <label>商品名称</label>
+            <input v-model="filterForm.product" placeholder="请输入商品名称" />
+          </div>
+        </div>
+        <div class="filter-panel-ft">
+          <button class="cancel" @click="showFilterPanel=false">取消</button>
+          <button class="confirm" @click="showFilterPanel=false">确定</button>
+        </div>
+      </div>
+
+      <!-- Category Cascader -->
+      <div class="cascader-mask" v-if="showCascader" @click.self="showCascader=false"></div>
+      <div class="cascader-panel" v-if="showCascader">
+        <div class="cascader-hd">
+          <div class="title">选择商品分类</div>
+          <div class="close" @click="showCascader=false">&#10005;</div>
+        </div>
+        <div class="cascader-body">
+          <div class="cascader-col" v-for="(col, idx) in cascaderColumns" :key="idx">
+            <div class="cascader-item" v-for="item in col" :key="item.label" :class="{active:cascaderSelection[idx]===item.label}" @click="onCascaderSelect(idx, item)">
+              <span>{{item.label}}</span>
+              <span v-if="item.children" class="arrow">&#9654;</span>
+            </div>
+          </div>
+        </div>
+        <div class="cascader-ft">
+          <button @click="confirmCascader">确定</button>
+        </div>
       </div>
     </div>
   `
