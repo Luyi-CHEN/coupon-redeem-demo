@@ -223,11 +223,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .record-card .rc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
 .record-card .rc-name { font-size:14px; font-weight:600; color:var(--title); flex:1; }
 .record-card .rc-amount { font-size:18px; font-weight:700; color:var(--danger); margin-left:8px; }
-.record-card .rc-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 12px; }
-.record-card .rc-item { font-size:12px; line-height:1.4; }
-.record-card .rc-item.full { grid-column:1 / -1; }
-.record-card .rc-item .lbl { color:var(--sub); }
-.record-card .rc-item .val { color:var(--text); margin-left:4px; }
+.record-card .rc-grid { display:flex; flex-direction:column; gap:6px; }
+.record-card .rc-item { font-size:12px; line-height:1.4; display:flex; align-items:flex-start; }
+.record-card .rc-item .lbl { color:var(--sub); flex-shrink:0; width:84px; }
+.record-card .rc-item .val { color:var(--text); flex:1; margin-left:4px; word-break:break-all; }
 .export-btn { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); display:flex; align-items:center; justify-content:center; z-index:100; }
 .export-btn button { width:calc(100% - 32px); height:40px; border:1.5px solid var(--primary); background:rgba(37,99,235,.05); color:var(--primary); border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
 
@@ -755,8 +754,8 @@ const RecordsView = defineComponent({
             <div class="rc-item"><span class="lbl">核销店员:</span><span class="val">{{r.staff}}</span></div>
             <div class="rc-item"><span class="lbl">核销SN/IMEI:</span><span class="val">{{r.sn}}</span></div>
             <div class="rc-item"><span class="lbl">核销PN:</span><span class="val">{{r.pn}}</span></div>
-            <div class="rc-item full"><span class="lbl">商品分类:</span><span class="val">{{r.categoryPath.join(' / ')}}</span></div>
-            <div class="rc-item full"><span class="lbl">商品名称:</span><span class="val">{{r.product}}</span></div>
+            <div class="rc-item"><span class="lbl">商品分类:</span><span class="val">{{r.categoryPath.join(' / ')}}</span></div>
+            <div class="rc-item"><span class="lbl">商品名称:</span><span class="val">{{r.product}}</span></div>
           </div>
         </div>
         <div v-if="filteredRecords.length===0" style="text-align:center;padding:40px 0;color:var(--sub);font-size:14px;">暂无核销记录</div>
