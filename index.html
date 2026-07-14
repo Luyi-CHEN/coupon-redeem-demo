@@ -96,21 +96,35 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .dash-time-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
 .dash-date-picker { margin-left:auto; display:flex; align-items:center; gap:4px; font-size:12px; color:var(--text); cursor:pointer; }
 .dash-date-picker .cal-icon { color:var(--primary); font-size:14px; }
-.dash-metrics { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px; }
-.dash-metric { text-align:center; }
-.dash-metric .m-label { font-size:11px; color:var(--sub); }
-.dash-metric .m-value { font-size:20px; font-weight:700; color:var(--title); margin-top:2px; }
-.dash-metric .m-value .m-unit { font-size:11px; font-weight:400; color:var(--sub); margin-left:1px; }
-.dash-metric .m-trend { font-size:10px; margin-top:2px; }
-.dash-metric .m-trend.up { color:var(--success); }
-.dash-metric .m-trend.down { color:var(--danger); }
+.dash-metrics { display:grid; grid-template-columns:1fr 1fr 1fr; margin-top:12px; background:var(--white); border-radius:8px; overflow:hidden; }
+.dash-cell { padding:10px 6px; min-height:56px; display:flex; flex-direction:column; justify-content:flex-end; border-right:1px solid var(--divider); border-bottom:1px solid var(--divider); }
+.dash-cell:nth-child(3n) { border-right:none; }
+.dash-cell:nth-child(n+16) { border-bottom:none; }
+.dash-cell.empty { justify-content:center; align-items:center; }
+.dash-cell .c-label { font-size:11px; color:var(--sub); line-height:1.3; }
+.dash-cell.arrow .c-label::after { content:' ›'; color:var(--sub); }
+.dash-cell .c-value { font-size:18px; font-weight:600; color:var(--title); margin-top:4px; line-height:1.2; }
+.dash-cell .c-sub { font-size:11px; color:var(--sub); margin-top:2px; }
+.dash-cell.empty .c-value { color:var(--sub); font-weight:400; }
 
 /* TabBar */
 .tabbar { position:absolute; bottom:0; left:0; right:0; height:50px; background:var(--white); display:flex; border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); z-index:100; }
 .tabbar-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:var(--tertiary); cursor:pointer; }
 .tabbar-item.active { color:var(--primary); }
-.tabbar-item .icon { font-size:20px; }
-.tabbar-item .text { font-size:10px; }
+.tabbar-item .icon { width:22px; height:22px; display:flex; align-items:center; justify-content:center; position:relative; }
+.tabbar-item .text { font-size:10px; margin-top:2px; }
+.icon-workbench { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2px; }
+.icon-workbench i { background:currentColor; border-radius:1px; }
+.icon-inventory { width:20px; height:18px; position:relative; }
+.icon-inventory::before { content:''; position:absolute; bottom:0; left:2px; width:16px; height:10px; background:currentColor; border-radius:1px; }
+.icon-inventory::after { content:''; position:absolute; top:1px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-bottom:8px solid currentColor; }
+.icon-pos { width:18px; height:12px; border:2px solid currentColor; border-radius:2px; position:relative; }
+.icon-pos::after { content:''; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%); width:8px; height:3px; background:currentColor; border-radius:0 0 2px 2px; }
+.icon-person { width:16px; height:16px; position:relative; }
+.icon-person::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:7px; height:7px; border-radius:50%; background:currentColor; }
+.icon-person::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:14px; height:7px; border-radius:7px 7px 0 0; background:currentColor; }
+.icon-ai { width:18px; height:16px; border:2px solid currentColor; border-radius:8px 8px 8px 2px; position:relative; }
+.icon-ai::before { content:''; position:absolute; top:4px; left:3px; width:2px; height:2px; border-radius:50%; background:currentColor; box-shadow:4px 0 0 currentColor, 2px 4px 0 currentColor; }
 
 /* ===== NavBar ===== */
 .navbar { height:44px; display:flex; align-items:center; padding:0 12px; background:var(--white); border-bottom:1px solid var(--divider); position:sticky; top:0; z-index:50; }
@@ -391,31 +405,94 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
             </div>
           </div>
           <div class="dash-metrics">
-            <div class="dash-metric">
-              <div class="m-label">销售额</div>
-              <div class="m-value">12,580<span class="m-unit">元</span></div>
-              <div class="m-trend up">&#9650; 12.5%</div>
+            <div class="dash-cell">
+              <div class="c-label">销售额</div>
+              <div class="c-value">0</div>
             </div>
-            <div class="dash-metric">
-              <div class="m-label">订单数</div>
-              <div class="m-value">36<span class="m-unit">单</span></div>
-              <div class="m-trend up">&#9650; 8.3%</div>
+            <div class="dash-cell">
+              <div class="c-label">订单数</div>
+              <div class="c-value">0</div>
             </div>
-            <div class="dash-metric">
-              <div class="m-label">客单价</div>
-              <div class="m-value">349<span class="m-unit">元</span></div>
-              <div class="m-trend down">&#9660; 2.1%</div>
+            <div class="dash-cell">
+              <div class="c-label">客单价</div>
+              <div class="c-value">0</div>
+            </div>
+            <div class="dash-cell">
+              <div class="c-label">销售目标/完成率</div>
+              <div class="c-value">-</div>
+              <div class="c-sub">-</div>
+            </div>
+            <div class="dash-cell">
+              <div class="c-label">毛利/毛利率</div>
+              <div class="c-value">0</div>
+              <div class="c-sub">0.00</div>
+            </div>
+            <div class="dash-cell">
+              <div class="c-label">毛利目标/完成率</div>
+              <div class="c-value">-</div>
+              <div class="c-sub">-</div>
+            </div>
+            <div class="dash-cell arrow">
+              <div class="c-label">PC销售额/占比</div>
+              <div class="c-value">0</div>
+              <div class="c-sub">0.00</div>
+            </div>
+            <div class="dash-cell arrow">
+              <div class="c-label">平板销售额/占比</div>
+              <div class="c-value">0</div>
+              <div class="c-sub">0.00</div>
+            </div>
+            <div class="dash-cell arrow">
+              <div class="c-label">手机销售额/占比</div>
+              <div class="c-value">0</div>
+              <div class="c-sub">0.00</div>
+            </div>
+            <div class="dash-cell arrow">
+              <div class="c-label">服务销售额/占比</div>
+              <div class="c-value">0</div>
+              <div class="c-sub">0.00</div>
+            </div>
+            <div class="dash-cell arrow">
+              <div class="c-label">选件销售额/占比</div>
+              <div class="c-value">0</div>
+              <div class="c-sub">0.00</div>
+            </div>
+            <div class="dash-cell empty">
+              <div class="c-value">-</div>
+            </div>
+            <div class="dash-cell">
+              <div class="c-label">主品连带率</div>
+              <div class="c-value">0.00</div>
+            </div>
+            <div class="dash-cell">
+              <div class="c-label">主品服务选件连带率</div>
+              <div class="c-value">0.00</div>
+            </div>
+            <div class="dash-cell">
+              <div class="c-label">PC-Care卡捆绑率</div>
+              <div class="c-value">0.00</div>
+            </div>
+            <div class="dash-cell">
+              <div class="c-label">客户注册率</div>
+              <div class="c-value">0.00</div>
+            </div>
+            <div class="dash-cell">
+              <div class="c-label">退单率</div>
+              <div class="c-value">0.00</div>
+            </div>
+            <div class="dash-cell empty">
+              <div class="c-value">-</div>
             </div>
           </div>
         </div>
 
         <div style="height:50px;"></div>
         <div class="tabbar">
-          <div class="tabbar-item active"><span class="icon">&#128188;</span><span class="text">工作台</span></div>
-          <div class="tabbar-item" @click="toast('库存管理仅演示')"><span class="icon">&#128230;</span><span class="text">库存管理</span></div>
-          <div class="tabbar-item" @click="toast('联想POS仅演示')"><span class="icon">&#128179;</span><span class="text">联想POS</span></div>
-          <div class="tabbar-item" @click="toast('个人中心仅演示')"><span class="icon">&#128100;</span><span class="text">个人中心</span></div>
-          <div class="tabbar-item" @click="toast('AI助手仅演示')"><span class="icon">&#129302;</span><span class="text">AI助手</span></div>
+          <div class="tabbar-item active"><span class="icon icon-workbench"><i></i><i></i><i></i><i></i></span><span class="text">工作台</span></div>
+          <div class="tabbar-item" @click="toast('库存管理仅演示')"><span class="icon icon-inventory"></span><span class="text">库存管理</span></div>
+          <div class="tabbar-item" @click="toast('联想POS仅演示')"><span class="icon icon-pos"></span><span class="text">联想POS</span></div>
+          <div class="tabbar-item" @click="toast('个人中心仅演示')"><span class="icon icon-person"></span><span class="text">个人中心</span></div>
+          <div class="tabbar-item" @click="toast('AI助手仅演示')"><span class="icon icon-ai"></span><span class="text">AI助手</span></div>
         </div>
       </div>
 
@@ -850,18 +927,25 @@ const RecordsView = defineComponent({
       <transition name="fade">
         <div class="cascader-mask" v-if="showCascader" @click.self="showCascader=false"></div>
       </transition>
-      <div class="cascader-panel" v-show="showCascader">
-        <div class="cascader-hd">
-          <div class="title">选择商品分类</div>
-          <div class="close" @click="showCascader=false">&#10005;</div>
+      <transition name="slide-up-c">
+        <div class="cascader-panel" v-if="showCascader">
+          <div class="cascader-hd">
+            <div class="title">选择商品分类</div>
+            <div class="close" @click="showCascader=false">&#10005;</div>
+          </div>
+          <div class="cascader-body">
+            <div class="cascader-col" v-for="(col, idx) in cascaderColumns" :key="idx">
+              <div class="cascader-item" v-for="item in col" :key="item.label" :class="{active:cascaderSelection[idx]===item.label}" @click="onCascaderSelect(idx, item)">
+                <span>{{item.label}}</span>
+                <span v-if="item.children" class="arrow">&#9654;</span>
+              </div>
+            </div>
+          </div>
+          <div class="cascader-ft">
+            <button @click="confirmCascader">确定</button>
+          </div>
         </div>
-        <div class="cascader-body">
-          STATIC CONTENT
-        </div>
-        <div class="cascader-ft">
-          <button @click="confirmCascader">确定</button>
-        </div>
-      </div>
+      </transition>
     </div>
   `
 });
