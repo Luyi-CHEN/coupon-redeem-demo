@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会员券核销SN绑定 - Demo</title>
+<style>
+:root {
+  --primary: #2563EB;
+  --text: #333333;
+  --sub: #6A6A6A;
+  --bg: #F5F7FA;
+  --white: #FFFFFF;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"PingFang SC","Microsoft Yahei",sans-serif; background:var(--bg); color:var(--text); display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.container { max-width:420px; width:100%; }
+.title { font-size:24px; font-weight:600; color:var(--text); text-align:center; margin-bottom:8px; }
+.subtitle { font-size:14px; color:var(--sub); text-align:center; margin-bottom:32px; }
+.card { background:var(--white); border-radius:12px; padding:24px; margin-bottom:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06); cursor:pointer; transition:all .2s; text-decoration:none; color:inherit; display:block; }
+.card:hover { transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.1); }
+.card-title { font-size:18px; font-weight:600; margin-bottom:6px; }
+.card-desc { font-size:13px; color:var(--sub); line-height:1.5; }
+.arrow { float:right; color:var(--primary); font-size:20px; margin-top:-6px; }
+.footer { text-align:center; font-size:12px; color:var(--sub); margin-top:24px; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">会员券核销SN绑定</div>
+    <div class="subtitle">不用POS开单核销会员券链路增强SN绑定</div>
+
+    <a class="card" href="./mobile.html">
+      <span class="arrow">&#8250;</span>
+      <div class="card-title">&#128241; 移动端H5 Demo</div>
+      <div class="card-desc">包含APP首页金刚区入口、会员券核销、核销记录等移动端完整交互流程。</div>
+    </a>
+
+    <a class="card" href="./pc.html">
+      <span class="arrow">&#8250;</span>
+      <div class="card-title">&#128187; PC后台 Demo</div>
+      <div class="card-desc">包含会员券核销历史记录报表、筛选表单、数据表格、分页等PC端管理后台功能。</div>
+    </a>
+
+    <div class="footer">零售通 / 会员营销能力 Demo</div>
+  </div>
+</body>
+</html>
