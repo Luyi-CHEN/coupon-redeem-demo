@@ -149,11 +149,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .status-tag.fail { background:rgba(255,77,79,.1); color:var(--danger); }
 .status-tag.pending { background:var(--box); color:var(--sub); }
 .input-row { display:flex; align-items:center; gap:8px; }
-.input-row input { flex:1; height:44px; border:1.5px solid var(--divider); border-radius:8px; padding:0 14px; font-size:16px; color:var(--text); outline:none; transition:border-color .2s; background:var(--white); }
+.input-row input { flex:1; height:44px; border:1.5px solid var(--divider); border-radius:8px; padding:0 14px; font-size:16px; color:var(--text); outline:none; transition:border-color .2s; background:var(--white); cursor:pointer; }
 .input-row input:focus { border-color:var(--primary); }
 .input-row input::placeholder { color:var(--placeholder); }
-.scan-btn { width:44px; height:44px; border-radius:8px; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; border:none; flex-shrink:0; }
+.input-row input:disabled { background:var(--box); cursor:not-allowed; }
+.scan-btn { width:60px; height:44px; border-radius:8px; background:var(--primary); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; border:none; flex-shrink:0; font-size:10px; }
+.scan-btn .scan-icon { width:16px; height:16px; border:2px solid #fff; border-radius:2px; position:relative; }
+.scan-btn .scan-icon::before { content:''; position:absolute; top:50%; left:-4px; right:-4px; height:2px; background:#fff; transform:translateY(-50%); }
 .scan-btn:active { opacity:.8; }
+.scan-btn:disabled { background:var(--tertiary); cursor:not-allowed; }
 .input-card .validate-btn { margin-top:10px; width:100%; height:40px; border:1.5px solid var(--primary); background:rgba(37,99,235,.05); color:var(--primary); border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
 .input-card .validate-btn:active { background:rgba(37,99,235,.12); }
 .input-card .validate-btn:disabled { border-color:var(--divider); color:var(--tertiary); background:var(--box); cursor:not-allowed; }
@@ -188,6 +192,21 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .dialog-btn { width:100%; height:42px; border:none; border-radius:8px; font-size:16px; font-weight:500; cursor:pointer; }
 .dialog-btn.primary { background:var(--primary); color:#fff; }
 .dialog-btn.primary:active { opacity:.85; }
+
+/* Manual input dialog */
+.manual-mask { position:absolute; inset:0; background:rgba(0,0,0,0.5); z-index:250; display:flex; align-items:center; justify-content:center; }
+.manual-dialog { width:300px; background:var(--white); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-popup); }
+.manual-dialog-hd { padding:20px 20px 12px; text-align:center; }
+.manual-dialog-title { font-size:17px; font-weight:600; color:var(--title); margin-bottom:6px; }
+.manual-dialog-subtitle { font-size:13px; color:var(--sub); }
+.manual-dialog-bd { padding:0 20px 16px; }
+.manual-dialog-bd input { width:100%; height:44px; border:1.5px solid var(--divider); border-radius:8px; padding:0 14px; font-size:16px; color:var(--text); outline:none; }
+.manual-dialog-bd input:focus { border-color:var(--primary); }
+.manual-dialog-ft { display:flex; border-top:1px solid var(--divider); }
+.manual-dialog-ft button { flex:1; height:48px; border:none; background:var(--white); font-size:16px; cursor:pointer; }
+.manual-dialog-ft button.cancel { color:var(--text); border-right:1px solid var(--divider); }
+.manual-dialog-ft button.submit { color:var(--primary); font-weight:500; }
+.manual-dialog-ft button:active { background:var(--box); }
 
 /* ===== Records Page ===== */
 .records-search { padding:8px 12px; background:var(--white); }
@@ -390,8 +409,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <div class="status-tag" :class="snStatus">{{snStatusText}}</div>
             </div>
             <div class="input-row">
-              <input v-model="snInput" placeholder="请输入或扫码SN/IMEI1编码" @keyup.enter="validateSn" :disabled="snStatus==='pass'" />
-              <button class="scan-btn" @click="mockScanSn" :disabled="snStatus==='pass'">&#9115;</button>
+              <input v-model="snInput" placeholder="点击手动录入SN/IMEI1" @click="openManualDialog('sn')" readonly :disabled="snStatus==='pass'" />
+              <button class="scan-btn" @click="mockScanSn" :disabled="snStatus==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
             </div>
             <button class="validate-btn" @click="validateSn" :disabled="!snInput||snStatus==='pass'||snValidating">
               {{snValidating?'校验中...':(snStatus==='pass'?'已校验通过':'校验SN')}}
@@ -410,8 +429,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <div class="status-tag" :class="couponStatus">{{couponStatusText}}</div>
             </div>
             <div class="input-row">
-              <input v-model="couponInput" placeholder="请输入或扫码会员券码" @keyup.enter="validateCoupon" :disabled="couponStatus==='pass'||snStatus!=='pass'" />
-              <button class="scan-btn" @click="mockScanCoupon" :disabled="couponStatus==='pass'||snStatus!=='pass'">&#9115;</button>
+              <input v-model="couponInput" placeholder="点击手动录入券码" @click="openManualDialog('coupon')" readonly :disabled="couponStatus==='pass'||snStatus!=='pass'" />
+              <button class="scan-btn" @click="mockScanCoupon" :disabled="couponStatus==='pass'||snStatus!=='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
             </div>
             <button class="validate-btn" @click="validateCoupon" :disabled="!couponInput||couponStatus==='pass'||snStatus!=='pass'||couponValidating">
               {{couponValidating?'校验中...':(couponStatus==='pass'?'已校验通过':'校验券码')}}
@@ -448,7 +467,24 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
       </div>
     </div>
 
-    <!-- Dialog -->
+    <!-- Manual Input Dialog -->
+    <div class="manual-mask" v-if="manualDialog.show" @click.self="closeManualDialog">
+      <div class="manual-dialog">
+        <div class="manual-dialog-hd">
+          <div class="manual-dialog-title">{{manualDialog.title}}</div>
+          <div class="manual-dialog-subtitle">{{manualDialog.subtitle}}</div>
+        </div>
+        <div class="manual-dialog-bd">
+          <input v-model="manualDialog.value" :placeholder="manualDialog.subtitle" @keyup.enter="confirmManualDialog" ref="manualInputRef" />
+        </div>
+        <div class="manual-dialog-ft">
+          <button class="cancel" @click="closeManualDialog">取消</button>
+          <button class="submit" @click="confirmManualDialog">提交</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Dialog -->
     <div class="dialog-mask" v-if="dialog.show" @click.self="dialog.show=false">
       <div class="dialog-panel">
         <div class="dialog-icon" :class="dialog.type">
@@ -468,7 +504,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 </div>
 
 <script>
-const { createApp, ref, computed, reactive, defineComponent } = Vue;
+const { createApp, ref, computed, reactive, defineComponent, nextTick } = Vue;
 
 // Records component
 const RecordsView = defineComponent({
@@ -587,6 +623,8 @@ createApp({
     const couponFeedback = ref({ type:'', msg:'' });
     const submitting = ref(false);
     const dialog = reactive({ show:false, type:'success', title:'', msg:'' });
+    const manualInputRef = ref(null);
+    const manualDialog = reactive({ show:false, field:'', title:'', subtitle:'', value:'' });
 
     const currentStep = computed(() => {
       if (snStatus.value === 'pass' && couponStatus.value === 'pass') return 3;
@@ -607,6 +645,24 @@ createApp({
       snInput.value=''; snStatus.value='pending'; snFeedback.value={type:'',msg:''};
       couponInput.value=''; couponStatus.value='pending'; couponFeedback.value={type:'',msg:''};
       submitting.value=false;
+    }
+
+    function openManualDialog(field) {
+      if (field === 'sn' && snStatus.value === 'pass') return;
+      if (field === 'coupon' && (couponStatus.value === 'pass' || snStatus.value !== 'pass')) return;
+      manualDialog.field = field;
+      manualDialog.title = field === 'sn' ? '输入SN/IMEI1编码' : '输入顾客的券码';
+      manualDialog.subtitle = field === 'sn' ? '编码在条码下方' : '券码在条码下方';
+      manualDialog.value = field === 'sn' ? snInput.value : couponInput.value;
+      manualDialog.show = true;
+      nextTick(() => { if (manualInputRef.value) manualInputRef.value.focus(); });
+    }
+    function closeManualDialog() { manualDialog.show = false; manualDialog.value = ''; }
+    function confirmManualDialog() {
+      const val = manualDialog.value.trim();
+      if (!val) { toast('请输入内容'); return; }
+      if (manualDialog.field === 'sn') { snInput.value = val; closeManualDialog(); validateSn(); }
+      else { couponInput.value = val; closeManualDialog(); validateCoupon(); }
     }
 
     function validateSn() {
@@ -672,6 +728,7 @@ createApp({
       snInput, snStatus, snValidating, snFeedback, snStatusText, validateSn, mockScanSn,
       couponInput, couponStatus, couponValidating, couponFeedback, couponStatusText, validateCoupon, mockScanCoupon,
       currentStep, stepStatus, canSubmit, submitting, submitRedeem, dialog,
+      manualInputRef, manualDialog, openManualDialog, closeManualDialog, confirmManualDialog,
     };
   }
 }).mount('#app');
