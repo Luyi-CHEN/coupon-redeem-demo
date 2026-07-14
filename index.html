@@ -856,12 +856,7 @@ const RecordsView = defineComponent({
           <div class="close" @click="showCascader=false">&#10005;</div>
         </div>
         <div class="cascader-body">
-          <div class="cascader-col" v-for="(col, idx) in cascaderColumns" :key="idx">
-            <div class="cascader-item" v-for="item in col" :key="item.label" :class="{active:cascaderSelection[idx]===item.label}" @click="onCascaderSelect(idx, item)">
-              <span>{{item.label}}</span>
-              <span v-if="item.children" class="arrow">&#9654;</span>
-            </div>
-          </div>
+          STATIC CONTENT
         </div>
         <div class="cascader-ft">
           <button @click="confirmCascader">确定</button>
