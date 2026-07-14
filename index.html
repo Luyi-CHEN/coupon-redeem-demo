@@ -427,8 +427,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <div class="status-tag" :class="couponStatus">{{couponStatusText}}</div>
             </div>
             <div class="input-row">
-              <input v-model="couponInput" placeholder="点击手动录入券码" @click="openManualDialog('coupon')" readonly :disabled="couponStatus==='pass'||snStatus!=='pass'" />
-              <button class="scan-btn" @click="mockScanCoupon" :disabled="couponStatus==='pass'||snStatus!=='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
+              <input v-model="couponInput" placeholder="点击手动录入券码" @click="openManualDialog('coupon')" readonly :disabled="couponStatus==='pass'" />
+              <button class="scan-btn" @click="mockScanCoupon" :disabled="couponStatus==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
             </div>
 
             <div class="feedback" :class="couponFeedback.type" v-if="couponFeedback.msg">
@@ -645,7 +645,7 @@ createApp({
 
     function openManualDialog(field) {
       if (field === 'sn' && snStatus.value === 'pass') return;
-      if (field === 'coupon' && (couponStatus.value === 'pass' || snStatus.value !== 'pass')) return;
+      if (field === 'coupon' && couponStatus.value === 'pass') return;
       manualDialog.field = field;
       manualDialog.title = field === 'sn' ? '输入SN/IMEI1编码' : '输入顾客的券码';
       manualDialog.subtitle = field === 'sn' ? '输入机器编码' : '券码在条码下方';
@@ -684,7 +684,7 @@ createApp({
     }
 
     function validateCoupon() {
-      if (!couponInput.value || couponStatus.value==='pass' || snStatus.value!=='pass' || couponValidating.value) return;
+      if (!couponInput.value || couponStatus.value==='pass' || couponValidating.value) return;
       couponValidating.value = true;
       couponFeedback.value = { type:'info', msg:'正在查询会员券码信息...' };
       setTimeout(() => {
