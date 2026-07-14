@@ -850,8 +850,7 @@ const RecordsView = defineComponent({
       <transition name="fade">
         <div class="cascader-mask" v-if="showCascader" @click.self="showCascader=false"></div>
       </transition>
-      <transition name="slide-up-c">
-        <div class="cascader-panel" v-if="showCascader">
+      <div class="cascader-panel" v-if="showCascader">
         <div class="cascader-hd">
           <div class="title">选择商品分类</div>
           <div class="close" @click="showCascader=false">&#10005;</div>
@@ -868,7 +867,6 @@ const RecordsView = defineComponent({
           <button @click="confirmCascader">确定</button>
         </div>
       </div>
-      </transition>
     </div>
   `
 });
