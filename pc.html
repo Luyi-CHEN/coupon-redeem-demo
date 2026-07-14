@@ -48,9 +48,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .nav-item .arrow { margin-left:auto; font-size:10px; transition:transform .2s; }
 .nav-item.expanded .arrow { transform:rotate(90deg); }
 .nav-sub { overflow:hidden; }
-.nav-sub-item { padding:8px 20px 8px 48px; font-size:13px; cursor:pointer; color:var(--sidebar-item); transition:all .2s; }
+.nav-sub-item { padding:8px 20px 8px 48px; font-size:13px; cursor:pointer; color:var(--sidebar-item); transition:all .2s; display:flex; align-items:center; justify-content:space-between; }
 .nav-sub-item:hover { color:#fff; background:rgba(255,255,255,.04); }
 .nav-sub-item.active { color:var(--sidebar-active); background:rgba(37,99,235,.2); }
+.nav-sub-item .arrow { font-size:10px; transition:transform .2s; }
+.nav-sub-item.expanded .arrow { transform:rotate(90deg); }
+.nav-sub-2 { overflow:hidden; }
+.nav-sub-2-item { padding:8px 20px 8px 64px; font-size:13px; cursor:pointer; color:var(--sidebar-item); transition:all .2s; }
+.nav-sub-2-item:hover { color:#fff; background:rgba(255,255,255,.04); }
+.nav-sub-2-item.active { color:var(--sidebar-active); background:rgba(37,99,235,.2); }
 
 /* Main */
 .main { flex:1; margin-left:220px; min-width:0; }
@@ -142,9 +148,19 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
         <template v-for="nav in navMenus" :key="nav.title">
           <transition name="expand" v-if="nav.children && nav.expanded">
             <div class="nav-sub">
-              <div class="nav-sub-item" v-for="child in nav.children" :key="child.title" :class="{active:child.active}" @click="toast(child.title+' - 仅演示')">
-                {{child.title}}
-              </div>
+              <template v-for="child in nav.children" :key="child.title">
+                <div class="nav-sub-item" :class="{active:child.active, expanded:child.expanded}" @click="toggleNav(child)">
+                  <span>{{child.title}}</span>
+                  <span class="arrow" v-if="child.children">&#9654;</span>
+                </div>
+                <transition name="expand" v-if="child.children && child.expanded">
+                  <div class="nav-sub-2">
+                    <div class="nav-sub-2-item" v-for="sub in child.children" :key="sub.title" :class="{active:sub.active}" @click="toast(sub.title+' - 仅演示')">
+                      {{sub.title}}
+                    </div>
+                  </div>
+                </transition>
+              </template>
             </div>
           </transition>
         </template>
@@ -157,13 +173,16 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
         <div class="left">
           <span class="hamburger">&#9776;</span>
           <div class="breadcrumb">
+            <span>POS</span>
+            <span class="sep">/</span>
             <span>数据</span>
+            <span class="sep">/</span>
+            <span>新报表</span>
             <span class="sep">/</span>
             <span class="current">会员券核销历史记录</span>
           </div>
         </div>
         <div class="right">
-          <div class="user-avatar">总</div>
           <div class="logout" @click="toast('退出登录仅演示')">
             <span>&#8634;</span><span>退出登录</span>
           </div>
@@ -333,14 +352,18 @@ createApp({
     // Nav menus
     const navMenus = ref([
       { title:'新论坛', icon:'&#128172;', active:false },
-      { title:'POS', icon:'&#128179;', active:false, expanded:false, children:[
-        { title:'商品', active:false }, { title:'订单', active:false },
-        { title:'素材', active:false }, { title:'库存查看', active:false },
-        { title:'出入库', active:false }, { title:'财务', active:false },
-      ]},
-      { title:'数据', icon:'&#128202;', active:true, expanded:true, children:[
-        { title:'销售分析报表', active:false }, { title:'会员券核销历史记录', active:true },
-        { title:'库存分析报表', active:false },
+      { title:'POS', icon:'&#128179;', active:false, expanded:true, children:[
+        { title:'数据', active:true, expanded:true, children:[
+          { title:'营销中心', active:false }, { title:'运维', active:false },
+          { title:'审核', active:false }, { title:'巡店', active:false },
+          { title:'商品', active:false }, { title:'订单', active:false },
+          { title:'素材', active:false }, { title:'库存查看', active:false },
+          { title:'出入库', active:false }, { title:'财务', active:false },
+          { title:'新报表', active:false, expanded:true, children:[
+            { title:'会员券核销历史记录', active:true }
+          ]},
+          { title:'销售分析报表', active:false }, { title:'库存分析报表', active:false },
+        ]},
       ]},
       { title:'营销中心', icon:'&#127881;', active:false },
       { title:'运维', icon:'&#128737;', active:false },
