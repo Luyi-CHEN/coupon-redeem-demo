@@ -213,11 +213,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .records-search .search-wrap { flex:1; position:relative; }
 .records-search .search-input { width:100%; height:36px; background:var(--box); border:none; border-radius:18px; padding:0 16px 0 36px; font-size:14px; color:var(--text); outline:none; position:relative; }
 .search-wrap .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:16px; color:var(--sub); z-index:1; }
-.filter-row { display:flex; gap:8px; padding:8px 12px; background:var(--white); border-bottom:1px solid var(--divider); overflow-x:auto; }
-.filter-row::-webkit-scrollbar { display:none; }
 .filter-chip { flex-shrink:0; padding:6px 12px; border-radius:16px; background:var(--box); font-size:12px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:4px; }
 .filter-chip.active { background:rgba(37,99,235,.1); color:var(--primary); }
 .filter-chip.has-filter { background:rgba(37,99,235,.1); color:var(--primary); }
+.filter-chip.filter-btn { position:relative; }
+.filter-chip .filter-badge { position:absolute; top:-5px; right:-5px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--danger); color:#fff; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center; }
 .records-list { padding:8px 12px 80px; }
 .record-card { background:var(--white); border-radius:12px; padding:14px; margin-bottom:10px; box-shadow:var(--shadow-card); }
 .record-card .rc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
@@ -230,13 +230,20 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .export-btn { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); display:flex; align-items:center; justify-content:center; z-index:100; }
 .export-btn button { width:calc(100% - 32px); height:40px; border:1.5px solid var(--primary); background:rgba(37,99,235,.05); color:var(--primary); border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
 
+/* Slide-up & fade transitions */
+.slide-up-enter-active,.slide-up-leave-active { transition:transform .28s cubic-bezier(.25,.8,.25,1); }
+.slide-up-enter-from,.slide-up-leave-to { transform:translateY(100%); }
+.fade-enter-active,.fade-leave-active { transition:opacity .25s ease; }
+.fade-enter-from,.fade-leave-to { opacity:0; }
+
 /* Filter panel */
 .filter-panel-mask { position:absolute; inset:0; background:rgba(0,0,0,0.4); z-index:220; }
 .filter-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:16px 16px 0 0; max-height:80%; overflow-y:auto; z-index:221; padding:16px; padding-bottom:calc(56px + env(safe-area-inset-bottom)); }
 .filter-panel-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-.filter-panel-hd .title { font-size:16px; font-weight:600; color:var(--title); }
-.filter-panel-hd .reset { font-size:14px; color:var(--sub); cursor:pointer; }
-.filter-form { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.filter-panel-hd .title { font-size:17px; font-weight:600; color:var(--title); }
+.filter-panel-hd .close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--sub); cursor:pointer; border-radius:50%; }
+.filter-panel-hd .close:active { background:var(--box); }
+.filter-form { display:grid; grid-template-columns:1fr 1fr; gap:14px 12px; }
 .filter-form .form-item.full { grid-column:1 / -1; }
 .filter-form .form-item.half { grid-column:span 1; }
 .filter-form .form-item label { display:block; font-size:12px; color:var(--sub); margin-bottom:6px; }
@@ -244,20 +251,26 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .filter-form .form-item input:focus { border-color:var(--primary); }
 .filter-form .form-item .category-trigger { display:flex; align-items:center; justify-content:space-between; cursor:pointer; color:var(--text); }
 .filter-form .form-item .category-trigger.placeholder { color:var(--placeholder); }
+.filter-form .form-item .category-trigger .arrow { color:var(--sub); font-size:12px; }
 .filter-form .form-item .range-row { display:flex; align-items:center; gap:8px; }
 .filter-form .form-item .range-row input { flex:1; }
-.filter-form .form-item .range-row span { color:var(--sub); font-size:12px; }
+.filter-form .form-item .range-row .range-sep { color:var(--sub); font-size:12px; flex-shrink:0; }
+.clear-input-wrap { position:relative; }
+.clear-input-wrap input { padding-right:30px; }
+.clear-input-wrap .clear { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:18px; height:18px; border-radius:50%; background:var(--tertiary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; }
+.clear-input-wrap .clear:active { opacity:.8; }
 .filter-panel-ft { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); display:flex; align-items:center; padding:0 16px; gap:12px; }
-.filter-panel-ft button { flex:1; height:40px; border-radius:8px; font-size:15px; font-weight:500; cursor:pointer; border:none; }
-.filter-panel-ft .cancel { background:var(--box); color:var(--text); }
-.filter-panel-ft .confirm { background:var(--primary); color:#fff; }
+.filter-panel-ft button { height:40px; border-radius:8px; font-size:15px; font-weight:500; cursor:pointer; border:none; }
+.filter-panel-ft .reset { width:80px; background:var(--box); color:var(--text); }
+.filter-panel-ft .confirm { flex:1; background:var(--primary); color:#fff; }
 
 /* Cascader */
 .cascader-mask { position:absolute; inset:0; background:rgba(0,0,0,0.4); z-index:230; }
 .cascader-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:16px 16px 0 0; max-height:70%; z-index:231; display:flex; flex-direction:column; }
 .cascader-hd { padding:16px; border-bottom:1px solid var(--divider); display:flex; align-items:center; justify-content:space-between; }
-.cascader-hd .title { font-size:16px; font-weight:600; color:var(--title); }
-.cascader-hd .close { font-size:20px; color:var(--sub); cursor:pointer; }
+.cascader-hd .title { font-size:17px; font-weight:600; color:var(--title); }
+.cascader-hd .close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--sub); cursor:pointer; border-radius:50%; }
+.cascader-hd .close:active { background:var(--box); }
 .cascader-body { display:flex; height:300px; overflow:hidden; }
 .cascader-col { flex:1; overflow-y:auto; border-right:1px solid var(--divider); }
 .cascader-col:last-child { border-right:none; }
@@ -545,16 +558,8 @@ const { createApp, ref, computed, reactive, defineComponent, nextTick } = Vue;
 const RecordsView = defineComponent({
   setup() {
     const searchKey = ref('');
-    const activeFilter = ref('all');
     const showFilterPanel = ref(false);
     const showCascader = ref(false);
-
-    const filters = [
-      { key:'all', label:'全部' },
-      { key:'today', label:'今日' },
-      { key:'week', label:'本周' },
-      { key:'month', label:'本月' },
-    ];
 
     const filterForm = reactive({
       id: '',
@@ -599,29 +604,11 @@ const RecordsView = defineComponent({
       { id:'R006', couponCode:'MC20260701006', couponName:'会员折扣券8折', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', categoryPath:['PC','笔记本','YOGA'], product:'YOGA Air 14', staff:'张三' },
     ]);
 
-    function timeMatch(r) {
-      if (activeFilter.value === 'all') return true;
-      const t = new Date(r.time);
-      const now = new Date('2026-07-13');
-      if (activeFilter.value === 'today') {
-        return t.toDateString() === now.toDateString();
-      }
-      if (activeFilter.value === 'week') {
-        const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate()-7);
-        return t >= weekAgo && t <= now;
-      }
-      if (activeFilter.value === 'month') {
-        return t.getMonth() === now.getMonth() && t.getFullYear() === now.getFullYear();
-      }
-      return true;
-    }
-
     const filteredRecords = computed(() => {
       return records.value.filter(r => {
-        if (!timeMatch(r)) return false;
         const k = searchKey.value.trim().toLowerCase();
         if (k) {
-          const fields = [r.id, r.couponCode, r.couponName, r.sn, r.pn, r.product, r.staff, r.categoryPath.join('/')];
+          const fields = [r.couponName, r.product];
           if (!fields.some(f => f.toLowerCase().includes(k))) return false;
         }
         if (filterForm.id && !r.id.toLowerCase().includes(filterForm.id.toLowerCase())) return false;
@@ -643,8 +630,18 @@ const RecordsView = defineComponent({
       });
     });
 
-    const hasFilter = computed(() => {
-      return filterForm.id || filterForm.couponCode || filterForm.couponName || filterForm.timeStart || filterForm.timeEnd || filterForm.amountMin || filterForm.amountMax || filterForm.sn || filterForm.pn || filterForm.product || filterForm.category.length;
+    const filterCount = computed(() => {
+      let count = 0;
+      if (filterForm.id) count++;
+      if (filterForm.couponCode) count++;
+      if (filterForm.couponName) count++;
+      if (filterForm.timeStart || filterForm.timeEnd) count++;
+      if (filterForm.amountMin || filterForm.amountMax) count++;
+      if (filterForm.sn) count++;
+      if (filterForm.pn) count++;
+      if (filterForm.product) count++;
+      if (filterForm.category.length) count++;
+      return count;
     });
 
     function resetFilters() {
@@ -659,7 +656,10 @@ const RecordsView = defineComponent({
       filterForm.pn = '';
       filterForm.category = [];
       filterForm.product = '';
-      activeFilter.value = 'all';
+    }
+
+    function clearField(key) {
+      filterForm[key] = '';
     }
 
     function openCascader() {
@@ -723,22 +723,18 @@ const RecordsView = defineComponent({
       URL.revokeObjectURL(url);
     }
 
-    return { searchKey, activeFilter, filters, filterForm, filteredRecords, showFilterPanel, showCascader, hasFilter, resetFilters, openCascader, onCascaderSelect, confirmCascader, categoryText, cascaderColumns, categoryOptions, exportRecords };
+    return { searchKey, filterForm, filteredRecords, showFilterPanel, showCascader, filterCount, resetFilters, clearField, openCascader, onCascaderSelect, confirmCascader, categoryText, cascaderColumns, categoryOptions, exportRecords };
   },
   template: `
     <div>
       <div class="records-search">
         <div class="search-wrap">
           <span class="search-icon">&#128269;</span>
-          <input class="search-input" v-model="searchKey" placeholder="搜索券码/券名称/SN/IMEI/商品等" />
+          <input class="search-input" v-model="searchKey" placeholder="搜索优惠券名称/商品名称" />
         </div>
-        <div class="filter-chip" :class="{active:showFilterPanel,'has-filter':hasFilter}" @click="showFilterPanel=true">
+        <div class="filter-chip filter-btn" :class="{active:showFilterPanel,'has-filter':filterCount>0}" @click="showFilterPanel=true">
           &#9881; 筛选
-        </div>
-      </div>
-      <div class="filter-row">
-        <div class="filter-chip" v-for="f in filters" :key="f.key" :class="{active:activeFilter===f.key}" @click="activeFilter=f.key">
-          {{f.label}}
+          <span class="filter-badge" v-if="filterCount>0">{{filterCount}}</span>
         </div>
       </div>
       <div class="records-list">
@@ -765,70 +761,95 @@ const RecordsView = defineComponent({
       </div>
 
       <!-- Filter Panel -->
-      <div class="filter-panel-mask" v-if="showFilterPanel" @click.self="showFilterPanel=false"></div>
-      <div class="filter-panel" v-if="showFilterPanel">
-        <div class="filter-panel-hd">
-          <div class="title">筛选条件</div>
-          <div class="reset" @click="resetFilters">重置</div>
-        </div>
-        <div class="filter-form">
-          <div class="form-item half">
-            <label>核销券id</label>
-            <input v-model="filterForm.id" placeholder="请输入" />
+      <transition name="fade">
+        <div class="filter-panel-mask" v-if="showFilterPanel" @click.self="showFilterPanel=false"></div>
+      </transition>
+      <transition name="slide-up">
+        <div class="filter-panel" v-if="showFilterPanel">
+          <div class="filter-panel-hd">
+            <div class="title">筛选条件</div>
+            <div class="close" @click="showFilterPanel=false">&#10005;</div>
           </div>
-          <div class="form-item half">
-            <label>核销券码</label>
-            <input v-model="filterForm.couponCode" placeholder="请输入" />
-          </div>
-          <div class="form-item full">
-            <label>券名称</label>
-            <input v-model="filterForm.couponName" placeholder="请输入券名称" />
-          </div>
-          <div class="form-item full">
-            <label>核销时间</label>
-            <div class="range-row">
-              <input type="date" v-model="filterForm.timeStart" placeholder="开始日期" />
-              <span>至</span>
-              <input type="date" v-model="filterForm.timeEnd" placeholder="结束日期" />
+          <div class="filter-form">
+            <div class="form-item half">
+              <label>核销券id</label>
+              <div class="clear-input-wrap">
+                <input v-model="filterForm.id" placeholder="请输入" />
+                <span class="clear" v-if="filterForm.id" @click="clearField('id')">&#10005;</span>
+              </div>
+            </div>
+            <div class="form-item half">
+              <label>核销券码</label>
+              <div class="clear-input-wrap">
+                <input v-model="filterForm.couponCode" placeholder="请输入" />
+                <span class="clear" v-if="filterForm.couponCode" @click="clearField('couponCode')">&#10005;</span>
+              </div>
+            </div>
+            <div class="form-item full">
+              <label>券名称</label>
+              <div class="clear-input-wrap">
+                <input v-model="filterForm.couponName" placeholder="请输入券名称" />
+                <span class="clear" v-if="filterForm.couponName" @click="clearField('couponName')">&#10005;</span>
+              </div>
+            </div>
+            <div class="form-item full">
+              <label>核销时间</label>
+              <div class="range-row">
+                <input type="date" v-model="filterForm.timeStart" />
+                <span class="range-sep">至</span>
+                <input type="date" v-model="filterForm.timeEnd" />
+              </div>
+            </div>
+            <div class="form-item full">
+              <label>核销金额</label>
+              <div class="range-row">
+                <input type="number" v-model="filterForm.amountMin" placeholder="最小金额" />
+                <span class="range-sep">至</span>
+                <input type="number" v-model="filterForm.amountMax" placeholder="最大金额" />
+              </div>
+            </div>
+            <div class="form-item half">
+              <label>核销SN/IMEI</label>
+              <div class="clear-input-wrap">
+                <input v-model="filterForm.sn" placeholder="请输入" />
+                <span class="clear" v-if="filterForm.sn" @click="clearField('sn')">&#10005;</span>
+              </div>
+            </div>
+            <div class="form-item half">
+              <label>核销PN</label>
+              <div class="clear-input-wrap">
+                <input v-model="filterForm.pn" placeholder="请输入" />
+                <span class="clear" v-if="filterForm.pn" @click="clearField('pn')">&#10005;</span>
+              </div>
+            </div>
+            <div class="form-item full">
+              <label>商品分类</label>
+              <div class="category-trigger" :class="{placeholder:!filterForm.category.length}" @click="openCascader">
+                <span>{{categoryText()}}</span>
+                <span class="arrow">&#9654;</span>
+              </div>
+            </div>
+            <div class="form-item full">
+              <label>商品名称</label>
+              <div class="clear-input-wrap">
+                <input v-model="filterForm.product" placeholder="请输入商品名称" />
+                <span class="clear" v-if="filterForm.product" @click="clearField('product')">&#10005;</span>
+              </div>
             </div>
           </div>
-          <div class="form-item full">
-            <label>核销金额</label>
-            <div class="range-row">
-              <input type="number" v-model="filterForm.amountMin" placeholder="最小金额" />
-              <span>至</span>
-              <input type="number" v-model="filterForm.amountMax" placeholder="最大金额" />
-            </div>
-          </div>
-          <div class="form-item half">
-            <label>核销SN/IMEI</label>
-            <input v-model="filterForm.sn" placeholder="请输入" />
-          </div>
-          <div class="form-item half">
-            <label>核销PN</label>
-            <input v-model="filterForm.pn" placeholder="请输入" />
-          </div>
-          <div class="form-item full">
-            <label>商品分类</label>
-            <div class="category-trigger" :class="{placeholder:!filterForm.category.length}" @click="openCascader">
-              <span>{{categoryText()}}</span>
-              <span>&#9654;</span>
-            </div>
-          </div>
-          <div class="form-item full">
-            <label>商品名称</label>
-            <input v-model="filterForm.product" placeholder="请输入商品名称" />
+          <div class="filter-panel-ft">
+            <button class="reset" @click="resetFilters">重置</button>
+            <button class="confirm" @click="showFilterPanel=false">确定</button>
           </div>
         </div>
-        <div class="filter-panel-ft">
-          <button class="cancel" @click="showFilterPanel=false">取消</button>
-          <button class="confirm" @click="showFilterPanel=false">确定</button>
-        </div>
-      </div>
+      </transition>
 
       <!-- Category Cascader -->
-      <div class="cascader-mask" v-if="showCascader" @click.self="showCascader=false"></div>
-      <div class="cascader-panel" v-if="showCascader">
+      <transition name="fade">
+        <div class="cascader-mask" v-if="showCascader" @click.self="showCascader=false"></div>
+      </transition>
+      <transition name="slide-up">
+        <div class="cascader-panel" v-if="showCascader">
         <div class="cascader-hd">
           <div class="title">选择商品分类</div>
           <div class="close" @click="showCascader=false">&#10005;</div>
@@ -845,6 +866,7 @@ const RecordsView = defineComponent({
           <button @click="confirmCascader">确定</button>
         </div>
       </div>
+      </transition>
     </div>
   `
 });
