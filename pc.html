@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC后台 Demo - 会员券核销历史记录报表</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1d4fd8;
+  --danger: #FF4D4F;
+  --success: #52C41A;
+  --warning: #FAAD14;
+  --title: #1B1B1B;
+  --text: #333333;
+  --sub: #6A6A6A;
+  --tertiary: #BFBFBF;
+  --placeholder: #D9D9D9;
+  --bg: #F5F7FA;
+  --white: #FFFFFF;
+  --box: #F0F0F0;
+  --divider: #E8E8E8;
+  --sidebar-bg: #001529;
+  --sidebar-item: #A6ADB4;
+  --sidebar-active: #FFFFFF;
+  --sidebar-active-bg: #2563EB;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"PingFang SC","Microsoft Yahei",sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
+::-webkit-scrollbar { width:8px; height:8px; }
+::-webkit-scrollbar-thumb { background:#ccc; border-radius:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+
+/* Layout */
+.app-layout { display:flex; min-height:100vh; }
+
+/* Sidebar */
+.sidebar { width:220px; background:var(--sidebar-bg); color:var(--sidebar-item); flex-shrink:0; position:fixed; top:0; bottom:0; left:0; overflow-y:auto; z-index:100; }
+.sidebar-logo { height:56px; display:flex; align-items:center; padding:0 20px; color:#fff; font-size:16px; font-weight:600; border-bottom:1px solid rgba(255,255,255,.08); gap:8px; }
+.sidebar-logo .logo-icon { width:28px; height:28px; background:var(--primary); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.nav-group { padding:4px 0; }
+.nav-group-title { padding:8px 20px; font-size:11px; color:rgba(166,173,180,.5); text-transform:uppercase; letter-spacing:1px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:10px 20px; cursor:pointer; font-size:14px; transition:all .2s; border-left:3px solid transparent; }
+.nav-item:hover { background:rgba(255,255,255,.05); color:#fff; }
+.nav-item.active { background:var(--sidebar-active-bg); color:var(--sidebar-active); border-left-color:#fff; }
+.nav-item .icon { width:18px; text-align:center; font-size:15px; }
+.nav-item .arrow { margin-left:auto; font-size:10px; transition:transform .2s; }
+.nav-item.expanded .arrow { transform:rotate(90deg); }
+.nav-sub { overflow:hidden; }
+.nav-sub-item { padding:8px 20px 8px 48px; font-size:13px; cursor:pointer; color:var(--sidebar-item); transition:all .2s; display:flex; align-items:center; justify-content:space-between; }
+.nav-sub-item:hover { color:#fff; background:rgba(255,255,255,.04); }
+.nav-sub-item.active { color:var(--sidebar-active); background:rgba(37,99,235,.2); }
+.nav-sub-item .arrow { font-size:10px; transition:transform .2s; }
+.nav-sub-item.expanded .arrow { transform:rotate(90deg); }
+.nav-sub-2 { overflow:hidden; }
+.nav-sub-2-item { padding:8px 20px 8px 64px; font-size:13px; cursor:pointer; color:var(--sidebar-item); transition:all .2s; }
+.nav-sub-2-item:hover { color:#fff; background:rgba(255,255,255,.04); }
+.nav-sub-2-item.active { color:var(--sidebar-active); background:rgba(37,99,235,.2); }
+
+/* Main */
+.main { flex:1; margin-left:220px; min-width:0; }
+.top-bar { height:56px; background:var(--white); display:flex; align-items:center; justify-content:space-between; padding:0 24px; border-bottom:1px solid var(--divider); position:sticky; top:0; z-index:50; }
+.top-bar .left { display:flex; align-items:center; gap:12px; }
+.top-bar .hamburger { font-size:20px; cursor:pointer; color:var(--text); }
+.top-bar .breadcrumb { font-size:14px; color:var(--sub); }
+.top-bar .breadcrumb .sep { margin:0 6px; color:var(--tertiary); }
+.top-bar .breadcrumb .current { color:var(--title); font-weight:500; }
+.top-bar .right { display:flex; align-items:center; gap:16px; }
+.top-bar .logout { display:flex; align-items:center; gap:4px; color:var(--sub); cursor:pointer; font-size:13px; }
+.top-bar .logout:hover { color:var(--primary); }
+.top-bar .user-avatar { width:32px; height:32px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; }
+
+/* Content */
+.content { padding:20px 24px; }
+
+/* Filter Panel */
+.filter-panel { background:var(--white); border-radius:8px; padding:20px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.filter-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px 20px; }
+.filter-item { display:flex; flex-direction:column; gap:6px; }
+.filter-item label { font-size:13px; color:var(--sub); }
+.filter-item input, .filter-item select { height:36px; border:1px solid var(--divider); border-radius:4px; padding:0 12px; font-size:13px; color:var(--text); outline:none; transition:border-color .2s; background:var(--white); }
+.filter-item input:focus, .filter-item select:focus { border-color:var(--primary); }
+.filter-item input::placeholder { color:var(--placeholder); }
+.filter-item select { cursor:pointer; }
+.filter-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:16px; padding-top:16px; border-top:1px solid var(--divider); }
+.btn { padding:0 20px; height:36px; border-radius:4px; font-size:14px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; border:none; transition:all .2s; }
+.btn-primary { background:var(--primary); color:#fff; }
+.btn-primary:hover { background:var(--primary-dark); }
+.btn-default { background:var(--white); color:var(--sub); border:1px solid var(--divider); }
+.btn-default:hover { color:var(--primary); border-color:var(--primary); }
+
+/* Table */
+.table-panel { background:var(--white); border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.04); overflow:hidden; }
+.table-toolbar { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--divider); }
+.table-toolbar .title { font-size:16px; font-weight:600; color:var(--title); }
+.table-toolbar .info { font-size:13px; color:var(--sub); }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead th { background:#FAFAFA; color:var(--sub); font-weight:500; padding:12px 14px; text-align:left; white-space:nowrap; border-bottom:1px solid var(--divider); position:sticky; top:0; }
+thead th.sortable { cursor:pointer; user-select:none; }
+thead th.sortable:hover { color:var(--primary); }
+tbody td { padding:12px 14px; border-bottom:1px solid var(--divider); color:var(--text); white-space:nowrap; }
+tbody tr:hover { background:rgba(37,99,235,.02); }
+.tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; }
+.tag-blue { background:rgba(37,99,235,.1); color:var(--primary); }
+.tag-green { background:rgba(82,196,26,.1); color:var(--success); }
+.tag-orange { background:rgba(250,173,20,.1); color:var(--warning); }
+.tag-gray { background:var(--box); color:var(--sub); }
+.amount { color:var(--danger); font-weight:600; }
+
+/* Pagination */
+.pagination { display:flex; align-items:center; justify-content:flex-end; gap:6px; padding:16px 20px; }
+.pagination .total { font-size:13px; color:var(--sub); margin-right:auto; }
+.page-btn { min-width:32px; height:32px; border:1px solid var(--divider); border-radius:4px; background:var(--white); cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; padding:0 6px; color:var(--text); }
+.page-btn:hover:not(:disabled) { border-color:var(--primary); color:var(--primary); }
+.page-btn.active { border-color:var(--primary); color:var(--primary); background:var(--white); font-weight:600; }
+.page-btn:disabled { color:var(--tertiary); cursor:not-allowed; border-color:var(--box); }
+.page-jump { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--sub); }
+.page-jump input { width:48px; height:32px; border:1px solid var(--divider); border-radius:4px; text-align:center; font-size:13px; outline:none; color:var(--text); }
+.page-jump input:focus { border-color:var(--primary); }
+.page-size-select { height:32px; border:1px solid var(--divider); border-radius:4px; padding:0 8px; font-size:13px; cursor:pointer; outline:none; color:var(--text); }
+
+/* Toast */
+.toast { position:fixed; top:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.75); color:#fff; padding:12px 24px; border-radius:6px; font-size:14px; z-index:999; white-space:nowrap; }
+
+/* Expand animation */
+.expand-enter-active,.expand-leave-active { transition:all .2s ease; overflow:hidden; }
+.expand-enter-from,.expand-leave-to { max-height:0; opacity:0; }
+.expand-enter-to,.expand-leave-from { max-height:300px; opacity:1; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">L</div>
+        <span>零售家后台</span>
+      </div>
+      <div class="nav-group">
+        <div class="nav-item" v-for="nav in navMenus" :key="nav.title" :class="{active:nav.active, expanded:nav.expanded}" @click="toggleNav(nav)">
+          <span class="icon" v-html="nav.icon"></span>
+          <span>{{nav.title}}</span>
+          <span class="arrow" v-if="nav.children">&#9654;</span>
+        </div>
+        <template v-for="nav in navMenus" :key="nav.title">
+          <transition name="expand" v-if="nav.children && nav.expanded">
+            <div class="nav-sub">
+              <template v-for="child in nav.children" :key="child.title">
+                <div class="nav-sub-item" :class="{active:child.active, expanded:child.expanded}" @click="toggleNav(child)">
+                  <span>{{child.title}}</span>
+                  <span class="arrow" v-if="child.children">&#9654;</span>
+                </div>
+                <transition name="expand" v-if="child.children && child.expanded">
+                  <div class="nav-sub-2">
+                    <div class="nav-sub-2-item" v-for="sub in child.children" :key="sub.title" :class="{active:sub.active}" @click="toast(sub.title+' - 仅演示')">
+                      {{sub.title}}
+                    </div>
+                  </div>
+                </transition>
+              </template>
+            </div>
+          </transition>
+        </template>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="top-bar">
+        <div class="left">
+          <span class="hamburger">&#9776;</span>
+          <div class="breadcrumb">
+            <span>POS</span>
+            <span class="sep">/</span>
+            <span>数据</span>
+            <span class="sep">/</span>
+            <span class="current">会员券核销历史记录</span>
+          </div>
+        </div>
+        <div class="right">
+          <div class="logout" @click="toast('退出登录仅演示')">
+            <span>&#8634;</span><span>退出登录</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Filter -->
+        <div class="filter-panel">
+          <div class="filter-grid">
+            <div class="filter-item">
+              <label>所属战区</label>
+              <select v-model="filters.warZone">
+                <option value="">全部战区</option>
+                <option v-for="z in warZones" :key="z">{{z}}</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>经销商编码</label>
+              <input v-model="filters.kCode" placeholder="请输入经销商编码" />
+            </div>
+            <div class="filter-item">
+              <label>经销商名称</label>
+              <input v-model="filters.kName" placeholder="请输入经销商名称" />
+            </div>
+            <div class="filter-item">
+              <label>门店编码</label>
+              <input v-model="filters.dCode" placeholder="请输入门店编码" />
+            </div>
+            <div class="filter-item">
+              <label>门店名称</label>
+              <input v-model="filters.dName" placeholder="请输入门店名称" />
+            </div>
+            <div class="filter-item">
+              <label>店面类型</label>
+              <select v-model="filters.storeType">
+                <option value="">全部类型</option>
+                <option v-for="t in storeTypes" :key="t">{{t}}</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>核销券码ID</label>
+              <input v-model="filters.couponId" placeholder="请输入核销券码ID" />
+            </div>
+            <div class="filter-item">
+              <label>核销券码</label>
+              <input v-model="filters.couponCode" placeholder="请输入核销券码" />
+            </div>
+            <div class="filter-item">
+              <label>券名称</label>
+              <input v-model="filters.couponName" placeholder="请输入券名称" />
+            </div>
+            <div class="filter-item">
+              <label>核销时间</label>
+              <input v-model="filters.dateRange" placeholder="2026-07-06 ~ 2026-07-13" />
+            </div>
+            <div class="filter-item">
+              <label>核销金额</label>
+              <input v-model="filters.amount" placeholder="请输入核销金额" />
+            </div>
+            <div class="filter-item">
+              <label>核销SN</label>
+              <input v-model="filters.sn" placeholder="请输入核销SN" />
+            </div>
+            <div class="filter-item">
+              <label>核销PN</label>
+              <input v-model="filters.pn" placeholder="请输入核销PN" />
+            </div>
+            <div class="filter-item">
+              <label>商品分类（大类）</label>
+              <select v-model="filters.category">
+                <option value="">全部分类</option>
+                <option v-for="c in categories" :key="c">{{c}}</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>商品名称</label>
+              <input v-model="filters.productName" placeholder="请输入商品名称" />
+            </div>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-primary" @click="searchData">&#128269; 搜索</button>
+            <button class="btn btn-default" @click="resetFilters">&#8634; 重置</button>
+            <button class="btn btn-primary" @click="exportData">&#11015; 导出</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-panel">
+          <div class="table-toolbar">
+            <div class="title">会员券核销历史记录</div>
+            <div class="info">共 {{filteredData.length}} 条记录</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="sortable" @click="sortBy('warZone')">战区 {{sortIcon('warZone')}}</th>
+                  <th class="sortable" @click="sortBy('kCode')">经销商编码</th>
+                  <th>经销商名称</th>
+                  <th>门店编码</th>
+                  <th>门店名称</th>
+                  <th>店面类型</th>
+                  <th>核销券码ID</th>
+                  <th>核销券码</th>
+                  <th>券名称</th>
+                  <th class="sortable" @click="sortBy('time')">核销时间 {{sortIcon('time')}}</th>
+                  <th class="sortable" @click="sortBy('amount')">核销金额 {{sortIcon('amount')}}</th>
+                  <th>核销SN</th>
+                  <th>核销PN</th>
+                  <th>商品分类</th>
+                  <th>商品名称</th>
+                  <th>核销店员</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row,i) in pagedData" :key="row.id">
+                  <td>{{row.warZone}}</td>
+                  <td>{{row.kCode}}</td>
+                  <td>{{row.kName}}</td>
+                  <td>{{row.dCode}}</td>
+                  <td>{{row.dName}}</td>
+                  <td><span class="tag" :class="row.storeType==='城市专卖店'?'tag-blue':'tag-gray'">{{row.storeType}}</span></td>
+                  <td>{{row.couponId}}</td>
+                  <td>{{row.couponCode}}</td>
+                  <td>{{row.couponName}}</td>
+                  <td>{{row.time}}</td>
+                  <td class="amount">&#165;{{row.amount}}</td>
+                  <td>{{row.sn}}</td>
+                  <td>{{row.pn}}</td>
+                  <td><span class="tag tag-orange">{{row.category}}</span></td>
+                  <td>{{row.productName}}</td>
+                  <td>{{row.staff}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <span class="total">共 {{filteredData.length}} 条记录，当前显示第{{displayRange.start}}-{{displayRange.end}}条记录</span>
+            <button class="page-btn" @click="currentPage--" :disabled="currentPage===1">&lsaquo;</button>
+            <button class="page-btn" v-for="p in pageNumbers" :key="p" :class="{active:p===currentPage}" @click="currentPage=p">{{p}}</button>
+            <button class="page-btn" @click="currentPage++" :disabled="currentPage===totalPages">&rsaquo;</button>
+            <select v-model="pageSize" class="page-size-select">
+              <option :value="10">10 条/页</option>
+              <option :value="20">20 条/页</option>
+              <option :value="50">50 条/页</option>
+            </select>
+            <div class="page-jump">
+              <span>跳至</span>
+              <input v-model="jumpInput" @keyup.enter="jumpPage" type="number" min="1" :max="totalPages" />
+              <span>页</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" v-if="toastMsg">{{toastMsg}}</div>
+</div>
+
+<script>
+const { createApp, ref, computed, reactive } = Vue;
+
+createApp({
+  setup() {
+    // Nav menus
+    const navMenus = ref([
+      { title:'新论坛', icon:'&#128172;', active:false },
+      { title:'POS', icon:'&#128179;', active:false, expanded:true, children:[
+        { title:'营销中心', active:false }, { title:'运维', active:false },
+        { title:'审核', active:false }, { title:'巡店', active:false },
+        { title:'商品', active:false }, { title:'订单', active:false },
+        { title:'素材', active:false }, { title:'库存查看', active:false },
+        { title:'出入库', active:false }, { title:'财务', active:false },
+        { title:'数据', active:true, expanded:true, children:[
+          { title:'销售分析报表', active:false },
+          { title:'库存分析报表', active:false },
+          { title:'会员券核销历史记录', active:true },
+        ]},
+      ]},
+      { title:'营销中心', icon:'&#127881;', active:false },
+      { title:'运维', icon:'&#128737;', active:false },
+      { title:'审核', icon:'&#9989;', active:false },
+      { title:'巡店', icon:'&#128064;', active:false },
+    ]);
+    function toggleNav(nav) {
+      if (nav.children) { nav.expanded = !nav.expanded; }
+      else { toast(nav.title + ' - 仅演示'); }
+    }
+
+    // Filter options
+    const warZones = ['华北战区','华东战区','华南战区','华中战区','西南战区','西北战区','东北战区'];
+    const storeTypes = ['城市专卖店','综合店','专卖店','旗舰店','体验店'];
+    const categories = ['拯救者','ThinkPad','小新','YOGA','台式机','平板','外设'];
+
+    // Filters
+    const filters = reactive({
+      warZone:'', kCode:'', kName:'', dCode:'', dName:'', storeType:'',
+      couponId:'', couponCode:'', couponName:'', dateRange:'', amount:'',
+      sn:'', pn:'', category:'', productName:''
+    });
+    function resetFilters() {
+      Object.keys(filters).forEach(k => filters[k]='');
+      currentPage.value = 1;
+      toast('筛选条件已重置');
+    }
+
+    // Mock data
+    const allData = ref([]);
+    const mockNames = ['会员专享满减券','会员生日特惠券','会员新人立减券','会员折扣券8折','会员满赠券','会员积分兑换券'];
+    const mockProducts = [
+      ['拯救者','拯救者R9000P 2024'],['拯救者','拯救者Y9000X 2024'],['拯救者','拯救者刃7000K'],
+      ['ThinkPad','ThinkPad X1 Carbon'],['ThinkPad','ThinkPad T14s'],['ThinkPad','ThinkPad E14'],
+      ['小新','小新Pro 16 2024'],['小新','小新Air 14 2024'],
+      ['YOGA','YOGA Air 14'],['YOGA','YOGA Pro 16s'],
+      ['台式机','天逸510S'],['平板','小新Pad Pro 12.7'],
+    ];
+    const mockStores = [
+      ['华北战区','K0206951','邢台五零科技有限公司','D00000001','联想体验店（邢台万达店）','城市专卖店'],
+      ['华北战区','K0203892','北京联想数码科技','D00000015','联想旗舰店（北京中关村店）','旗舰店'],
+      ['华东战区','K0102003','上海联想信息科技','D00000028','联想体验店（上海陆家嘴店）','体验店'],
+      ['华东战区','K0105567','杭州联想商贸有限公','D00000042','联想专卖店（杭州武林店）','专卖店'],
+      ['华南战区','K0301089','深圳联想数码广场','D00000056','联想体验店（深圳南山店）','城市专卖店'],
+      ['华南战区','K0303344','广州联想信息科技','D00000071','联想综合店（广州天河店）','综合店'],
+      ['华中战区','K0402001','武汉联想科技广场','D00000085','联想体验店（武汉光谷店）','体验店'],
+      ['西南战区','K0501088','成都联想数码科技','D00000099','联想专卖店（成都春熙路店）','专卖店'],
+      ['西南战区','K0503321','重庆联想商贸公司','D00000103','联想旗舰店（重庆观音桥店）','旗舰店'],
+      ['西北战区','K0601005','西安联想信息科技','D00000117','联想体验店（西安小寨店）','体验店'],
+      ['东北战区','K0702008','沈阳联想数码广场','D00000125','联想专卖店（沈阳中街店）','专卖店'],
+      ['华北战区','K0206951','邢台五零科技有限公司','D00000001','联想体验店（邢台万达店）','城市专卖店'],
+    ];
+    const staffNames = ['张三','李四','王五','赵六','刘七','陈八'];
+    for (let i = 0; i < 47; i++) {
+      const store = mockStores[i % mockStores.length];
+      const prod = mockProducts[i % mockProducts.length];
+      const day = String(Math.floor(i/6)+1).padStart(2,'0');
+      allData.value.push({
+        id: i+1,
+        warZone: store[0], kCode: store[1], kName: store[2], dCode: store[3], dName: store[4], storeType: store[5],
+        couponId: 'CID' + String(20260700001 + i),
+        couponCode: 'MC2026' + String(70001 + i).padStart(5,'0'),
+        couponName: mockNames[i % mockNames.length],
+        time: `2026-07-${day} ${String(8+(i%10)).padStart(2,'0')}:${String((i*7)%60).padStart(2,'0')}:${String((i*13)%60).padStart(2,'0')}`,
+        amount: [100,200,300,500,350,150,800][i%7],
+        sn: 'SN' + String(100000000+i*137),
+        pn: 'PN2026' + String(50001+i).padStart(5,'0'),
+        category: prod[0], productName: prod[1],
+        staff: staffNames[i%staffNames.length],
+      });
+    }
+
+    // Sorting
+    const sortKey = ref('');
+    const sortDir = ref('asc');
+    function sortBy(key) {
+      if (sortKey.value === key) { sortDir.value = sortDir.value==='asc'?'desc':'asc'; }
+      else { sortKey.value = key; sortDir.value = 'asc'; }
+    }
+    function sortIcon(key) {
+      if (sortKey.value !== key) return '';
+      return sortDir.value==='asc' ? ' \u2191' : ' \u2193';
+    }
+
+    // Filtered data
+    const filteredData = computed(() => {
+      let result = allData.value;
+      if (filters.warZone) result = result.filter(r => r.warZone===filters.warZone);
+      if (filters.kCode) result = result.filter(r => r.kCode.includes(filters.kCode));
+      if (filters.kName) result = result.filter(r => r.kName.includes(filters.kName));
+      if (filters.dCode) result = result.filter(r => r.dCode.includes(filters.dCode));
+      if (filters.dName) result = result.filter(r => r.dName.includes(filters.dName));
+      if (filters.storeType) result = result.filter(r => r.storeType===filters.storeType);
+      if (filters.couponId) result = result.filter(r => r.couponId.includes(filters.couponId));
+      if (filters.couponCode) result = result.filter(r => r.couponCode.includes(filters.couponCode));
+      if (filters.couponName) result = result.filter(r => r.couponName.includes(filters.couponName));
+      if (filters.sn) result = result.filter(r => r.sn.toLowerCase().includes(filters.sn.toLowerCase()));
+      if (filters.pn) result = result.filter(r => r.pn.toLowerCase().includes(filters.pn.toLowerCase()));
+      if (filters.category) result = result.filter(r => r.category===filters.category);
+      if (filters.productName) result = result.filter(r => r.productName.includes(filters.productName));
+      if (sortKey.value) {
+        result = [...result].sort((a,b) => {
+          let va = a[sortKey.value], vb = b[sortKey.value];
+          if (typeof va === 'string') { va = va; vb = vb; }
+          if (va < vb) return sortDir.value==='asc' ? -1 : 1;
+          if (va > vb) return sortDir.value==='asc' ? 1 : -1;
+          return 0;
+        });
+      }
+      return result;
+    });
+
+    // Pagination
+    const currentPage = ref(1);
+    const pageSize = ref(10);
+    const totalPages = computed(() => Math.ceil(filteredData.value.length / pageSize.value) || 1);
+    const pagedData = computed(() => {
+      const start = (currentPage.value-1) * pageSize.value;
+      return filteredData.value.slice(start, start + pageSize.value);
+    });
+    const pageNumbers = computed(() => {
+      const total = totalPages.value, cur = currentPage.value;
+      let arr = [];
+      if (total <= 7) { for(let i=1;i<=total;i++) arr.push(i); }
+      else {
+        arr = [1];
+        if (cur > 3) arr.push('...');
+        for (let i = Math.max(2,cur-1); i <= Math.min(total-1,cur+1); i++) arr.push(i);
+        if (cur < total-2) arr.push('...');
+        arr.push(total);
+      }
+      return arr.filter(n => n !== '...');
+    });
+
+    const jumpInput = ref('');
+    function jumpPage() {
+      const p = parseInt(jumpInput.value);
+      if (p >= 1 && p <= totalPages.value) { currentPage.value = p; }
+      jumpInput.value = '';
+    }
+    const displayRange = computed(() => {
+      const start = (currentPage.value - 1) * pageSize.value + 1;
+      const end = Math.min(currentPage.value * pageSize.value, filteredData.value.length);
+      return { start: filteredData.value.length === 0 ? 0 : start, end };
+    });
+
+    // Toast
+    const toastMsg = ref('');
+    let toastTimer = null;
+    function toast(msg) { toastMsg.value = msg; clearTimeout(toastTimer); toastTimer = setTimeout(() => toastMsg.value = '', 1500); }
+
+    function searchData() { currentPage.value = 1; toast('搜索完成，共' + filteredData.value.length + '条记录'); }
+    function exportData() { toast('正在导出数据，请稍候...'); setTimeout(() => toast('导出成功！文件已下载'), 1200); }
+
+    return {
+      navMenus, toggleNav, warZones, storeTypes, categories, filters, resetFilters,
+      filteredData, pagedData, currentPage, pageSize, totalPages, pageNumbers,
+      sortKey, sortDir, sortBy, sortIcon, toastMsg, toast, searchData, exportData,
+      jumpInput, jumpPage, displayRange,
+    };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
