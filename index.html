@@ -2,1374 +2,215 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>企微工作台 - 门店会员营销Demo</title>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <style>
-:root {
-  --primary: #2563EB;
-  --danger: #FF4D4F;
-  --label: #FF9500;
-  --success: #52C41A;
-  --warning: #FAAD14;
-  --title: #1B1B1B;
-  --text: #333333;
-  --sub: #6A6A6A;
-  --tertiary: #BFBFBF;
-  --placeholder: #D9D9D9;
-  --bg: #EDF4FF;
-  --white: #FFFFFF;
-  --box: #F0F0F0;
-  --divider: #DCDEE0;
-  --shadow-card: 0px 20px 35px -6px rgba(255,100,100,0.06);
-  --shadow-bottom: 0px -4px 10px rgba(0,0,0,0.04);
-  --shadow-popup: 0px 8px 24px rgba(0,0,0,0.12);
-}
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"PingFang SC","Microsoft Yahei",sans-serif; background:#222; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:20px 0; }
-.phone-frame { width:390px; height:844px; background:var(--bg); border-radius:48px; border:12px solid #1a1a1a; overflow:hidden; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
-.phone-screen { width:100%; height:100%; overflow-y:auto; overflow-x:hidden; position:relative; }
-.phone-screen::-webkit-scrollbar { display:none; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB',sans-serif;background:#1a1a2e;display:flex;align-items:center;justify-content:center;min-height:100vh}
+.phone-frame{width:390px;height:844px;background:#F5F6FA;border-radius:48px;border:12px solid #1a1a1a;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.phone-screen{width:100%;height:100%;overflow-y:auto;overflow-x:hidden;position:relative}
+.phone-screen::-webkit-scrollbar{display:none}
 
 /* Status bar */
-.status-bar { height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; font-size:15px; font-weight:600; color:var(--title); background:transparent; position:relative; z-index:10; }
-.status-bar .time { font-size:15px; font-weight:600; }
-.status-bar .icons { display:flex; align-items:center; gap:5px; font-size:13px; }
+.status-bar{height:44px;background:#1C2B4A;display:flex;align-items:center;justify-content:space-between;padding:0 20px;color:#fff;font-size:12px;flex-shrink:0}
+.status-bar .icons{font-size:11px;letter-spacing:2px}
 
-/* Generic */
-.page { min-height:100%; }
-.fade-enter-active,.fade-leave-active { transition:opacity .25s ease; }
-.fade-enter-from,.fade-leave-to { opacity:0; }
-.card { background:var(--white); border-radius:12px; box-shadow:var(--shadow-card); overflow:hidden; }
-.section-title { font-size:16px; font-weight:600; color:var(--title); margin-bottom:8px; }
+/* Header */
+.qy-header{background:linear-gradient(180deg,#1C2B4A 0%,#243556 100%);padding:8px 16px 16px;flex-shrink:0}
+.qy-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:10px}
+.qy-search{display:flex;align-items:center;background:rgba(255,255,255,.12);border-radius:8px;height:36px;padding:0 12px;gap:8px}
+.qy-search .icon{color:rgba(255,255,255,.5);font-size:14px}
+.qy-search .placeholder{color:rgba(255,255,255,.4);font-size:14px}
 
-/* ===== HomePage ===== */
-.home-top { background:var(--white); padding:0 16px 12px; }
-.home-top .switch-row { display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
-.home-top .switch-row .switch-store { display:flex; align-items:center; gap:4px; font-size:14px; color:var(--text); cursor:pointer; }
-.home-top .switch-row .switch-store .arrow { font-size:10px; color:var(--sub); }
-.home-top .switch-row .msg-icon { position:relative; cursor:pointer; font-size:20px; }
-.home-top .switch-row .msg-icon .msg-badge { position:absolute; top:-6px; right:-8px; background:#FF3141; color:#fff; font-size:9px; padding:1px 5px; border-radius:100px; font-weight:600; line-height:1.3; }
-.home-top .store-identity { display:flex; align-items:center; gap:10px; margin-top:12px; }
-.home-top .store-identity .avatar { width:44px; height:44px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:600; flex-shrink:0; }
-.home-top .store-identity .store-info .store-name { font-size:17px; font-weight:600; color:var(--title); line-height:1.3; }
-.home-top .store-identity .store-info .store-sub { font-size:12px; color:var(--sub); margin-top:2px; }
+/* Service summary */
+.service-card{margin:12px 12px 0;background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.service-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.service-title{display:flex;align-items:center;gap:6px}
+.service-title .dot{width:8px;height:8px;border-radius:50%;background:#52C41A}
+.service-title span{font-size:15px;font-weight:600;color:#333}
+.service-link{font-size:12px;color:#2563EB;cursor:pointer}
+.service-body{font-size:13px;color:#999;line-height:1.5}
+.service-body b{color:#666;font-weight:500}
+.service-btn{display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:4px 12px;background:rgba(37,99,235,.08);border-radius:4px;font-size:12px;color:#2563EB;cursor:pointer;border:none}
 
-.store-card { background:#E8F0FE; margin:0 12px; border-radius:8px; padding:12px 14px; }
-.store-card .sc-row { display:flex; align-items:center; justify-content:space-between; }
-.store-card .sc-fields { display:flex; flex-wrap:wrap; gap:4px 12px; font-size:12px; color:var(--text); }
-.store-card .sc-fields .field { white-space:nowrap; }
-.store-card .sc-fields .field .lbl { color:var(--sub); }
-.store-card .sc-detail { font-size:12px; color:var(--sub); cursor:pointer; white-space:nowrap; }
+/* Section card */
+.section-card{margin:12px 12px 0;background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:16px;font-weight:600;color:#333}
+.section-more{font-size:12px;color:#999;cursor:pointer}
 
-.banner-area { margin:12px 12px 0; border-radius:8px; overflow:hidden; height:100px; background:linear-gradient(135deg,#FFC0CB,#FF69B4); display:flex; align-items:center; justify-content:center; position:relative; }
-.banner-area .banner-placeholder { font-size:13px; color:rgba(255,255,255,.85); text-align:center; }
-.banner-area .banner-dots { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:4px; }
-.banner-area .banner-dots .dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.4); }
-.banner-area .banner-dots .dot.active { background:#fff; }
+/* Icon grid */
+.icon-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 8px}
+.icon-item{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;position:relative}
+.icon-item:active{opacity:.7}
+.icon-box{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;position:relative}
+.icon-label{font-size:11px;color:#666;text-align:center;line-height:1.2;max-width:68px;word-break:keep-all}
+.icon-badge{position:absolute;top:-2px;right:-2px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:#FF4D4F;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600}
+.icon-sub{font-size:9px;color:#999;margin-top:-4px}
 
-.msg-reminder { margin:12px; background:#F0EDFF; border-radius:8px; padding:10px 14px; display:flex; align-items:center; gap:8px; cursor:pointer; }
-.msg-reminder .mr-title { font-size:14px; font-weight:600; color:var(--primary); }
-.msg-reminder .mr-count { font-size:14px; color:var(--title); font-weight:500; }
-.msg-reminder .mr-tag { background:#FF6B35; color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; margin-left:auto; }
-.msg-reminder .mr-arrow { color:var(--tertiary); font-size:14px; }
+/* Sales section */
+.sales-grid{display:flex;gap:20px;padding:4px 0}
+.sales-item{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
+.sales-item:active{opacity:.7}
+.sales-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.sales-label{font-size:11px;color:#666}
 
-.kingkong { background:var(--white); border-radius:12px; margin:0 12px; padding:16px 8px; box-shadow:var(--shadow-card); }
-.kk-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px 0; }
-.kk-item { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; }
-.kk-icon { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; position:relative; }
-.kk-label { font-size:11px; color:#333; text-align:center; line-height:1.3; }
-.kk-new-tag { position:absolute; top:-5px; right:-5px; background:#FF3141; color:#fff; font-size:9px; padding:1px 5px; border-radius:100px; font-weight:600; line-height:1.3; min-width:16px; text-align:center; }
-.kk-page-dots { display:flex; justify-content:center; gap:4px; margin-top:14px; }
-.kk-page-dots .dot { width:5px; height:5px; border-radius:50%; background:var(--divider); }
-.kk-page-dots .dot.active { background:var(--primary); }
-
-.dashboard { margin:12px; background:linear-gradient(135deg,#E8F0FE,#F0F5FF); border-radius:12px; padding:14px 16px; box-shadow:var(--shadow-card); }
-.dash-head { display:flex; align-items:center; justify-content:space-between; }
-.dash-head .dash-title-l { display:flex; align-items:center; gap:6px; }
-.dash-head .dash-title-l .dash-icon { width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:16px; }
-.dash-head .dash-title-l .title-text { font-size:15px; font-weight:600; color:var(--title); }
-.dash-head .dash-title-l .help-icon { font-size:14px; color:var(--tertiary); cursor:pointer; }
-.dash-head .dash-date { font-size:15px; color:var(--sub); }
-.dash-time-row { display:flex; align-items:center; gap:6px; margin-top:10px; }
-.dash-time-btn { padding:3px 14px; border-radius:14px; font-size:12px; border:1px solid var(--divider); background:var(--white); color:var(--sub); cursor:pointer; }
-.dash-time-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
-.dash-date-picker { margin-left:auto; display:flex; align-items:center; gap:4px; font-size:12px; color:var(--text); cursor:pointer; }
-.dash-date-picker .cal-icon { color:var(--primary); font-size:14px; }
-.dash-metrics { display:grid; grid-template-columns:1fr 1fr 1fr; margin-top:12px; background:var(--white); border-radius:8px; overflow:hidden; }
-.dash-cell { padding:10px 6px; min-height:56px; display:flex; flex-direction:column; justify-content:flex-end; border-right:1px solid var(--divider); border-bottom:1px solid var(--divider); }
-.dash-cell:nth-child(3n) { border-right:none; }
-.dash-cell:nth-child(n+16) { border-bottom:none; }
-.dash-cell.empty { justify-content:center; align-items:center; }
-.dash-cell .c-label { font-size:15px; color:var(--sub); line-height:1.3; }
-.dash-cell .c-value { font-size:15px; font-weight:600; color:var(--title); margin-top:4px; line-height:1.2; }
-.dash-cell .c-sub { font-size:15px; color:var(--sub); margin-top:2px; }
-
-/* TabBar */
-.tabbar { position:absolute; bottom:0; left:0; right:0; height:50px; background:var(--white); display:flex; border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); z-index:100; }
-.tabbar-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:#999999; cursor:pointer; }
-.tabbar-item.active { color:var(--primary); }
-.tabbar-item .icon { width:22px; height:22px; display:flex; align-items:center; justify-content:center; position:relative; }
-.tabbar-item .text { font-size:10px; margin-top:2px; }
-.icon-workbench { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2px; }
-.icon-workbench i { background:currentColor; border-radius:1px; }
-.icon-inventory { width:20px; height:18px; position:relative; }
-.icon-inventory::before { content:''; position:absolute; bottom:0; left:3px; width:14px; height:9px; background:currentColor; border-radius:1px; }
-.icon-inventory::after { content:''; position:absolute; top:2px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-bottom:8px solid currentColor; }
-.icon-pos { width:20px; height:14px; border:2px solid currentColor; border-radius:2px; position:relative; display:flex; align-items:center; justify-content:center; }
-.icon-pos::before { content:'POS'; font-size:7px; font-weight:700; color:currentColor; line-height:1; }
-.icon-pos::after { content:''; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%); width:8px; height:3px; background:currentColor; border-radius:0 0 2px 2px; }
-.icon-person { width:16px; height:16px; position:relative; }
-.icon-person::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:7px; height:7px; border-radius:50%; background:currentColor; }
-.icon-person::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:14px; height:7px; border-radius:7px 7px 0 0; background:currentColor; }
-.icon-ai { width:18px; height:16px; border:2px solid currentColor; border-radius:8px 8px 8px 2px; position:relative; }
-.icon-ai::before { content:''; position:absolute; top:4px; left:4px; width:3px; height:3px; border-radius:50%; background:currentColor; box-shadow:6px 0 0 currentColor; }
-
-/* ===== NavBar ===== */
-.navbar { height:44px; display:flex; align-items:center; padding:0 12px; background:var(--white); border-bottom:1px solid var(--divider); position:sticky; top:0; z-index:50; }
-.navbar .left { width:60px; display:flex; align-items:center; gap:4px; }
-.navbar .left .back { font-size:22px; color:var(--text); cursor:pointer; line-height:1; }
-.navbar .title { flex:1; text-align:center; font-size:17px; font-weight:600; color:var(--title); }
-.navbar .right { width:60px; text-align:right; }
-.navbar .right .more { font-size:20px; color:var(--text); cursor:pointer; }
-
-/* ===== Segmented Tabs ===== */
-.seg-tabs { display:flex; background:var(--box); border-radius:23px; margin:12px; padding:3px; }
-.seg-tab { flex:1; text-align:center; padding:10px 0; font-size:14px; color:var(--title); border-radius:20px; cursor:pointer; transition:all .2s; }
-.seg-tab.active { background:var(--white); color:var(--primary); font-weight:500; font-size:16px; box-shadow:0 1px 4px rgba(0,0,0,.08); position:relative; }
-.seg-tab.active::after { content:''; position:absolute; bottom:4px; left:50%; transform:translateX(-50%); width:24px; height:3px; background:var(--primary); border-radius:8px; }
-
-/* ===== Store Switcher ===== */
-.store-switcher { margin:0 12px 10px; background:var(--white); border-radius:8px; padding:12px 14px; box-shadow:var(--shadow-card); cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
-.store-switcher:active { background:#F8F9FA; }
-.ss-info { flex:1; min-width:0; }
-.ss-name { font-size:15px; font-weight:600; color:var(--title); line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.ss-sub { font-size:12px; color:var(--sub); margin-top:2px; }
-.ss-arrow { font-size:12px; color:var(--sub); transition:transform .25s; flex-shrink:0; margin-left:8px; }
-.ss-arrow.open { transform:rotate(180deg); }
-.store-panel-mask { position:absolute; inset:0; background:rgba(0,0,0,.3); z-index:250; }
-.store-panel { position:absolute; top:0; left:0; right:0; background:var(--white); border-radius:0 0 12px 12px; z-index:251; max-height:420px; overflow-y:auto; padding:16px 12px; box-shadow:0 8px 24px rgba(0,0,0,.12); animation:slideDown .25s ease; }
-@keyframes slideDown { from{transform:translateY(-100%);opacity:0} to{transform:translateY(0);opacity:1} }
-.sp-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.sp-title { font-size:17px; font-weight:600; color:var(--title); }
-.sp-close { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--sub); cursor:pointer; }
-.sp-close:active { background:var(--box); }
-.sp-item { background:var(--white); border:1.5px solid var(--divider); border-radius:8px; padding:12px 14px; margin-bottom:8px; cursor:pointer; position:relative; transition:border-color .2s; }
-.sp-item:active { background:#F8F9FA; }
-.sp-item.selected { border-color:var(--primary); background:rgba(37,99,235,.03); }
-.sp-code { font-size:16px; font-weight:600; color:var(--title); }
-.sp-desc { font-size:13px; color:var(--sub); margin-top:4px; }
-.sp-check { position:absolute; top:12px; right:14px; width:20px; height:20px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
-
-/* ===== Steps ===== */
-.steps-bar { background:var(--white); border-radius:12px; margin:0 12px 12px; padding:16px 12px; box-shadow:var(--shadow-card); }
-.steps-row { display:flex; align-items:center; }
-.step-item { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; }
-.step-circle { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; z-index:2; }
-.step-item.finish .step-circle { background:var(--primary); color:#fff; }
-.step-item.process .step-circle { background:var(--primary); color:#fff; box-shadow:0 0 0 4px rgba(37,99,235,.15); }
-.step-item.wait .step-circle { background:var(--box); color:var(--sub); }
-.step-line { position:absolute; top:14px; left:50%; width:100%; height:2px; background:var(--box); z-index:1; }
-.step-line.done { background:var(--primary); }
-.step-label { font-size:13px; color:var(--sub); margin-top:6px; text-align:center; line-height:1.3; }
-.step-item.process .step-label { color:var(--primary); font-weight:600; }
-.step-item.finish .step-label { color:var(--text); }
-
-/* ===== Input Card ===== */
-.input-card { background:var(--white); border-radius:12px; margin:0 12px 12px; padding:16px; box-shadow:var(--shadow-card); }
-.input-card .card-head { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-.input-card .card-head .num { width:22px; height:22px; border-radius:6px; background:var(--primary); color:#fff; font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; }
-.input-card .card-head .title { font-size:15px; font-weight:600; color:var(--title); }
-.input-card .card-head .status-tag { margin-left:auto; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:500; }
-.status-tag.pass { background:rgba(82,196,26,.1); color:var(--success); }
-.status-tag.fail { background:rgba(255,77,79,.1); color:var(--danger); }
-.status-tag.pending { background:var(--box); color:var(--sub); }
-.input-row { display:flex; align-items:center; gap:8px; }
-.input-row input { flex:1; height:44px; border:1.5px solid var(--divider); border-radius:8px; padding:0 14px; font-size:16px; color:var(--text); outline:none; transition:border-color .2s; background:var(--white); cursor:pointer; }
-.input-row input:focus { border-color:var(--primary); }
-.input-row input::placeholder { color:var(--placeholder); }
-.input-row input:disabled { background:var(--box); cursor:not-allowed; }
-.scan-btn { width:60px; height:44px; border-radius:8px; background:var(--primary); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; border:none; flex-shrink:0; font-size:10px; }
-.scan-btn .scan-icon { width:16px; height:16px; border:2px solid #fff; border-radius:2px; position:relative; }
-.scan-btn .scan-icon::before { content:''; position:absolute; top:50%; left:-4px; right:-4px; height:2px; background:#fff; transform:translateY(-50%); }
-.scan-btn:active { opacity:.8; }
-.scan-btn:disabled { background:var(--tertiary); cursor:not-allowed; }
-.input-card .validate-btn { margin-top:10px; width:100%; height:40px; border:1.5px solid var(--primary); background:rgba(37,99,235,.05); color:var(--primary); border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
-.input-card .validate-btn:active { background:rgba(37,99,235,.12); }
-.input-card .validate-btn:disabled { border-color:var(--divider); color:var(--tertiary); background:var(--box); cursor:not-allowed; }
-.feedback { margin-top:8px; font-size:12px; padding:6px 10px; border-radius:6px; display:flex; align-items:center; gap:4px; }
-.feedback.success { background:rgba(82,196,26,.08); color:var(--success); }
-.feedback.error { background:rgba(255,77,79,.08); color:var(--danger); }
-.feedback.info { background:rgba(37,99,235,.06); color:var(--primary); }
-.feedback .loading-spin { width:12px; height:12px; border:2px solid var(--primary); border-top-color:transparent; border-radius:50%; animation:spin .6s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-
-/* Notice bar */
-.notice-bar { margin:0 12px 12px; background:rgba(255,149,0,.08); border-radius:8px; padding:10px 12px; display:flex; align-items:flex-start; gap:6px; font-size:15px; color:var(--label); line-height:1.5; }
-.notice-bar .icon { flex-shrink:0; font-size:14px; }
-
-/* Bottom submit bar */
-.submit-bar { position:absolute; bottom:0; left:0; right:0; height:68px; background:var(--white); border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); display:flex; align-items:center; padding:0 16px; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
-.submit-btn { flex:1; height:49px; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; transition:all .2s; }
-.submit-btn.enabled { background:var(--primary); color:#fff; }
-.submit-btn.enabled:active { opacity:.85; }
-.submit-btn.disabled { background:var(--box); color:var(--tertiary); cursor:not-allowed; }
-
-/* Result dialog */
-.dialog-mask { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:200; display:flex; align-items:center; justify-content:center; }
-.dialog-panel { width:279px; background:var(--white); border-radius:8px; padding:24px 20px 16px; text-align:center; box-shadow:var(--shadow-popup); }
-.dialog-icon { width:56px; height:56px; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:28px; }
-.dialog-icon.success { background:rgba(82,196,26,.1); color:var(--success); }
-.dialog-icon.error { background:rgba(255,77,79,.1); color:var(--danger); }
-.dialog-icon.loading { background:rgba(37,99,235,.1); }
-.dialog-icon.loading .loading-spin-lg { width:28px; height:28px; border:3px solid var(--primary); border-top-color:transparent; border-radius:50%; animation:spin .6s linear infinite; }
-.dialog-title { font-size:17px; font-weight:600; color:var(--title); margin-bottom:8px; }
-.dialog-msg { font-size:13px; color:var(--sub); line-height:1.5; margin-bottom:16px; }
-.dialog-btn { width:100%; height:45px; border:none; border-radius:4px; font-size:18px; font-weight:500; cursor:pointer; }
-.dialog-btn.primary { background:var(--primary); color:#fff; }
-.dialog-btn.primary:active { opacity:.85; }
-
-/* Manual input dialog */
-.manual-mask { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:250; display:flex; align-items:center; justify-content:center; }
-.manual-dialog { width:279px; background:var(--white); border-radius:8px; overflow:hidden; box-shadow:var(--shadow-popup); }
-.manual-dialog-hd { padding:20px 20px 12px; text-align:center; }
-.manual-dialog-title { font-size:17px; font-weight:600; color:var(--title); margin-bottom:6px; }
-.manual-dialog-subtitle { font-size:13px; color:var(--sub); }
-.manual-dialog-bd { padding:0 20px 16px; }
-.manual-dialog-bd input { width:100%; height:44px; border:1.5px solid var(--divider); border-radius:8px; padding:0 14px; font-size:16px; color:var(--text); outline:none; }
-.manual-dialog-bd input:focus { border-color:var(--primary); }
-.manual-dialog-ft { display:flex; border-top:1px solid var(--divider); }
-.manual-dialog-ft button { flex:1; height:48px; border:none; background:var(--white); font-size:18px; cursor:pointer; }
-.manual-dialog-ft button.cancel { color:var(--text); border-right:0.5px solid var(--divider); }
-.manual-dialog-ft button.submit { color:var(--primary); font-weight:500; }
-.manual-dialog-ft button:active { background:var(--box); }
-
-/* ===== Records Page ===== */
-.records-search { padding:8px 12px; background:var(--white); display:flex; gap:8px; align-items:center; }
-.records-search .search-wrap { flex:1; position:relative; }
-.records-search .search-input { width:100%; height:32px; background:#F5F5F5; border:none; border-radius:6px; padding:0 16px 0 36px; font-size:15px; color:var(--text); outline:none; position:relative; }
-.records-search .search-input::placeholder { color:#999999; }
-.search-wrap .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:16px; color:#CCCCCC; z-index:1; }
-.filter-chip { flex-shrink:0; padding:6px 12px; border-radius:2px; background:#F5F5F5; font-size:15px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:4px; }
-.filter-chip.active { background:rgba(37,99,235,.1); color:var(--primary); }
-.filter-chip.has-filter { background:rgba(37,99,235,.1); color:var(--primary); }
-.filter-chip.filter-btn { position:relative; }
-.filter-chip .filter-badge { position:absolute; top:-5px; right:-5px; min-width:10px; height:10px; padding:0 2px; border-radius:100px; background:#FF3141; color:#fff; font-size:9px; font-weight:600; display:flex; align-items:center; justify-content:center; }
-.records-list { padding:8px 12px 80px; }
-.record-card { background:var(--white); border-radius:8px; padding:14px; margin-bottom:10px; box-shadow:var(--shadow-card); }
-.record-card .rc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-.record-card .rc-name { font-size:14px; font-weight:600; color:var(--title); flex:1; }
-.record-card .rc-amount { font-size:18px; font-weight:700; color:var(--danger); margin-left:8px; }
-.record-card .rc-grid { display:flex; flex-direction:column; gap:6px; }
-.record-card .rc-item { font-size:12px; line-height:1.4; display:flex; align-items:flex-start; }
-.record-card .rc-item .lbl { color:var(--sub); flex-shrink:0; width:84px; }
-.record-card .rc-item .val { color:var(--text); flex:1; margin-left:4px; word-break:break-all; }
-.export-btn { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); display:flex; align-items:center; justify-content:center; z-index:100; }
-.export-btn button { width:calc(100% - 32px); height:40px; border:1.5px solid var(--primary); background:rgba(37,99,235,.05); color:var(--primary); border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
-
-/* Slide-up & fade transitions */
-.slide-up-enter-active,.slide-up-leave-active,
-.slide-up-c-enter-active,.slide-up-c-leave-active { transition:transform .28s cubic-bezier(.25,.8,.25,1); }
-.slide-up-enter-from,.slide-up-leave-to,
-.slide-up-c-enter-from,.slide-up-c-leave-to { transform:translateY(100%); }
-.fade-enter-active,.fade-leave-active { transition:opacity .25s ease; }
-.fade-enter-from,.fade-leave-to { opacity:0; }
-
-/* Filter panel */
-.filter-panel-mask { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:220; }
-.filter-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:8px 8px 0 0; max-height:80%; overflow-y:auto; z-index:221; padding:16px; padding-bottom:calc(56px + env(safe-area-inset-bottom)); }
-.filter-panel-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-.filter-panel-hd .title { font-size:17px; font-weight:600; color:var(--title); }
-.filter-panel-hd .close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--sub); cursor:pointer; border-radius:50%; }
-.filter-panel-hd .close:active { background:var(--box); }
-.filter-form { display:grid; grid-template-columns:1fr 1fr; gap:14px 12px; }
-.filter-form .form-item.full { grid-column:1 / -1; }
-.filter-form .form-item.half { grid-column:span 1; }
-.filter-form .form-item label { display:block; font-size:12px; color:var(--sub); margin-bottom:6px; }
-.filter-form .form-item input, .filter-form .form-item .category-trigger { width:100%; height:40px; border:1.5px solid var(--divider); border-radius:8px; padding:0 12px; font-size:17px; color:var(--text); outline:none; background:var(--white); }
-.filter-form .form-item input:focus { border-color:var(--primary); }
-.filter-form .form-item input::placeholder { color:#CCCCCC; }
-.filter-form .form-item .category-trigger { display:flex; align-items:center; justify-content:space-between; cursor:pointer; color:var(--text); }
-.filter-form .form-item .category-trigger.placeholder { color:#CCCCCC; }
-.filter-form .form-item .category-trigger .arrow { color:var(--sub); font-size:12px; }
-.filter-form .form-item .range-row { display:flex; align-items:center; gap:8px; }
-.filter-form .form-item .range-row input { flex:1; }
-.filter-form .form-item .range-row .range-sep { color:var(--sub); font-size:12px; flex-shrink:0; }
-.clear-input-wrap { position:relative; }
-.clear-input-wrap input { padding-right:30px; }
-.clear-input-wrap .clear { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:18px; height:18px; border-radius:50%; background:var(--tertiary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; }
-.clear-input-wrap .clear:active { opacity:.8; }
-.filter-panel-ft { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); display:flex; align-items:center; padding:0 16px; gap:12px; }
-.filter-panel-ft button { height:40px; border-radius:8px; font-size:15px; font-weight:500; cursor:pointer; border:none; }
-.filter-panel-ft .reset { width:80px; background:var(--box); color:var(--text); border-radius:4px; }
-.filter-panel-ft .confirm { flex:1; background:var(--primary); color:#fff; border-radius:4px; }
-
-/* Cascader */
-.cascader-mask { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:230; }
-.cascader-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:8px 8px 0 0; max-height:480px; z-index:231; display:flex; flex-direction:column; }
-.cascader-hd { padding:16px; border-bottom:1px solid var(--divider); display:flex; align-items:center; justify-content:space-between; }
-.cascader-hd .title { font-size:17px; font-weight:600; color:var(--title); }
-.cascader-hd .close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--sub); cursor:pointer; border-radius:50%; }
-.cascader-hd .close:active { background:var(--box); }
-.cascader-body { display:flex; height:300px; overflow:hidden; }
-.cascader-col { flex:1; overflow-y:auto; border-right:1px solid var(--divider); }
-.cascader-col:last-child { border-right:none; }
-.cascader-item { padding:12px 16px; font-size:17px; color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
-.cascader-item.active { background:rgba(37,99,235,.08); color:var(--primary); font-weight:500; }
-.cascader-item .arrow { color:var(--sub); font-size:12px; }
-.cascader-ft { padding:12px 16px; border-top:1px solid var(--divider); }
-.cascader-ft button { width:100%; height:40px; border:none; border-radius:8px; background:var(--primary); color:#fff; font-size:15px; font-weight:500; cursor:pointer; }
+/* Tab bar */
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:82px;background:#fff;border-top:1px solid #E8E8E8;display:flex;align-items:flex-start;padding-top:8px;z-index:10}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;position:relative}
+.tab-icon{font-size:22px;color:#999;height:24px;display:flex;align-items:center;justify-content:center}
+.tab-item.active .tab-icon{color:#2563EB}
+.tab-label{font-size:10px;color:#999}
+.tab-item.active .tab-label{color:#2563EB;font-weight:500}
+.tab-dot{position:absolute;top:-2px;right:50%;margin-right:-18px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#FF4D4F;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600}
 
 /* Toast */
-.toast { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,.75); color:#fff; padding:12px 20px; border-radius:8px; font-size:13px; z-index:300; white-space:nowrap; }
-
-/* Scanner overlay */
-.scanner-overlay { position:absolute; inset:0; background:#000; z-index:300; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.scanner-top { position:absolute; top:60px; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:2; }
-.scanner-close { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; cursor:pointer; }
-.scanner-title { color:#fff; font-size:17px; font-weight:500; }
-.scanner-flash { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; cursor:pointer; }
-.scanner-viewfinder { width:240px; height:240px; position:relative; }
-.scanner-corner { position:absolute; width:24px; height:24px; border-color:#fff; border-style:solid; }
-.scanner-corner.tl { top:0; left:0; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
-.scanner-corner.tr { top:0; right:0; border-width:3px 3px 0 0; border-radius:0 4px 0 0; }
-.scanner-corner.bl { bottom:0; left:0; border-width:0 0 3px 3px; border-radius:0 0 0 4px; }
-.scanner-corner.br { bottom:0; right:0; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
-.scanner-line { position:absolute; left:8px; right:8px; height:2px; background:linear-gradient(90deg,transparent,var(--primary),transparent); animation:scanLine 1.8s ease-in-out infinite; box-shadow:0 0 8px rgba(37,99,235,.5); }
-@keyframes scanLine { 0%{top:8px} 50%{top:calc(100% - 10px)} 100%{top:8px} }
-.scanner-hint { color:rgba(255,255,255,.7); font-size:14px; margin-top:24px; text-align:center; line-height:1.5; }
-.scanner-success { position:absolute; bottom:120px; left:50%; transform:translateX(-50%); color:#52C41A; font-size:16px; font-weight:600; display:flex; align-items:center; gap:6px; }
-.scanner-success .check { width:20px; height:20px; border-radius:50%; background:#52C41A; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
-
-/* ===== QyWork Page ===== */
-.qy-status-bar { height:44px; background:#1C2B4A; display:flex; align-items:center; justify-content:space-between; padding:0 20px; color:#fff; font-size:12px; flex-shrink:0; }
-.qy-status-bar .icons { font-size:11px; letter-spacing:2px; }
-.qy-header { background:linear-gradient(180deg,#1C2B4A 0%,#243556 100%); padding:8px 16px 16px; flex-shrink:0; }
-.qy-title { font-size:20px; font-weight:700; color:#fff; margin-bottom:10px; }
-.qy-search { display:flex; align-items:center; background:rgba(255,255,255,.12); border-radius:8px; height:36px; padding:0 12px; gap:8px; cursor:pointer; }
-.qy-search .icon { color:rgba(255,255,255,.5); font-size:14px; }
-.qy-search .placeholder { color:rgba(255,255,255,.4); font-size:14px; }
-.qy-service-card { margin:12px 12px 0; background:var(--white); border-radius:12px; padding:14px 16px; box-shadow:var(--shadow-card); }
-.qy-service-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-.qy-service-title { display:flex; align-items:center; gap:6px; }
-.qy-service-title .dot { width:8px; height:8px; border-radius:50%; background:var(--success); }
-.qy-service-title span { font-size:15px; font-weight:600; color:var(--title); }
-.qy-service-link { font-size:12px; color:var(--primary); cursor:pointer; }
-.qy-service-body { font-size:13px; color:#999; line-height:1.5; }
-.qy-service-body b { color:#666; font-weight:500; }
-.qy-service-btn { display:inline-flex; align-items:center; gap:4px; margin-top:8px; padding:4px 12px; background:rgba(37,99,235,.08); border-radius:4px; font-size:12px; color:var(--primary); cursor:pointer; border:none; }
-.qy-section-card { margin:12px 12px 0; background:var(--white); border-radius:12px; padding:16px; box-shadow:var(--shadow-card); }
-.qy-section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-.qy-section-title { font-size:16px; font-weight:600; color:var(--title); }
-.qy-section-more { font-size:12px; color:#999; cursor:pointer; }
-.qy-icon-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px 8px; }
-.qy-icon-item { display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; position:relative; }
-.qy-icon-item:active { opacity:.7; }
-.qy-icon-box { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; position:relative; }
-.qy-icon-label { font-size:11px; color:#666; text-align:center; line-height:1.2; max-width:68px; word-break:keep-all; }
-.qy-icon-sub { font-size:9px; color:#999; margin-top:-4px; }
-.qy-sales-grid { display:flex; gap:20px; padding:4px 0; }
-.qy-sales-item { display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; }
-.qy-sales-item:active { opacity:.7; }
-.qy-sales-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; }
-.qy-sales-label { font-size:11px; color:#666; }
-.qy-tabbar { position:absolute; bottom:0; left:0; right:0; height:82px; background:var(--white); border-top:1px solid #E8E8E8; display:flex; align-items:flex-start; padding-top:8px; z-index:10; }
-.qy-tab-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; position:relative; }
-.qy-tab-icon { font-size:22px; color:#999; height:24px; display:flex; align-items:center; justify-content:center; }
-.qy-tab-item.active .qy-tab-icon { color:var(--primary); }
-.qy-tab-label { font-size:10px; color:#999; }
-.qy-tab-item.active .qy-tab-label { color:var(--primary); font-weight:500; }
-.qy-tab-dot { position:absolute; top:-2px; right:50%; margin-right:-18px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--danger); color:#fff; font-size:9px; display:flex; align-items:center; justify-content:center; font-weight:600; }
+.toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;z-index:300;white-space:nowrap}
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="phone-frame">
-    <div class="phone-screen">
-      <!-- QyWork Page (企微工作台首页) -->
-      <div class="page" v-if="currentPage==='qywork'">
-        <div class="qy-status-bar">
-          <span>13:56</span>
-          <span class="icons">5G &#128267; &#128268;</span>
-        </div>
-        <div class="qy-header">
-          <div class="qy-title">工作台</div>
-          <div class="qy-search" @click="toast('搜索仅演示')">
-            <span class="icon">&#128269;</span>
-            <span class="placeholder">搜索应用、功能、文档</span>
-          </div>
-        </div>
-        <div class="qy-service-card">
-          <div class="qy-service-head">
-            <div class="qy-service-title"><div class="dot"></div><span>服务总结</span></div>
-            <span class="qy-service-link">查看全部 ›</span>
-          </div>
-          <div class="qy-service-body">
-            <b>AI自动结案</b>：今日已完成 <b>3</b> 个服务工单结案，效率提升 <b>42%</b>
-          </div>
-          <button class="qy-service-btn" @click="toast('观看讲解仅演示')">&#9654; 观看讲解</button>
-        </div>
-        <div class="qy-section-card">
-          <div class="qy-section-header">
-            <span class="qy-section-title">融合零售助手</span>
-            <span class="qy-section-more" @click="toast('更多应用仅演示')">更多 ›</span>
-          </div>
-          <div class="qy-icon-grid">
-            <div class="qy-icon-item" v-for="item in qyApps" :key="item.label" @click="onQyAppClick(item)">
-              <div class="qy-icon-box" :style="{background:item.bg}"><span v-html="item.icon"></span></div>
-              <div class="qy-icon-label">{{item.label}}</div>
-              <div class="qy-icon-sub" v-if="item.sub">{{item.sub}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="qy-section-card">
-          <div class="qy-section-header">
-            <span class="qy-section-title">销售通</span>
-            <span class="qy-section-more" @click="toast('更多仅演示')">更多 ›</span>
-          </div>
-          <div class="qy-sales-grid">
-            <div class="qy-sales-item" v-for="item in salesApps" :key="item.label" @click="toast(item.label+' - 仅演示入口')">
-              <div class="qy-sales-icon" :style="{background:item.bg}"><span v-html="item.icon"></span></div>
-              <div class="qy-sales-label">{{item.label}}</div>
-            </div>
-          </div>
-        </div>
-        <div style="height:90px"></div>
+<div class="phone-frame">
+  <div class="phone-screen" ref="screenRef">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span>13:56</span>
+      <span class="icons">5G &#128267; &#128268;</span>
+    </div>
+
+    <!-- Header -->
+    <div class="qy-header">
+      <div class="qy-title">工作台</div>
+      <div class="qy-search" @click="toast('搜索仅演示')">
+        <span class="icon">&#128269;</span>
+        <span class="placeholder">搜索应用、功能、文档</span>
       </div>
+    </div>
 
-      <!-- HomePage -->
-      <div class="page" v-else-if="currentPage==='home'">
-        <!-- Top: Status bar + Store info -->
-        <div class="home-top">
-          <div class="status-bar">
-            <span class="time">19:48</span>
-            <span class="icons">&#128683; 5G &#128267;</span>
-          </div>
-          <div class="switch-row">
-            <div class="switch-store" @click="toast('门店切换功能仅演示')">
-              <span>切换店面</span>
-              <span class="arrow">&#9662;</span>
-            </div>
-            <div class="msg-icon" @click="toast('消息中心仅演示')">
-              <span>&#128172;</span>
-              <span class="msg-badge">99+</span>
-            </div>
-          </div>
-          <div class="store-identity">
-            <div class="avatar">L</div>
-            <div class="store-info">
-              <div class="store-name">智店通-城市专卖店-授权-D00000001</div>
-              <div class="store-sub">隶属于：智店通经销商</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Store basic info card -->
-        <div class="store-card">
-          <div class="sc-row">
-            <div class="sc-fields">
-              <div class="field"><span class="lbl">城市级别:</span> --</div>
-              <div class="field"><span class="lbl">商圈属性:</span> --</div>
-              <div class="field"><span class="lbl">店铺面积:</span> --m²</div>
-              <div class="field"><span class="lbl">人员:</span> 4名</div>
-            </div>
-            <div class="sc-detail" @click="toast('查看详情仅演示')">查看详情 &rsaquo;</div>
-          </div>
-        </div>
-
-        <!-- Banner carousel -->
-        <div class="banner-area">
-          <div class="banner-placeholder">&#127881; 门店营销活动<br/>会员专享优惠等你来</div>
-          <div class="banner-dots">
-            <div class="dot active"></div>
-            <div class="dot"></div>
-          </div>
-        </div>
-
-        <!-- Message reminder -->
-        <div class="msg-reminder" @click="toast('消息提醒仅演示')">
-          <span class="mr-title">消息提醒</span>
-          <span class="mr-count">071302</span>
-          <span class="mr-tag">未读</span>
-          <span class="mr-arrow">&rsaquo;</span>
-        </div>
-
-        <!-- Kingkong grid -->
-        <div class="kingkong">
-          <div class="kk-grid">
-            <div class="kk-item" v-for="item in kingkongItems" :key="item.label" @click="onKkClick(item)">
-              <div class="kk-icon" :style="{background:item.bg}">
-                <span v-html="item.icon"></span>
-                <span class="kk-new-tag" v-if="item.isNew">NEW</span>
-              </div>
-              <div class="kk-label">{{item.label}}</div>
-            </div>
-          </div>
-          <div class="kk-page-dots">
-            <div class="dot active"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-          </div>
-        </div>
-
-        <!-- Sales dashboard -->
-        <div class="dashboard">
-          <div class="dash-head">
-            <div class="dash-title-l">
-              <span class="dash-icon">&#128202;</span>
-              <span class="title-text">我的销售看板</span>
-              <span class="help-icon" @click="toast('看板说明仅演示')">&#9432;</span>
-            </div>
-            <span class="dash-date">数据更新至 2026-07-13</span>
-          </div>
-          <div class="dash-time-row">
-            <div class="dash-time-btn" :class="{active:dashTime==='day'}" @click="dashTime='day'">日</div>
-            <div class="dash-time-btn" :class="{active:dashTime==='week'}" @click="dashTime='week'">周</div>
-            <div class="dash-time-btn" :class="{active:dashTime==='month'}" @click="dashTime='month'">月</div>
-            <div class="dash-time-btn" :class="{active:dashTime==='quarter'}" @click="dashTime='quarter'">季</div>
-            <div class="dash-date-picker" @click="toast('日期选择仅演示')">
-              <span>2026-07-13</span>
-              <span class="cal-icon">&#128197;</span>
-            </div>
-          </div>
-          <div class="dash-metrics">
-            <div class="dash-cell">
-              <div class="c-label">销售额</div>
-              <div class="c-value">0</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">订单数</div>
-              <div class="c-value">0</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">客单价</div>
-              <div class="c-value">0</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">销售目标/完成率</div>
-              <div class="c-value">-</div>
-              <div class="c-sub">-</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">毛利/毛利率</div>
-              <div class="c-value">0</div>
-              <div class="c-sub">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">毛利目标/完成率</div>
-              <div class="c-value">-</div>
-              <div class="c-sub">-</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">PC销售额/占比</div>
-              <div class="c-value">0</div>
-              <div class="c-sub">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">平板销售额/占比</div>
-              <div class="c-value">0</div>
-              <div class="c-sub">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">手机销售额/占比</div>
-              <div class="c-value">0</div>
-              <div class="c-sub">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">服务销售额/占比</div>
-              <div class="c-value">0</div>
-              <div class="c-sub">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">选件销售额/占比</div>
-              <div class="c-value">0</div>
-              <div class="c-sub">0.00</div>
-            </div>
-            <div class="dash-cell empty"></div>
-            <div class="dash-cell">
-              <div class="c-label">主品连带率</div>
-              <div class="c-value">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">主品服务选件连带率</div>
-              <div class="c-value">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">PC-Care卡捆绑率</div>
-              <div class="c-value">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">客户注册率</div>
-              <div class="c-value">0.00</div>
-            </div>
-            <div class="dash-cell">
-              <div class="c-label">退单率</div>
-              <div class="c-value">0.00</div>
-            </div>
-            <div class="dash-cell empty"></div>
-          </div>
-        </div>
-
-        <div style="height:50px;"></div>
-        <div class="tabbar">
-          <div class="tabbar-item active"><span class="icon icon-workbench"><i></i><i></i><i></i><i></i></span><span class="text">工作台</span></div>
-          <div class="tabbar-item" @click="toast('库存管理仅演示')"><span class="icon icon-inventory"></span><span class="text">库存管理</span></div>
-          <div class="tabbar-item" @click="toast('联想POS仅演示')"><span class="icon icon-pos"></span><span class="text">联想POS</span></div>
-          <div class="tabbar-item" @click="toast('个人中心仅演示')"><span class="icon icon-person"></span><span class="text">个人中心</span></div>
-          <div class="tabbar-item" @click="toast('AI助手仅演示')"><span class="icon icon-ai"></span><span class="text">AI助手</span></div>
-        </div>
+    <!-- Service summary -->
+    <div class="service-card">
+      <div class="service-head">
+        <div class="service-title"><div class="dot"></div><span>服务总结</span></div>
+        <span class="service-link">查看全部 ›</span>
       </div>
+      <div class="service-body">
+        <b>AI自动结案</b>：今日已完成 <b>3</b> 个服务工单结案，效率提升 <b>42%</b>
+      </div>
+      <button class="service-btn" @click="toast('观看讲解仅演示')">&#9654; 观看讲解</button>
+    </div>
 
-      <!-- Redeem Page -->
-      <div class="page" v-else-if="currentPage==='redeem'">
-        <div class="status-bar"><span class="time">14:37</span><span class="icons">5G &#128267;</span></div>
-        <div class="navbar">
-          <div class="left"><span class="back" @click="goHome">&#8249;</span></div>
-          <div class="title">会员券核销</div>
-          <div class="right"><span class="more" @click="toast('更多操作')">&#8943;</span></div>
-        </div>
-
-        <div class="seg-tabs">
-          <div class="seg-tab" :class="{active:activeTab==='redeem'}" @click="activeTab='redeem'">券码核销</div>
-          <div class="seg-tab" :class="{active:activeTab==='records'}" @click="activeTab='records'">核销记录</div>
-        </div>
-
-        <!-- Redeem Tab -->
-        <div v-if="activeTab==='redeem'">
-
-          <!-- Store Switcher -->
-          <div class="store-switcher" @click="showStorePanel=true" v-if="!showStorePanel">
-            <div class="ss-info">
-              <div class="ss-name">{{currentStore.name}}</div>
-              <div class="ss-sub">{{currentStore.code}} · {{currentStore.type}}</div>
-            </div>
-            <span class="ss-arrow">&#9660;</span>
+    <!-- 融合零售助手 -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">融合零售助手</span>
+        <span class="section-more" @click="toast('更多应用仅演示')">更多 ›</span>
+      </div>
+      <div class="icon-grid">
+        <div class="icon-item" v-for="item in apps" :key="item.label" @click="onAppClick(item)">
+          <div class="icon-box" :style="{background:item.bg}">
+            <span v-html="item.icon"></span>
+            <div class="icon-badge" v-if="item.badge">{{item.badge}}</div>
           </div>
-          <div class="store-panel-mask" v-if="showStorePanel" @click="showStorePanel=false"></div>
-          <div class="store-panel" v-if="showStorePanel">
-            <div class="sp-header">
-              <span class="sp-title">选择门店</span>
-              <span class="sp-close" @click="showStorePanel=false">&#10005;</span>
-            </div>
-            <div class="sp-item" v-for="s in storeList" :key="s.code" :class="{selected:s.code===currentStore.code}" @click="selectStore(s)">
-              <div class="sp-code">{{s.code}}</div>
-              <div class="sp-desc">{{s.name}} · {{s.type}}</div>
-              <div class="sp-check" v-if="s.code===currentStore.code">&#10003;</div>
-            </div>
-          </div>
-
-          <div class="steps-bar">
-            <div class="steps-row">
-              <div class="step-item" :class="stepStatus(1)">
-                <div class="step-line" :class="{done:currentStep>1}"></div>
-                <div class="step-circle">{{currentStep>1?'&#10003;':'1'}}</div>
-                <div class="step-label">SN/IMEI校验</div>
-              </div>
-              <div class="step-item" :class="stepStatus(2)">
-                <div class="step-line" :class="{done:currentStep>2}"></div>
-                <div class="step-circle">{{currentStep>2?'&#10003;':'2'}}</div>
-                <div class="step-label">券码校验</div>
-              </div>
-              <div class="step-item" :class="stepStatus(3)">
-                <div class="step-circle">3</div>
-                <div class="step-label">提交核销<br>（自动上报机码）</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SN Input Card -->
-          <div class="input-card">
-            <div class="card-head">
-              <div class="num">1</div>
-              <div class="title">SN/IMEI编码录入</div>
-              <div class="status-tag" :class="snStatus">{{snStatusText}}</div>
-            </div>
-            <div class="input-row">
-              <input v-model="snInput" placeholder="点击手动录入SN/IMEI" @click="openManualDialog('sn')" readonly :disabled="snStatus==='pass'" />
-              <button class="scan-btn" @click="mockScanSn" :disabled="snStatus==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
-            </div>
-
-            <div class="feedback" :class="snFeedback.type" v-if="snFeedback.msg">
-              <span v-if="snFeedback.type==='info'" class="loading-spin"></span>
-              <span>{{snFeedback.msg}}</span>
-            </div>
-          </div>
-
-          <!-- Coupon Input Card -->
-          <div class="input-card">
-            <div class="card-head">
-              <div class="num">2</div>
-              <div class="title">会员券码录入</div>
-              <div class="status-tag" :class="couponStatus">{{couponStatusText}}</div>
-            </div>
-            <div class="input-row">
-              <input v-model="couponInput" placeholder="点击手动录入券码" @click="openManualDialog('coupon')" readonly :disabled="couponStatus==='pass'" />
-              <button class="scan-btn" @click="mockScanCoupon" :disabled="couponStatus==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
-            </div>
-
-            <div class="feedback" :class="couponFeedback.type" v-if="couponFeedback.msg">
-              <span v-if="couponFeedback.type==='info'" class="loading-spin"></span>
-              <span>{{couponFeedback.msg}}</span>
-            </div>
-          </div>
-
-          <div class="notice-bar">
-            <span class="icon">&#9432;</span>
-            <div>
-              <div><b>操作指南：</b></div>
-              <div>1. 扫码/手动输入SN/IMEI编码并校验</div>
-              <div>2. 扫码/手动输入会员券码并校验</div>
-              <div>3. 两项均通过后点击"提交核销（自动上报机码）"</div>
-              <div>4. 如需查看或导出历史核销记录，请点击切换【核销记录】TAB页</div>
-              <div style="margin-top:4px;color:var(--sub);">备注：提交核销后，如该SN/IMEI未上报过机码，系统将自动上报</div>
-            </div>
-          </div>
-
-          <div style="height:80px;"></div>
-          <div class="submit-bar">
-            <button class="submit-btn" :class="canSubmit?'enabled':'disabled'" @click="submitRedeem" :disabled="!canSubmit">
-              {{submitting?'提交中...':'提交核销（自动上报机码）'}}
-            </button>
-          </div>
-        </div>
-
-        <!-- Records Tab -->
-        <div v-else>
-          <records-view></records-view>
+          <div class="icon-label">{{item.label}}</div>
+          <div class="icon-sub" v-if="item.sub">{{item.sub}}</div>
         </div>
       </div>
     </div>
 
-    <!-- Manual Input Dialog -->
-    <div class="manual-mask" v-if="manualDialog.show" @click.self="closeManualDialog">
-      <div class="manual-dialog">
-        <div class="manual-dialog-hd">
-          <div class="manual-dialog-title">{{manualDialog.title}}</div>
-          <div class="manual-dialog-subtitle">{{manualDialog.subtitle}}</div>
-        </div>
-        <div class="manual-dialog-bd">
-          <input v-model="manualDialog.value" :placeholder="manualDialog.subtitle" @keyup.enter="confirmManualDialog" ref="manualInputRef" />
-        </div>
-        <div class="manual-dialog-ft">
-          <button class="cancel" @click="closeManualDialog">取消</button>
-          <button class="submit" @click="confirmManualDialog">提交</button>
+    <!-- 销售通 -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">销售通</span>
+        <span class="section-more" @click="toast('更多仅演示')">更多 ›</span>
+      </div>
+      <div class="sales-grid">
+        <div class="sales-item" v-for="item in salesApps" :key="item.label" @click="onAppClick(item)">
+          <div class="sales-icon" :style="{background:item.bg}"><span v-html="item.icon"></span></div>
+          <div class="sales-label">{{item.label}}</div>
         </div>
       </div>
     </div>
 
-    <!-- Result Dialog -->
-    <div class="dialog-mask" v-if="dialog.show" @click.self="dialog.show=false">
-      <div class="dialog-panel">
-        <div class="dialog-icon" :class="dialog.type">
-          <span v-if="dialog.type==='success'">&#10003;</span>
-          <span v-if="dialog.type==='error'">&#10007;</span>
-          <span v-if="dialog.type==='loading'" class="loading-spin-lg"></span>
-        </div>
-        <div class="dialog-title">{{dialog.title}}</div>
-        <div class="dialog-msg" v-if="dialog.msg">{{dialog.msg}}</div>
-        <button class="dialog-btn primary" @click="dialog.show=false" v-if="dialog.type!=='loading'">确定</button>
-      </div>
+    <!-- Spacer for tabbar -->
+    <div style="height:90px"></div>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tabbar">
+    <div class="tab-item" @click="toast('消息仅演示')">
+      <div class="tab-icon">&#128172;</div>
+      <div class="tab-label">消息</div>
+      <div class="tab-dot">19</div>
     </div>
-
-    <!-- QyWork TabBar -->
-    <div class="qy-tabbar" v-if="currentPage==='qywork'">
-      <div class="qy-tab-item" @click="toast('消息仅演示')"><div class="qy-tab-icon">&#128172;</div><div class="qy-tab-label">消息</div><div class="qy-tab-dot">19</div></div>
-      <div class="qy-tab-item" @click="toast('文档仅演示')"><div class="qy-tab-icon">&#128196;</div><div class="qy-tab-label">文档</div></div>
-      <div class="qy-tab-item" @click="toast('通讯录仅演示')"><div class="qy-tab-icon">&#128101;</div><div class="qy-tab-label">通讯录</div></div>
-      <div class="qy-tab-item active"><div class="qy-tab-icon">&#9638;</div><div class="qy-tab-label">工作台</div></div>
-      <div class="qy-tab-item" @click="toast('我仅演示')"><div class="qy-tab-icon">&#128100;</div><div class="qy-tab-label">我</div></div>
+    <div class="tab-item" @click="toast('文档仅演示')">
+      <div class="tab-icon">&#128196;</div>
+      <div class="tab-label">文档</div>
     </div>
-
-    <!-- Toast -->
-    <div class="toast" v-if="toastMsg">{{toastMsg}}</div>
-
-    <!-- Scanner -->
-    <div class="scanner-overlay" v-if="showScanner">
-      <div class="scanner-top">
-        <div class="scanner-close" @click="cancelScan">&#10005;</div>
-        <div class="scanner-title">{{scannerTitle}}</div>
-        <div class="scanner-flash" @click="toast('闪光灯仅演示')">&#9889;</div>
-      </div>
-      <div class="scanner-viewfinder">
-        <div class="scanner-corner tl"></div>
-        <div class="scanner-corner tr"></div>
-        <div class="scanner-corner bl"></div>
-        <div class="scanner-corner br"></div>
-        <div class="scanner-line" v-if="!scanSuccess"></div>
-      </div>
-      <div class="scanner-hint" v-if="!scanSuccess">将{{scannerTarget}}对准框内，即可自动扫描</div>
-      <div class="scanner-success" v-if="scanSuccess">
-        <span class="check">&#10003;</span>
-        <span>扫码成功</span>
-      </div>
+    <div class="tab-item" @click="toast('通讯录仅演示')">
+      <div class="tab-icon">&#128101;</div>
+      <div class="tab-label">通讯录</div>
+    </div>
+    <div class="tab-item active">
+      <div class="tab-icon">&#9638;</div>
+      <div class="tab-label">工作台</div>
+    </div>
+    <div class="tab-item" @click="toast('我仅演示')">
+      <div class="tab-icon">&#128100;</div>
+      <div class="tab-label">我</div>
     </div>
   </div>
+
+  <!-- Toast -->
+  <div class="toast" v-if="toastMsg">{{toastMsg}}</div>
+</div>
 </div>
 
 <script>
-const { createApp, ref, computed, reactive, defineComponent, nextTick } = Vue;
-
-// Records component
-const RecordsView = defineComponent({
-  setup() {
-    const searchKey = ref('');
-    const showFilterPanel = ref(false);
-    const showCascader = ref(false);
-
-    const filterForm = reactive({
-      id: '',
-      couponCode: '',
-      couponName: '',
-      timeStart: '',
-      timeEnd: '',
-      amountMin: '',
-      amountMax: '',
-      sn: '',
-      pn: '',
-      category: [],
-      product: ''
-    });
-
-    const categoryOptions = [
-      {
-        label: 'PC',
-        children: [
-          { label: '笔记本', children: [{ label: '拯救者' }, { label: 'ThinkPad' }, { label: '小新' }, { label: 'YOGA' }] },
-          { label: '台式机', children: [{ label: '刃系列' }, { label: '天逸' }] }
-        ]
-      },
-      {
-        label: '手机',
-        children: [
-          { label: 'MOTO手机', children: [{ label: '折叠机' }, { label: 'edge系列' }] },
-          { label: '联想手机', children: [{ label: '拯救者手机' }] }
-        ]
-      }
-    ];
-
-    const cascaderSelection = ref([]);
-    const cascaderColumns = ref([categoryOptions]);
-
-    const records = ref([
-      { id:'R001', couponCode:'MC20260701001', couponName:'会员专享满减券', time:'2026-07-13 10:23:15', amount:200, sn:'SN/IMEI123456789', pn:'PN202605001', categoryPath:['PC','笔记本','拯救者'], product:'拯救者R9000P 2024', staff:'张三' },
-      { id:'R002', couponCode:'MC20260701002', couponName:'会员生日特惠券', time:'2026-07-13 09:15:42', amount:500, sn:'SN/IMEI987654321', pn:'PN202604008', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad X1 Carbon', staff:'李四' },
-      { id:'R003', couponCode:'MC20260701003', couponName:'会员新人立减券', time:'2026-07-12 16:48:30', amount:100, sn:'SN/IMEI567890123', pn:'PN202603015', categoryPath:['PC','笔记本','小新'], product:'小新Pro 16 2024', staff:'张三' },
-      { id:'R004', couponCode:'MC20260701004', couponName:'会员专享满减券', time:'2026-07-12 14:20:08', amount:200, sn:'SN/IMEI345678901', pn:'PN202605002', categoryPath:['PC','笔记本','拯救者'], product:'拯救者Y9000X', staff:'王五' },
-      { id:'R005', couponCode:'MC20260701005', couponName:'会员生日特惠券', time:'2026-07-11 11:05:55', amount:500, sn:'SN/IMEI234567890', pn:'PN202604009', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad T14s', staff:'李四' },
-      { id:'R006', couponCode:'MC20260701006', couponName:'会员折扣券8折', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', categoryPath:['PC','笔记本','YOGA'], product:'YOGA Air 14', staff:'张三' },
-    ]);
-
-    const filteredRecords = computed(() => {
-      return records.value.filter(r => {
-        const k = searchKey.value.trim().toLowerCase();
-        if (k) {
-          const fields = [r.couponName, r.product];
-          if (!fields.some(f => f.toLowerCase().includes(k))) return false;
-        }
-        if (filterForm.id && !r.id.toLowerCase().includes(filterForm.id.toLowerCase())) return false;
-        if (filterForm.couponCode && !r.couponCode.toLowerCase().includes(filterForm.couponCode.toLowerCase())) return false;
-        if (filterForm.couponName && !r.couponName.includes(filterForm.couponName)) return false;
-        if (filterForm.timeStart && r.time < filterForm.timeStart + ' 00:00:00') return false;
-        if (filterForm.timeEnd && r.time > filterForm.timeEnd + ' 23:59:59') return false;
-        if (filterForm.amountMin && r.amount < Number(filterForm.amountMin)) return false;
-        if (filterForm.amountMax && r.amount > Number(filterForm.amountMax)) return false;
-        if (filterForm.sn && !r.sn.toLowerCase().includes(filterForm.sn.toLowerCase())) return false;
-        if (filterForm.pn && !r.pn.toLowerCase().includes(filterForm.pn.toLowerCase())) return false;
-        if (filterForm.product && !r.product.includes(filterForm.product)) return false;
-        if (filterForm.category.length) {
-          const catStr = filterForm.category.join('/');
-          const rCatStr = r.categoryPath.slice(0, filterForm.category.length).join('/');
-          if (catStr !== rCatStr) return false;
-        }
-        return true;
-      });
-    });
-
-    const filterCount = computed(() => {
-      let count = 0;
-      if (filterForm.id) count++;
-      if (filterForm.couponCode) count++;
-      if (filterForm.couponName) count++;
-      if (filterForm.timeStart || filterForm.timeEnd) count++;
-      if (filterForm.amountMin || filterForm.amountMax) count++;
-      if (filterForm.sn) count++;
-      if (filterForm.pn) count++;
-      if (filterForm.product) count++;
-      if (filterForm.category.length) count++;
-      return count;
-    });
-
-    function resetFilters() {
-      filterForm.id = '';
-      filterForm.couponCode = '';
-      filterForm.couponName = '';
-      filterForm.timeStart = '';
-      filterForm.timeEnd = '';
-      filterForm.amountMin = '';
-      filterForm.amountMax = '';
-      filterForm.sn = '';
-      filterForm.pn = '';
-      filterForm.category = [];
-      filterForm.product = '';
-    }
-
-    function clearField(key) {
-      filterForm[key] = '';
-    }
-
-    function openCascader() {
-      cascaderSelection.value = [...filterForm.category];
-      const cols = [categoryOptions];
-      let opts = categoryOptions;
-      for (let i = 0; i < cascaderSelection.value.length; i++) {
-        const found = opts.find(o => o.label === cascaderSelection.value[i]);
-        if (found && found.children) {
-          opts = found.children;
-          cols.push(opts);
-        } else {
-          break;
-        }
-      }
-      cascaderColumns.value = cols;
-      showCascader.value = true;
-    }
-
-    function onCascaderSelect(level, item) {
-      cascaderSelection.value = cascaderSelection.value.slice(0, level);
-      cascaderSelection.value[level] = item.label;
-      const cols = [categoryOptions];
-      let opts = categoryOptions;
-      for (let i = 0; i < cascaderSelection.value.length; i++) {
-        const found = opts.find(o => o.label === cascaderSelection.value[i]);
-        if (found && found.children) {
-          opts = found.children;
-          cols.push(opts);
-        } else {
-          break;
-        }
-      }
-      cascaderColumns.value = cols;
-    }
-
-    function confirmCascader() {
-      filterForm.category = [...cascaderSelection.value];
-      showCascader.value = false;
-    }
-
-    function categoryText() {
-      return filterForm.category.length ? filterForm.category.join(' / ') : '请选择商品分类';
-    }
-
-    function exportRecords() {
-      const list = filteredRecords.value;
-      const headers = ['核销券id','核销券码','券名称','核销时间','核销金额','核销SN/IMEI','核销PN','商品分类','商品名称','核销店员'];
-      const rows = list.map(r => [
-        r.id, r.couponCode, r.couponName, r.time, r.amount, r.sn, r.pn, r.categoryPath.join('/'), r.product, r.staff
-      ]);
-      const csvContent = '\ufeff' + [headers, ...rows].map(row => row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',')).join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = '会员券核销记录_' + new Date().toISOString().slice(0,10) + '.csv';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
-
-    return { searchKey, filterForm, filteredRecords, showFilterPanel, showCascader, filterCount, resetFilters, clearField, openCascader, onCascaderSelect, confirmCascader, categoryText, cascaderColumns, categoryOptions, exportRecords };
-  },
-  template: `
-    <div>
-      <div class="records-search">
-        <div class="search-wrap">
-          <span class="search-icon">&#128269;</span>
-          <input class="search-input" v-model="searchKey" placeholder="搜索优惠券名称/商品名称" />
-        </div>
-        <div class="filter-chip filter-btn" :class="{active:showFilterPanel,'has-filter':filterCount>0}" @click="showFilterPanel=true">
-          &#9881; 筛选
-          <span class="filter-badge" v-if="filterCount>0">{{filterCount}}</span>
-        </div>
-      </div>
-      <div class="records-list">
-        <div class="record-card" v-for="r in filteredRecords" :key="r.id">
-          <div class="rc-head">
-            <div class="rc-name">{{r.couponName}}</div>
-            <div class="rc-amount">&#165;{{r.amount}}</div>
-          </div>
-          <div class="rc-grid">
-            <div class="rc-item"><span class="lbl">核销券id:</span><span class="val">{{r.id}}</span></div>
-            <div class="rc-item"><span class="lbl">核销券码:</span><span class="val">{{r.couponCode}}</span></div>
-            <div class="rc-item"><span class="lbl">核销时间:</span><span class="val">{{r.time}}</span></div>
-            <div class="rc-item"><span class="lbl">核销店员:</span><span class="val">{{r.staff}}</span></div>
-            <div class="rc-item"><span class="lbl">核销SN/IMEI:</span><span class="val">{{r.sn}}</span></div>
-            <div class="rc-item"><span class="lbl">核销PN:</span><span class="val">{{r.pn}}</span></div>
-            <div class="rc-item"><span class="lbl">商品分类:</span><span class="val">{{r.categoryPath.join(' / ')}}</span></div>
-            <div class="rc-item"><span class="lbl">商品名称:</span><span class="val">{{r.product}}</span></div>
-          </div>
-        </div>
-        <div v-if="filteredRecords.length===0" style="text-align:center;padding:40px 0;color:var(--sub);font-size:14px;">暂无核销记录</div>
-      </div>
-      <div class="export-btn">
-        <button @click="exportRecords">&#11015; 全量导出核销记录</button>
-      </div>
-
-      <!-- Filter Panel -->
-      <transition name="fade">
-        <div class="filter-panel-mask" v-if="showFilterPanel" @click.self="showFilterPanel=false"></div>
-      </transition>
-      <transition name="slide-up">
-        <div class="filter-panel" v-if="showFilterPanel">
-          <div class="filter-panel-hd">
-            <div class="title">筛选条件</div>
-            <div class="close" @click="showFilterPanel=false">&#10005;</div>
-          </div>
-          <div class="filter-form">
-            <div class="form-item half">
-              <label>核销券id</label>
-              <div class="clear-input-wrap">
-                <input v-model="filterForm.id" placeholder="请输入" />
-                <span class="clear" v-if="filterForm.id" @click="clearField('id')">&#10005;</span>
-              </div>
-            </div>
-            <div class="form-item half">
-              <label>核销券码</label>
-              <div class="clear-input-wrap">
-                <input v-model="filterForm.couponCode" placeholder="请输入" />
-                <span class="clear" v-if="filterForm.couponCode" @click="clearField('couponCode')">&#10005;</span>
-              </div>
-            </div>
-            <div class="form-item full">
-              <label>券名称</label>
-              <div class="clear-input-wrap">
-                <input v-model="filterForm.couponName" placeholder="请输入券名称" />
-                <span class="clear" v-if="filterForm.couponName" @click="clearField('couponName')">&#10005;</span>
-              </div>
-            </div>
-            <div class="form-item full">
-              <label>核销时间</label>
-              <div class="range-row">
-                <input type="date" v-model="filterForm.timeStart" />
-                <span class="range-sep">至</span>
-                <input type="date" v-model="filterForm.timeEnd" />
-              </div>
-            </div>
-            <div class="form-item full">
-              <label>核销金额</label>
-              <div class="range-row">
-                <input type="number" v-model="filterForm.amountMin" placeholder="最小金额" />
-                <span class="range-sep">至</span>
-                <input type="number" v-model="filterForm.amountMax" placeholder="最大金额" />
-              </div>
-            </div>
-            <div class="form-item half">
-              <label>核销SN/IMEI</label>
-              <div class="clear-input-wrap">
-                <input v-model="filterForm.sn" placeholder="请输入" />
-                <span class="clear" v-if="filterForm.sn" @click="clearField('sn')">&#10005;</span>
-              </div>
-            </div>
-            <div class="form-item half">
-              <label>核销PN</label>
-              <div class="clear-input-wrap">
-                <input v-model="filterForm.pn" placeholder="请输入" />
-                <span class="clear" v-if="filterForm.pn" @click="clearField('pn')">&#10005;</span>
-              </div>
-            </div>
-            <div class="form-item full">
-              <label>商品分类</label>
-              <div class="category-trigger" :class="{placeholder:!filterForm.category.length}" @click="openCascader">
-                <span>{{categoryText()}}</span>
-                <span class="arrow">&#9654;</span>
-              </div>
-            </div>
-            <div class="form-item full">
-              <label>商品名称</label>
-              <div class="clear-input-wrap">
-                <input v-model="filterForm.product" placeholder="请输入商品名称" />
-                <span class="clear" v-if="filterForm.product" @click="clearField('product')">&#10005;</span>
-              </div>
-            </div>
-          </div>
-          <div class="filter-panel-ft">
-            <button class="reset" @click="resetFilters">重置</button>
-            <button class="confirm" @click="showFilterPanel=false">确定</button>
-          </div>
-        </div>
-      </transition>
-
-      <!-- Category Cascader -->
-      <transition name="fade">
-        <div class="cascader-mask" v-if="showCascader" @click.self="showCascader=false"></div>
-      </transition>
-      <transition name="slide-up-c">
-        <div class="cascader-panel" v-if="showCascader">
-          <div class="cascader-hd">
-            <div class="title">选择商品分类</div>
-            <div class="close" @click="showCascader=false">&#10005;</div>
-          </div>
-          <div class="cascader-body">
-            <div class="cascader-col" v-for="(col, idx) in cascaderColumns" :key="idx">
-              <div class="cascader-item" v-for="item in col" :key="item.label" :class="{active:cascaderSelection[idx]===item.label}" @click="onCascaderSelect(idx, item)">
-                <span>{{item.label}}</span>
-                <span v-if="item.children" class="arrow">&#9654;</span>
-              </div>
-            </div>
-          </div>
-          <div class="cascader-ft">
-            <button @click="confirmCascader">确定</button>
-          </div>
-        </div>
-      </transition>
-    </div>
-  `
-});
-
+const { createApp, ref } = Vue;
 createApp({
-  components: { RecordsView },
   setup() {
-    const currentPage = ref('qywork');
-    const activeTab = ref('redeem');
-    const dashTime = ref('day');
+    const screenRef = ref(null);
     const toastMsg = ref('');
     let toastTimer = null;
+
     function toast(msg) {
       toastMsg.value = msg;
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toastMsg.value = '', 1500);
+      toastTimer = setTimeout(() => { toastMsg.value = ''; }, 1500);
     }
-    function goHome() { currentPage.value = 'home'; activeTab.value = 'redeem'; resetForm(); }
 
-    // QyWork apps
-    const qyApps = ref([
-      { label:'账号管理', bg:'linear-gradient(135deg,#4FACFE,#00C6FB)', icon:'&#128100;' },
-      { label:'服务工作台', bg:'linear-gradient(135deg,#FF9800,#FF7043)', icon:'&#128194;' },
-      { label:'超级导购', bg:'linear-gradient(135deg,#FF6B6B,#EE5A24)', icon:'&#128129;' },
-      { label:'智慧零售商户助手', bg:'linear-gradient(135deg,#A8E6CF,#3DC1D3)', icon:'&#127970;' },
-      { label:'门店会员营销', bg:'linear-gradient(135deg,#FF6348,#FF4757)', icon:'&#127873;', target:'redeem' },
-      { label:'联想乐呗', bg:'linear-gradient(135deg,#DFE6E9,#B2BEC3)', icon:'&#127925;', sub:'暂无注册信息' },
-      { label:'联想会员中心', bg:'linear-gradient(135deg,#E74C3C,#C0392B)', icon:'<b style="color:#fff;font-size:13px;font-family:Arial;">Lenovo</b>' },
-      { label:'店面自检', bg:'linear-gradient(135deg,#74B9FF,#0984E3)', icon:'&#128203;' },
-      { label:'内容管理平台', bg:'linear-gradient(135deg,#FD79A8,#E84393)', icon:'&#128218;' },
-      { label:'以旧换新', bg:'linear-gradient(135deg,#FFEAA7,#FDCB6E)', icon:'&#128260;' },
-      { label:'企微助手', bg:'linear-gradient(135deg,#E17055,#D63031)', icon:'<b style="color:#fff;font-size:11px;font-family:Arial;">WeCom</b>' },
-      { label:'产品政策', bg:'linear-gradient(135deg,#FF7675,#D63031)', icon:'&#128200;' },
+    const apps = ref([
+      { label:'账号管理', bg:'linear-gradient(135deg,#4FACFE,#00C6FB)', icon:'&#128100;', badge:'' },
+      { label:'服务工作台', bg:'linear-gradient(135deg,#FF9800,#FF7043)', icon:'&#128194;', badge:'' },
+      { label:'超级导购', bg:'linear-gradient(135deg,#FF6B6B,#EE5A24)', icon:'&#128129;', badge:'' },
+      { label:'智慧零售商户助手', bg:'linear-gradient(135deg,#A8E6CF,#3DC1D3)', icon:'&#127970;', badge:'' },
+      { label:'门店会员营销', bg:'linear-gradient(135deg,#FF6348,#FF4757)', icon:'&#127873;', badge:'', target:'index.html' },
+      { label:'联想乐呗', bg:'linear-gradient(135deg,#DFE6E9,#B2BEC3)', icon:'&#127925;', sub:'暂无注册信息', badge:'' },
+      { label:'联想会员中心', bg:'linear-gradient(135deg,#E74C3C,#C0392B)', icon:'<b style="color:#fff;font-size:13px;font-family:Arial;">Lenovo</b>', badge:'' },
+      { label:'店面自检', bg:'linear-gradient(135deg,#74B9FF,#0984E3)', icon:'&#128203;', badge:'' },
+      { label:'内容管理平台', bg:'linear-gradient(135deg,#FD79A8,#E84393)', icon:'&#128218;', badge:'' },
+      { label:'以旧换新', bg:'linear-gradient(135deg,#FFEAA7,#FDCB6E)', icon:'&#128260;', badge:'' },
+      { label:'企微助手', bg:'linear-gradient(135deg,#E17055,#D63031)', icon:'<b style="color:#fff;font-size:11px;font-family:Arial;">WeCom</b>', badge:'' },
+      { label:'产品政策', bg:'linear-gradient(135deg,#FF7675,#D63031)', icon:'&#128200;', badge:'' },
     ]);
+
     const salesApps = ref([
       { label:'销售看板', bg:'linear-gradient(135deg,#74B9FF,#0984E3)', icon:'&#128202;' },
       { label:'鹰眼巡检', bg:'linear-gradient(135deg,#636E72,#2D3436)', icon:'&#129413;' },
       { label:'扫码入库', bg:'linear-gradient(135deg,#55EFC4,#00B894)', icon:'&#128225;' },
     ]);
-    function onQyAppClick(item) {
-      if (item.target === 'redeem') {
-        currentPage.value = 'redeem';
-        activeTab.value = 'redeem';
-        const screen = document.querySelector('.phone-screen');
-        if (screen) screen.scrollTop = 0;
+
+    function onAppClick(item) {
+      if (item.target) {
+        window.location.href = item.target;
       } else {
         toast(item.label + ' - 仅演示入口');
       }
     }
 
-    // Kingkong items
-    const kingkongItems = ref([
-      { label:'伙伴商城', bg:'linear-gradient(135deg,#FF6B6B,#FF5252)', icon:'&#127980;', isNew:false },
-      { label:'YK_POS', bg:'linear-gradient(135deg,#FF9800,#FF8800)', icon:'<b style="color:#fff;font-size:17px;font-family:Arial;">A</b>', isNew:false },
-      { label:'商品查询', bg:'linear-gradient(135deg,#9C27B0,#7B1FA2)', icon:'&#128270;', isNew:false },
-      { label:'联想服务产品', bg:'linear-gradient(135deg,#EF5350,#E53935)', icon:'&#10084;', isNew:false },
-      { label:'卡券核销', bg:'linear-gradient(135deg,#FF9800,#F57C00)', icon:'&#165;', isNew:false },
-      { label:'全网营销', bg:'linear-gradient(135deg,#FFD54F,#FFB300)', icon:'&#11044;', isNew:false },
-      { label:'POSA卡', bg:'linear-gradient(135deg,#9C27B0,#6A1B9A)', icon:'&#128424;', isNew:false },
-      { label:'门店会员营销', bg:'linear-gradient(135deg,#2563EB,#1565C0)', icon:'&#127881;', isNew:false },
-    ]);
-    const kkDots = ref([1,0,0,0,0,0,0,0]);
-    function onKkClick(item) {
-      if (item.label === '门店会员营销') {
-        currentPage.value = 'redeem';
-        activeTab.value = 'redeem';
-        resetForm();
-      } else {
-        toast(item.label + ' - 仅演示入口');
-      }
-    }
-
-    // Redeem form state
-    const snInput = ref('');
-    const snStatus = ref('pending'); // pending, pass, fail
-    const snValidating = ref(false);
-    const snFeedback = ref({ type:'', msg:'' });
-    const couponInput = ref('');
-    const couponStatus = ref('pending');
-    const couponValidating = ref(false);
-    const couponFeedback = ref({ type:'', msg:'' });
-    const submitting = ref(false);
-    const dialog = reactive({ show:false, type:'success', title:'', msg:'' });
-    const manualInputRef = ref(null);
-    const manualDialog = reactive({ show:false, field:'', title:'', subtitle:'', value:'' });
-    const showScanner = ref(false);
-
-    // Store switcher
-    const showStorePanel = ref(false);
-    const currentStore = ref({ code:'K0206951', name:'智店通开发测试商', type:'城市专卖店' });
-    const storeList = ref([
-      { code:'K0206951', name:'智店通开发测试商', type:'城市专卖店' },
-      { code:'K0308712', name:'联想体验店（北京朝阳店）', type:'城市专卖店' },
-      { code:'D00000001', name:'智店通-城市专卖店-授权', type:'城市专卖店' },
-      { code:'K0412563', name:'联想服务中心（上海浦东店）', type:'授权服务' },
-      { code:'K0519874', name:'联想智慧零售旗舰店（深圳）', type:'旗舰店' },
-    ]);
-    function selectStore(s) {
-      currentStore.value = s;
-      showStorePanel.value = false;
-      toast('已切换至：' + s.name);
-    }
-    const scanSuccess = ref(false);
-    const scannerTarget = ref('');
-    const scannerTitle = ref('');
-    let scanTimer = null;
-
-    const currentStep = computed(() => {
-      if (snStatus.value === 'pass' && couponStatus.value === 'pass') return 3;
-      if (snStatus.value === 'pass') return 2;
-      return 1;
-    });
-    const snStatusText = computed(() => snStatus.value==='pass'?'已通过':snStatus.value==='fail'?'未通过':'待校验');
-    const couponStatusText = computed(() => couponStatus.value==='pass'?'已通过':couponStatus.value==='fail'?'未通过':'待校验');
-    const canSubmit = computed(() => snStatus.value==='pass' && couponStatus.value==='pass' && !submitting.value);
-
-    function stepStatus(step) {
-      if (step < currentStep.value) return 'finish';
-      if (step === currentStep.value) return 'process';
-      return 'wait';
-    }
-
-    function resetForm() {
-      snInput.value=''; snStatus.value='pending'; snFeedback.value={type:'',msg:''};
-      couponInput.value=''; couponStatus.value='pending'; couponFeedback.value={type:'',msg:''};
-      submitting.value=false;
-    }
-
-    function openManualDialog(field) {
-      if (field === 'sn' && snStatus.value === 'pass') return;
-      if (field === 'coupon' && couponStatus.value === 'pass') return;
-      manualDialog.field = field;
-      manualDialog.title = field === 'sn' ? '输入SN/IMEI编码' : '输入顾客的券码';
-      manualDialog.subtitle = field === 'sn' ? '输入SN/IMEI编码' : '券码在条码下方';
-      manualDialog.value = field === 'sn' ? snInput.value : couponInput.value;
-      manualDialog.show = true;
-      nextTick(() => { if (manualInputRef.value) manualInputRef.value.focus(); });
-    }
-    function closeManualDialog() { manualDialog.show = false; manualDialog.value = ''; }
-    function confirmManualDialog() {
-      const val = manualDialog.value.trim();
-      if (!val) { toast('请输入内容'); return; }
-      if (manualDialog.field === 'sn') { snInput.value = val; closeManualDialog(); validateSn(); }
-      else { couponInput.value = val; closeManualDialog(); validateCoupon(); }
-    }
-
-    function validateSn() {
-      if (!snInput.value || snStatus.value==='pass' || snValidating.value) return;
-      snValidating.value = true;
-      snFeedback.value = { type:'info', msg:'正在校验SN/IMEI，检查锁定/首销/未机码/未PO状态...' };
-      setTimeout(() => {
-        snValidating.value = false;
-        if (snInput.value.toLowerCase() === 'testerror') {
-          snStatus.value = 'fail';
-          snFeedback.value = { type:'error', msg:'这台设备不符合锁定/首销/机码上报/PO有效激活的合规性校验，请您更换设备后重新尝试' };
-        } else if (snInput.value.toLowerCase().includes('fail')) {
-          snStatus.value = 'fail';
-          snFeedback.value = { type:'error', msg:'校验失败：该SN/IMEI未首销，无法进行核销。请确认SN/IMEI状态后重试。' };
-        } else {
-          snStatus.value = 'pass';
-          snFeedback.value = { type:'success', msg:'SN/IMEI校验通过！' };
-        }
-      }, 1200);
-    }
-
-    function mockScanSn() {
-      document.querySelector('.phone-screen').scrollTop = 0;
-      scannerTarget.value = 'SN/IMEI条码';
-      scannerTitle.value = '扫描SN/IMEI';
-      scanSuccess.value = false;
-      showScanner.value = true;
-      scanTimer = setTimeout(() => {
-        scanSuccess.value = true;
-        snInput.value = 'SN/IMEI' + Math.floor(Math.random()*900000+100000);
-        setTimeout(() => {
-          showScanner.value = false;
-          validateSn();
-        }, 800);
-      }, 2500);
-    }
-
-    function validateCoupon() {
-      if (!couponInput.value || couponStatus.value==='pass' || couponValidating.value) return;
-      couponValidating.value = true;
-      couponFeedback.value = { type:'info', msg:'正在查询会员券码信息...' };
-      setTimeout(() => {
-        couponValidating.value = false;
-        if (couponInput.value.toLowerCase().includes('error')) {
-          couponStatus.value = 'fail';
-          couponFeedback.value = { type:'error', msg:'券码校验失败：该券码已过期或已被使用，请确认后重试。' };
-        } else {
-          couponStatus.value = 'pass';
-          couponFeedback.value = { type:'success', msg:'券码校验通过！' };
-        }
-      }, 1200);
-    }
-
-    function mockScanCoupon() {
-      document.querySelector('.phone-screen').scrollTop = 0;
-      scannerTarget.value = '券码条码';
-      scannerTitle.value = '扫描券码';
-      scanSuccess.value = false;
-      showScanner.value = true;
-      scanTimer = setTimeout(() => {
-        scanSuccess.value = true;
-        couponInput.value = 'MC' + new Date().getFullYear() + String(Math.floor(Math.random()*900+100)).padStart(3,'0') + String(Math.floor(Math.random()*900+100)).padStart(3,'0');
-        setTimeout(() => {
-          showScanner.value = false;
-          validateCoupon();
-        }, 800);
-      }, 2500);
-    }
-
-    function cancelScan() {
-      clearTimeout(scanTimer);
-      showScanner.value = false;
-      scanSuccess.value = false;
-    }
-
-    function submitRedeem() {
-      if (!canSubmit.value) return;
-      submitting.value = true;
-      dialog.show = true; dialog.type = 'loading'; dialog.title = '正在处理'; dialog.msg = '正在执行机码上报及券码核销...';
-      setTimeout(() => {
-        submitting.value = false;
-        dialog.type = 'success';
-        dialog.title = '核销成功';
-        dialog.msg = '会员券码已成功核销！\n机码上报：已完成\n券码核销：已成功';
-        resetForm();
-      }, 2000);
-    }
-
-    return {
-      currentPage, activeTab, dashTime, toastMsg, toast, goHome,
-      qyApps, salesApps, onQyAppClick,
-      kingkongItems, onKkClick,
-      snInput, snStatus, snValidating, snFeedback, snStatusText, validateSn, mockScanSn,
-      couponInput, couponStatus, couponValidating, couponFeedback, couponStatusText, validateCoupon, mockScanCoupon,
-      currentStep, stepStatus, canSubmit, submitting, submitRedeem, dialog,
-      manualInputRef, manualDialog, openManualDialog, closeManualDialog, confirmManualDialog,
-      showScanner, scanSuccess, scannerTarget, scannerTitle, cancelScan,
-      showStorePanel, currentStore, storeList, selectStore,
-    };
+    return { screenRef, toastMsg, toast, apps, salesApps, onAppClick };
   }
 }).mount('#app');
 </script>
