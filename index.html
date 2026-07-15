@@ -139,6 +139,28 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .seg-tab.active { background:var(--white); color:var(--primary); font-weight:500; font-size:16px; box-shadow:0 1px 4px rgba(0,0,0,.08); position:relative; }
 .seg-tab.active::after { content:''; position:absolute; bottom:4px; left:50%; transform:translateX(-50%); width:24px; height:3px; background:var(--primary); border-radius:8px; }
 
+/* ===== Store Switcher ===== */
+.store-switcher { margin:0 12px 10px; background:var(--white); border-radius:8px; padding:12px 14px; box-shadow:var(--shadow-card); cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
+.store-switcher:active { background:#F8F9FA; }
+.ss-info { flex:1; min-width:0; }
+.ss-name { font-size:15px; font-weight:600; color:var(--title); line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ss-sub { font-size:12px; color:var(--sub); margin-top:2px; }
+.ss-arrow { font-size:12px; color:var(--sub); transition:transform .25s; flex-shrink:0; margin-left:8px; }
+.ss-arrow.open { transform:rotate(180deg); }
+.store-panel-mask { position:absolute; inset:0; background:rgba(0,0,0,.3); z-index:250; }
+.store-panel { position:absolute; top:0; left:0; right:0; background:var(--white); border-radius:0 0 12px 12px; z-index:251; max-height:420px; overflow-y:auto; padding:16px 12px; box-shadow:0 8px 24px rgba(0,0,0,.12); animation:slideDown .25s ease; }
+@keyframes slideDown { from{transform:translateY(-100%);opacity:0} to{transform:translateY(0);opacity:1} }
+.sp-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.sp-title { font-size:17px; font-weight:600; color:var(--title); }
+.sp-close { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--sub); cursor:pointer; }
+.sp-close:active { background:var(--box); }
+.sp-item { background:var(--white); border:1.5px solid var(--divider); border-radius:8px; padding:12px 14px; margin-bottom:8px; cursor:pointer; position:relative; transition:border-color .2s; }
+.sp-item:active { background:#F8F9FA; }
+.sp-item.selected { border-color:var(--primary); background:rgba(37,99,235,.03); }
+.sp-code { font-size:16px; font-weight:600; color:var(--title); }
+.sp-desc { font-size:13px; color:var(--sub); margin-top:4px; }
+.sp-check { position:absolute; top:12px; right:14px; width:20px; height:20px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
+
 /* ===== Steps ===== */
 .steps-bar { background:var(--white); border-radius:12px; margin:0 12px 12px; padding:16px 12px; box-shadow:var(--shadow-card); }
 .steps-row { display:flex; align-items:center; }
@@ -528,6 +550,28 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 
         <!-- Redeem Tab -->
         <div v-if="activeTab==='redeem'">
+
+          <!-- Store Switcher -->
+          <div class="store-switcher" @click="showStorePanel=true" v-if="!showStorePanel">
+            <div class="ss-info">
+              <div class="ss-name">{{currentStore.name}}</div>
+              <div class="ss-sub">{{currentStore.code}} · {{currentStore.type}}</div>
+            </div>
+            <span class="ss-arrow">&#9660;</span>
+          </div>
+          <div class="store-panel-mask" v-if="showStorePanel" @click="showStorePanel=false"></div>
+          <div class="store-panel" v-if="showStorePanel">
+            <div class="sp-header">
+              <span class="sp-title">选择门店</span>
+              <span class="sp-close" @click="showStorePanel=false">&#10005;</span>
+            </div>
+            <div class="sp-item" v-for="s in storeList" :key="s.code" :class="{selected:s.code===currentStore.code}" @click="selectStore(s)">
+              <div class="sp-code">{{s.code}}</div>
+              <div class="sp-desc">{{s.name}} · {{s.type}}</div>
+              <div class="sp-check" v-if="s.code===currentStore.code">&#10003;</div>
+            </div>
+          </div>
+
           <div class="steps-bar">
             <div class="steps-row">
               <div class="step-item" :class="stepStatus(1)">
@@ -1038,6 +1082,22 @@ createApp({
     const manualInputRef = ref(null);
     const manualDialog = reactive({ show:false, field:'', title:'', subtitle:'', value:'' });
     const showScanner = ref(false);
+
+    // Store switcher
+    const showStorePanel = ref(false);
+    const currentStore = ref({ code:'K0206951', name:'智店通开发测试商', type:'城市专卖店' });
+    const storeList = ref([
+      { code:'K0206951', name:'智店通开发测试商', type:'城市专卖店' },
+      { code:'K0308712', name:'联想体验店（北京朝阳店）', type:'城市专卖店' },
+      { code:'D00000001', name:'智店通-城市专卖店-授权', type:'城市专卖店' },
+      { code:'K0412563', name:'联想服务中心（上海浦东店）', type:'授权服务' },
+      { code:'K0519874', name:'联想智慧零售旗舰店（深圳）', type:'旗舰店' },
+    ]);
+    function selectStore(s) {
+      currentStore.value = s;
+      showStorePanel.value = false;
+      toast('已切换至：' + s.name);
+    }
     const scanSuccess = ref(false);
     const scannerTarget = ref('');
     const scannerTitle = ref('');
@@ -1176,6 +1236,7 @@ createApp({
       currentStep, stepStatus, canSubmit, submitting, submitRedeem, dialog,
       manualInputRef, manualDialog, openManualDialog, closeManualDialog, confirmManualDialog,
       showScanner, scanSuccess, scannerTarget, scannerTitle, cancelScan,
+      showStorePanel, currentStore, storeList, selectStore,
     };
   }
 }).mount('#app');
