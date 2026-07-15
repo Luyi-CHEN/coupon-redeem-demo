@@ -6,8 +6,7 @@
 
 | 端 | 入口 | 链接 |
 |----|------|------|
-| 移动端 - 企微工作台 | 纯企微工作台首页 Demo | https://luyi-chen.github.io/coupon-redeem-demo/ |
-| 移动端 - APP入口 | APP首页 → 核销（不含切换门店） | https://luyi-chen.github.io/coupon-redeem-demo/mobile-app.html |
+| 移动端 - APP入口 | APP首页 → 核销 | https://luyi-chen.github.io/coupon-redeem-demo/mobile-app.html |
 | PC 后台 | 报表查看 | https://luyi-chen.github.io/coupon-redeem-demo/pc.html |
 
 ## 项目概述
@@ -32,8 +31,7 @@ PC后台实时查看核销历史数据
 
 ```
 coupon-redeem-demo/
-├── index.html                          # 移动端 Demo - 企微工作台首页（仅演示工作台入口）
-├── mobile-app.html                     # 移动端 Demo - APP入口（APP首页 → 核销不含切换门店）
+├── mobile-app.html                     # 移动端 Demo - APP首页 → 核销
 ├── pc.html                             # PC 后台报表页面
 ├── mobile.html                         # 移动端旧版页面（保留参考）
 ├── .nojekyll                           # 防止 GitHub Pages Jekyll 构建
