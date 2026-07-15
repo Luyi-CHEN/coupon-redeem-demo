@@ -204,6 +204,22 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .feedback .loading-spin { width:12px; height:12px; border:2px solid var(--primary); border-top-color:transparent; border-radius:50%; animation:spin .6s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
+/* Multi-coupon */
+.coupon-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.coupon-head .title { font-size:15px; font-weight:600; color:var(--title); }
+.add-coupon-btn { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border:1.5px solid var(--primary); border-radius:6px; color:var(--primary); font-size:12px; font-weight:500; background:#fff; cursor:pointer; }
+.add-coupon-btn:active { background:rgba(37,99,235,.08); }
+.coupon-list { display:flex; flex-direction:column; gap:10px; }
+.coupon-item { background:var(--white); border:1.5px solid var(--divider); border-radius:10px; padding:12px; position:relative; }
+.coupon-item.pass { border-color:var(--success); background:rgba(82,196,26,.03); }
+.coupon-item.fail { border-color:var(--danger); background:rgba(255,77,79,.03); }
+.coupon-item-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.coupon-item-head .label { font-size:13px; font-weight:600; color:var(--title); }
+.coupon-item-head .del { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--tertiary); font-size:14px; cursor:pointer; }
+.coupon-item-head .del:active { background:var(--box); color:var(--danger); }
+.coupon-item .feedback { margin-top:8px; }
+.coupon-empty { text-align:center; padding:20px 0; color:var(--sub); font-size:13px; }
+
 /* Notice bar */
 .notice-bar { margin:0 12px 12px; background:rgba(255,149,0,.08); border-radius:8px; padding:10px 12px; display:flex; align-items:flex-start; gap:6px; font-size:15px; color:var(--label); line-height:1.5; }
 .notice-bar .icon { flex-shrink:0; font-size:14px; }
@@ -686,17 +702,31 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
             <div class="card-head">
               <div class="num">2</div>
               <div class="title">会员券码录入</div>
-              <div class="status-tag" :class="couponStatus">{{couponStatusText}}</div>
-            </div>
-            <div class="input-row">
-              <input v-model="couponInput" placeholder="点击手动录入券码" @click="openManualDialog('coupon')" readonly :disabled="couponStatus==='pass'" />
-              <button class="scan-btn" @click="mockScanCoupon" :disabled="couponStatus==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
+              <div class="status-tag" :class="couponOverallStatus">{{couponOverallStatusText}}</div>
             </div>
 
-            <div class="feedback" :class="couponFeedback.type" v-if="couponFeedback.msg">
-              <span v-if="couponFeedback.type==='info'" class="loading-spin"></span>
-              <span>{{couponFeedback.msg}}</span>
+            <div class="coupon-head">
+              <span class="title">券码列表</span>
+              <button class="add-coupon-btn" @click="addCoupon" :disabled="snStatus!=='pass'">+ 添加券码</button>
             </div>
+
+            <div class="coupon-list" v-if="coupons.length">
+              <div class="coupon-item" v-for="(c,i) in coupons" :key="c.id" :class="c.status">
+                <div class="coupon-item-head">
+                  <span class="label">券码 {{i+1}}</span>
+                  <span class="del" @click="removeCoupon(i)">&#10005;</span>
+                </div>
+                <div class="input-row">
+                  <input v-model="c.code" placeholder="点击手动录入券码" @click="openManualDialog('coupon',i)" readonly :disabled="c.status==='pass' || snStatus!=='pass'" />
+                  <button class="scan-btn" @click="mockScanCoupon(i)" :disabled="c.status==='pass' || snStatus!=='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
+                </div>
+                <div class="feedback" :class="c.feedback.type" v-if="c.feedback.msg">
+                  <span v-if="c.feedback.type==='info'" class="loading-spin"></span>
+                  <span>{{c.feedback.msg}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="coupon-empty" v-else>暂无券码，点击上方「+添加券码」开始录入</div>
           </div>
 
           <div class="notice-bar">
@@ -1189,6 +1219,8 @@ createApp({
     const couponStatus = ref('pending');
     const couponValidating = ref(false);
     const couponFeedback = ref({ type:'', msg:'' });
+    const coupons = ref([]);
+    const editingCouponIndex = ref(-1);
     const submitting = ref(false);
     const dialog = reactive({ show:false, type:'success', title:'', msg:'' });
     const manualInputRef = ref(null);
@@ -1216,13 +1248,25 @@ createApp({
     let scanTimer = null;
 
     const currentStep = computed(() => {
-      if (snStatus.value === 'pass' && couponStatus.value === 'pass') return 3;
+      const allPass = coupons.value.length > 0 && coupons.value.every(c => c.status === 'pass');
+      if (snStatus.value === 'pass' && allPass) return 3;
       if (snStatus.value === 'pass') return 2;
       return 1;
     });
     const snStatusText = computed(() => snStatus.value==='pass'?'已通过':snStatus.value==='fail'?'未通过':'待校验');
-    const couponStatusText = computed(() => couponStatus.value==='pass'?'已通过':couponStatus.value==='fail'?'未通过':'待校验');
-    const canSubmit = computed(() => snStatus.value==='pass' && couponStatus.value==='pass' && !submitting.value);
+    const couponOverallStatus = computed(() => {
+      if (coupons.value.length === 0) return 'pending';
+      if (coupons.value.some(c => c.status === 'fail')) return 'fail';
+      if (coupons.value.every(c => c.status === 'pass')) return 'pass';
+      return 'pending';
+    });
+    const couponOverallStatusText = computed(() => {
+      if (coupons.value.length === 0) return '待录入';
+      if (couponOverallStatus.value === 'pass') return '已通过';
+      if (couponOverallStatus.value === 'fail') return '未通过';
+      return '待校验';
+    });
+    const canSubmit = computed(() => snStatus.value==='pass' && couponOverallStatus.value==='pass' && !submitting.value);
 
     function stepStatus(step) {
       if (step < currentStep.value) return 'finish';
@@ -1232,26 +1276,36 @@ createApp({
 
     function resetForm() {
       snInput.value=''; snStatus.value='pending'; snFeedback.value={type:'',msg:''};
-      couponInput.value=''; couponStatus.value='pending'; couponFeedback.value={type:'',msg:''};
+      coupons.value=[]; editingCouponIndex.value=-1;
       submitting.value=false;
     }
 
-    function openManualDialog(field) {
+    function openManualDialog(field, index=-1) {
       if (field === 'sn' && snStatus.value === 'pass') return;
-      if (field === 'coupon' && couponStatus.value === 'pass') return;
+      if (field === 'coupon') {
+        if (index < 0 || !coupons.value[index]) return;
+        if (coupons.value[index].status === 'pass') return;
+        editingCouponIndex.value = index;
+      }
       manualDialog.field = field;
       manualDialog.title = field === 'sn' ? '输入SN/IMEI编码' : '输入顾客的券码';
       manualDialog.subtitle = field === 'sn' ? '输入SN/IMEI编码' : '券码在条码下方';
-      manualDialog.value = field === 'sn' ? snInput.value : couponInput.value;
+      manualDialog.value = field === 'sn' ? snInput.value : (coupons.value[index]?.code || '');
       manualDialog.show = true;
       nextTick(() => { if (manualInputRef.value) manualInputRef.value.focus(); });
     }
-    function closeManualDialog() { manualDialog.show = false; manualDialog.value = ''; }
+    function closeManualDialog() { manualDialog.show = false; manualDialog.value = ''; editingCouponIndex.value=-1; }
     function confirmManualDialog() {
       const val = manualDialog.value.trim();
       if (!val) { toast('请输入内容'); return; }
       if (manualDialog.field === 'sn') { snInput.value = val; closeManualDialog(); validateSn(); }
-      else { couponInput.value = val; closeManualDialog(); validateCoupon(); }
+      else { 
+        if (editingCouponIndex.value >= 0) {
+          coupons.value[editingCouponIndex.value].code = val;
+          closeManualDialog();
+          validateCoupon(editingCouponIndex.value);
+        }
+      }
     }
 
     function validateSn() {
@@ -1289,36 +1343,48 @@ createApp({
       }, 2500);
     }
 
-    function validateCoupon() {
-      if (!couponInput.value || couponStatus.value==='pass' || couponValidating.value) return;
-      couponValidating.value = true;
-      couponFeedback.value = { type:'info', msg:'正在查询会员券码信息...' };
+    function validateCoupon(index) {
+      const c = coupons.value[index];
+      if (!c || !c.code || c.status==='pass' || c.validating) return;
+      c.validating = true;
+      c.feedback = { type:'info', msg:'正在查询会员券码信息...' };
       setTimeout(() => {
-        couponValidating.value = false;
-        if (couponInput.value.toLowerCase().includes('error')) {
-          couponStatus.value = 'fail';
-          couponFeedback.value = { type:'error', msg:'券码校验失败：该券码已过期或已被使用，请确认后重试。' };
+        c.validating = false;
+        if (c.code.toLowerCase().includes('error')) {
+          c.status = 'fail';
+          c.feedback = { type:'error', msg:'券码校验失败：该券码已过期或已被使用，请确认后重试。' };
         } else {
-          couponStatus.value = 'pass';
-          couponFeedback.value = { type:'success', msg:'券码校验通过！' };
+          c.status = 'pass';
+          c.feedback = { type:'success', msg:'券码校验通过！' };
         }
       }, 1200);
     }
 
-    function mockScanCoupon() {
+    function mockScanCoupon(index) {
       document.querySelector('.phone-screen').scrollTop = 0;
+      editingCouponIndex.value = index;
       scannerTarget.value = '券码条码';
       scannerTitle.value = '扫描券码';
       scanSuccess.value = false;
       showScanner.value = true;
       scanTimer = setTimeout(() => {
         scanSuccess.value = true;
-        couponInput.value = 'MC' + new Date().getFullYear() + String(Math.floor(Math.random()*900+100)).padStart(3,'0') + String(Math.floor(Math.random()*900+100)).padStart(3,'0');
+        if (coupons.value[index]) {
+          coupons.value[index].code = 'MC' + new Date().getFullYear() + String(Math.floor(Math.random()*900+100)).padStart(3,'0') + String(Math.floor(Math.random()*900+100)).padStart(3,'0');
+        }
         setTimeout(() => {
           showScanner.value = false;
-          validateCoupon();
+          validateCoupon(index);
         }, 800);
       }, 2500);
+    }
+
+    function addCoupon() {
+      if (snStatus.value !== 'pass') { toast('请先完成SN/IMEI校验'); return; }
+      coupons.value.push({ id: Date.now() + Math.random(), code:'', status:'pending', validating:false, feedback:{type:'',msg:''} });
+    }
+    function removeCoupon(index) {
+      coupons.value.splice(index, 1);
     }
 
     function cancelScan() {
@@ -1335,7 +1401,7 @@ createApp({
         submitting.value = false;
         dialog.type = 'success';
         dialog.title = '核销成功';
-        dialog.msg = '会员券码已成功核销！\n机码上报：已完成\n券码核销：已成功';
+        dialog.msg = `SN/IMEI：${snInput.value}\n券码数量：${coupons.value.length} 张\n机码上报：已完成\n券码核销：已成功`;
         resetForm();
       }, 2000);
     }
@@ -1345,7 +1411,7 @@ createApp({
       qyApps, salesApps, onQyAppClick,
       kingkongItems, onKkClick,
       snInput, snStatus, snValidating, snFeedback, snStatusText, validateSn, mockScanSn,
-      couponInput, couponStatus, couponValidating, couponFeedback, couponStatusText, validateCoupon, mockScanCoupon,
+      coupons, couponOverallStatus, couponOverallStatusText, addCoupon, removeCoupon, validateCoupon, mockScanCoupon,
       currentStep, stepStatus, canSubmit, submitting, submitRedeem, dialog,
       manualInputRef, manualDialog, openManualDialog, closeManualDialog, confirmManualDialog,
       showScanner, scanSuccess, scannerTarget, scannerTitle, cancelScan,
