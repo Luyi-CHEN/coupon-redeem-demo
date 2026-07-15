@@ -1219,7 +1219,7 @@ createApp({
     const couponStatus = ref('pending');
     const couponValidating = ref(false);
     const couponFeedback = ref({ type:'', msg:'' });
-    const coupons = ref([]);
+    const coupons = ref([{ id: Date.now() + Math.random(), code:'', status:'pending', validating:false, feedback:{type:'',msg:''} }]);
     const editingCouponIndex = ref(-1);
     const submitting = ref(false);
     const dialog = reactive({ show:false, type:'success', title:'', msg:'' });
@@ -1276,7 +1276,8 @@ createApp({
 
     function resetForm() {
       snInput.value=''; snStatus.value='pending'; snFeedback.value={type:'',msg:''};
-      coupons.value=[]; editingCouponIndex.value=-1;
+      coupons.value=[{ id: Date.now() + Math.random(), code:'', status:'pending', validating:false, feedback:{type:'',msg:''} }];
+      editingCouponIndex.value=-1;
       submitting.value=false;
     }
 
@@ -1384,6 +1385,7 @@ createApp({
       coupons.value.push({ id: Date.now() + Math.random(), code:'', status:'pending', validating:false, feedback:{type:'',msg:''} });
     }
     function removeCoupon(index) {
+      if (coupons.value.length <= 1) { toast('至少需要保留1张券码'); return; }
       coupons.value.splice(index, 1);
     }
 
