@@ -6,6 +6,7 @@
 
 | 端 | 链接 |
 |----|------|
+| 企微工作台（默认首页） | https://luyi-chen.github.io/coupon-redeem-demo/qywork.html |
 | 移动端 H5 | https://luyi-chen.github.io/coupon-redeem-demo/ |
 | PC 后台 | https://luyi-chen.github.io/coupon-redeem-demo/pc.html |
 
@@ -31,6 +32,7 @@ PC后台实时查看核销历史数据
 
 ```
 coupon-redeem-demo/
+├── qywork.html                         # 企微工作台首页（默认入口，点击“门店会员营销”进入核销流程）
 ├── index.html                          # 移动端 H5 主页面（首页 + 核销 + 记录）
 ├── pc.html                             # PC 后台报表页面
 ├── mobile.html                         # 移动端旧版页面（保留参考）
