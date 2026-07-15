@@ -6,7 +6,7 @@
 
 | 端 | 入口 | 链接 |
 |----|------|------|
-| 移动端 - APP入口 | APP首页 → 核销 | https://luyi-chen.github.io/coupon-redeem-demo/mobile-app.html |
+| 移动端 - APP入口 | APP首页 → 多券码核销 | https://luyi-chen.github.io/coupon-redeem-demo/mobile-app.html |
 | PC 后台 | 报表查看 | https://luyi-chen.github.io/coupon-redeem-demo/pc.html |
 
 ## 项目概述
@@ -67,7 +67,7 @@ coupon-redeem-demo/
 
 ## 功能模块说明
 
-### 移动端 H5（index.html）
+### 移动端 H5（mobile-app.html）
 
 #### 首页（工作台）
 - 店铺信息卡片（店铺名称、经销商、面积、人员）
@@ -85,8 +85,8 @@ coupon-redeem-demo/
     - 正常编码 → 校验通过
     - 包含 `fail` → 校验失败（通用错误）
     - 输入 `testerror` → 校验失败（设备不合规，展示完整合规性错误文案）
-- **券码录入**：同上，支持扫码/手动，校验通过/失败
-- **提交核销**：两项均通过后启用，提交后显示处理中 → 成功弹窗 → 自动重置
+- **券码录入**：支持多张券码同时录入，默认展示 1 张券码卡片；SN/IMEI 与券码校验无先后顺序；支持扫码/手动，单张独立校验通过/失败
+- **提交核销**：SN/IMEI 与所有券码均校验通过后启用，提交后显示处理中 → 成功弹窗 → 自动重置
 
 #### 核销记录页
 - 搜索框（按券名称/商品名称模糊搜索）
