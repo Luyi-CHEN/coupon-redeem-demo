@@ -1099,6 +1099,7 @@ createApp({
     }
 
     function mockScanSn() {
+      document.querySelector('.phone-screen').scrollTop = 0;
       scannerTarget.value = 'SN/IMEI条码';
       scannerTitle.value = '扫描SN/IMEI';
       scanSuccess.value = false;
@@ -1130,6 +1131,7 @@ createApp({
     }
 
     function mockScanCoupon() {
+      document.querySelector('.phone-screen').scrollTop = 0;
       scannerTarget.value = '券码条码';
       scannerTitle.value = '扫描券码';
       scanSuccess.value = false;
