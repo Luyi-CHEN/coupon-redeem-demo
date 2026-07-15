@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>移动端H5 Demo - 会员券核销SN/IMEI绑定</title>
+<title>企微工作台 - 门店会员营销Demo</title>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <style>
 :root {
@@ -340,14 +340,105 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .scanner-hint { color:rgba(255,255,255,.7); font-size:14px; margin-top:24px; text-align:center; line-height:1.5; }
 .scanner-success { position:absolute; bottom:120px; left:50%; transform:translateX(-50%); color:#52C41A; font-size:16px; font-weight:600; display:flex; align-items:center; gap:6px; }
 .scanner-success .check { width:20px; height:20px; border-radius:50%; background:#52C41A; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
+
+/* ===== QyWork Page ===== */
+.qy-status-bar { height:44px; background:#1C2B4A; display:flex; align-items:center; justify-content:space-between; padding:0 20px; color:#fff; font-size:12px; flex-shrink:0; }
+.qy-status-bar .icons { font-size:11px; letter-spacing:2px; }
+.qy-header { background:linear-gradient(180deg,#1C2B4A 0%,#243556 100%); padding:8px 16px 16px; flex-shrink:0; }
+.qy-title { font-size:20px; font-weight:700; color:#fff; margin-bottom:10px; }
+.qy-search { display:flex; align-items:center; background:rgba(255,255,255,.12); border-radius:8px; height:36px; padding:0 12px; gap:8px; cursor:pointer; }
+.qy-search .icon { color:rgba(255,255,255,.5); font-size:14px; }
+.qy-search .placeholder { color:rgba(255,255,255,.4); font-size:14px; }
+.qy-service-card { margin:12px 12px 0; background:var(--white); border-radius:12px; padding:14px 16px; box-shadow:var(--shadow-card); }
+.qy-service-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.qy-service-title { display:flex; align-items:center; gap:6px; }
+.qy-service-title .dot { width:8px; height:8px; border-radius:50%; background:var(--success); }
+.qy-service-title span { font-size:15px; font-weight:600; color:var(--title); }
+.qy-service-link { font-size:12px; color:var(--primary); cursor:pointer; }
+.qy-service-body { font-size:13px; color:#999; line-height:1.5; }
+.qy-service-body b { color:#666; font-weight:500; }
+.qy-service-btn { display:inline-flex; align-items:center; gap:4px; margin-top:8px; padding:4px 12px; background:rgba(37,99,235,.08); border-radius:4px; font-size:12px; color:var(--primary); cursor:pointer; border:none; }
+.qy-section-card { margin:12px 12px 0; background:var(--white); border-radius:12px; padding:16px; box-shadow:var(--shadow-card); }
+.qy-section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.qy-section-title { font-size:16px; font-weight:600; color:var(--title); }
+.qy-section-more { font-size:12px; color:#999; cursor:pointer; }
+.qy-icon-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px 8px; }
+.qy-icon-item { display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; position:relative; }
+.qy-icon-item:active { opacity:.7; }
+.qy-icon-box { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; position:relative; }
+.qy-icon-label { font-size:11px; color:#666; text-align:center; line-height:1.2; max-width:68px; word-break:keep-all; }
+.qy-icon-sub { font-size:9px; color:#999; margin-top:-4px; }
+.qy-sales-grid { display:flex; gap:20px; padding:4px 0; }
+.qy-sales-item { display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; }
+.qy-sales-item:active { opacity:.7; }
+.qy-sales-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+.qy-sales-label { font-size:11px; color:#666; }
+.qy-tabbar { position:absolute; bottom:0; left:0; right:0; height:82px; background:var(--white); border-top:1px solid #E8E8E8; display:flex; align-items:flex-start; padding-top:8px; z-index:10; }
+.qy-tab-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; position:relative; }
+.qy-tab-icon { font-size:22px; color:#999; height:24px; display:flex; align-items:center; justify-content:center; }
+.qy-tab-item.active .qy-tab-icon { color:var(--primary); }
+.qy-tab-label { font-size:10px; color:#999; }
+.qy-tab-item.active .qy-tab-label { color:var(--primary); font-weight:500; }
+.qy-tab-dot { position:absolute; top:-2px; right:50%; margin-right:-18px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--danger); color:#fff; font-size:9px; display:flex; align-items:center; justify-content:center; font-weight:600; }
 </style>
 </head>
 <body>
 <div id="app">
   <div class="phone-frame">
     <div class="phone-screen">
+      <!-- QyWork Page (企微工作台首页) -->
+      <div class="page" v-if="currentPage==='qywork'">
+        <div class="qy-status-bar">
+          <span>13:56</span>
+          <span class="icons">5G &#128267; &#128268;</span>
+        </div>
+        <div class="qy-header">
+          <div class="qy-title">工作台</div>
+          <div class="qy-search" @click="toast('搜索仅演示')">
+            <span class="icon">&#128269;</span>
+            <span class="placeholder">搜索应用、功能、文档</span>
+          </div>
+        </div>
+        <div class="qy-service-card">
+          <div class="qy-service-head">
+            <div class="qy-service-title"><div class="dot"></div><span>服务总结</span></div>
+            <span class="qy-service-link">查看全部 ›</span>
+          </div>
+          <div class="qy-service-body">
+            <b>AI自动结案</b>：今日已完成 <b>3</b> 个服务工单结案，效率提升 <b>42%</b>
+          </div>
+          <button class="qy-service-btn" @click="toast('观看讲解仅演示')">&#9654; 观看讲解</button>
+        </div>
+        <div class="qy-section-card">
+          <div class="qy-section-header">
+            <span class="qy-section-title">融合零售助手</span>
+            <span class="qy-section-more" @click="toast('更多应用仅演示')">更多 ›</span>
+          </div>
+          <div class="qy-icon-grid">
+            <div class="qy-icon-item" v-for="item in qyApps" :key="item.label" @click="onQyAppClick(item)">
+              <div class="qy-icon-box" :style="{background:item.bg}"><span v-html="item.icon"></span></div>
+              <div class="qy-icon-label">{{item.label}}</div>
+              <div class="qy-icon-sub" v-if="item.sub">{{item.sub}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="qy-section-card">
+          <div class="qy-section-header">
+            <span class="qy-section-title">销售通</span>
+            <span class="qy-section-more" @click="toast('更多仅演示')">更多 ›</span>
+          </div>
+          <div class="qy-sales-grid">
+            <div class="qy-sales-item" v-for="item in salesApps" :key="item.label" @click="toast(item.label+' - 仅演示入口')">
+              <div class="qy-sales-icon" :style="{background:item.bg}"><span v-html="item.icon"></span></div>
+              <div class="qy-sales-label">{{item.label}}</div>
+            </div>
+          </div>
+        </div>
+        <div style="height:90px"></div>
+      </div>
+
       <!-- HomePage -->
-      <div class="page" v-if="currentPage==='home'">
+      <div class="page" v-else-if="currentPage==='home'">
         <!-- Top: Status bar + Store info -->
         <div class="home-top">
           <div class="status-bar">
@@ -683,6 +774,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
         <div class="dialog-msg" v-if="dialog.msg">{{dialog.msg}}</div>
         <button class="dialog-btn primary" @click="dialog.show=false" v-if="dialog.type!=='loading'">确定</button>
       </div>
+    </div>
+
+    <!-- QyWork TabBar -->
+    <div class="qy-tabbar" v-if="currentPage==='qywork'">
+      <div class="qy-tab-item" @click="toast('消息仅演示')"><div class="qy-tab-icon">&#128172;</div><div class="qy-tab-label">消息</div><div class="qy-tab-dot">19</div></div>
+      <div class="qy-tab-item" @click="toast('文档仅演示')"><div class="qy-tab-icon">&#128196;</div><div class="qy-tab-label">文档</div></div>
+      <div class="qy-tab-item" @click="toast('通讯录仅演示')"><div class="qy-tab-icon">&#128101;</div><div class="qy-tab-label">通讯录</div></div>
+      <div class="qy-tab-item active"><div class="qy-tab-icon">&#9638;</div><div class="qy-tab-label">工作台</div></div>
+      <div class="qy-tab-item" @click="toast('我仅演示')"><div class="qy-tab-icon">&#128100;</div><div class="qy-tab-label">我</div></div>
     </div>
 
     <!-- Toast -->
@@ -1034,7 +1134,7 @@ const RecordsView = defineComponent({
 createApp({
   components: { RecordsView },
   setup() {
-    const currentPage = ref('home');
+    const currentPage = ref('qywork');
     const activeTab = ref('redeem');
     const dashTime = ref('day');
     const toastMsg = ref('');
@@ -1045,6 +1145,37 @@ createApp({
       toastTimer = setTimeout(() => toastMsg.value = '', 1500);
     }
     function goHome() { currentPage.value = 'home'; activeTab.value = 'redeem'; resetForm(); }
+
+    // QyWork apps
+    const qyApps = ref([
+      { label:'账号管理', bg:'linear-gradient(135deg,#4FACFE,#00C6FB)', icon:'&#128100;' },
+      { label:'服务工作台', bg:'linear-gradient(135deg,#FF9800,#FF7043)', icon:'&#128194;' },
+      { label:'超级导购', bg:'linear-gradient(135deg,#FF6B6B,#EE5A24)', icon:'&#128129;' },
+      { label:'智慧零售商户助手', bg:'linear-gradient(135deg,#A8E6CF,#3DC1D3)', icon:'&#127970;' },
+      { label:'门店会员营销', bg:'linear-gradient(135deg,#FF6348,#FF4757)', icon:'&#127873;', target:'redeem' },
+      { label:'联想乐呗', bg:'linear-gradient(135deg,#DFE6E9,#B2BEC3)', icon:'&#127925;', sub:'暂无注册信息' },
+      { label:'联想会员中心', bg:'linear-gradient(135deg,#E74C3C,#C0392B)', icon:'<b style="color:#fff;font-size:13px;font-family:Arial;">Lenovo</b>' },
+      { label:'店面自检', bg:'linear-gradient(135deg,#74B9FF,#0984E3)', icon:'&#128203;' },
+      { label:'内容管理平台', bg:'linear-gradient(135deg,#FD79A8,#E84393)', icon:'&#128218;' },
+      { label:'以旧换新', bg:'linear-gradient(135deg,#FFEAA7,#FDCB6E)', icon:'&#128260;' },
+      { label:'企微助手', bg:'linear-gradient(135deg,#E17055,#D63031)', icon:'<b style="color:#fff;font-size:11px;font-family:Arial;">WeCom</b>' },
+      { label:'产品政策', bg:'linear-gradient(135deg,#FF7675,#D63031)', icon:'&#128200;' },
+    ]);
+    const salesApps = ref([
+      { label:'销售看板', bg:'linear-gradient(135deg,#74B9FF,#0984E3)', icon:'&#128202;' },
+      { label:'鹰眼巡检', bg:'linear-gradient(135deg,#636E72,#2D3436)', icon:'&#129413;' },
+      { label:'扫码入库', bg:'linear-gradient(135deg,#55EFC4,#00B894)', icon:'&#128225;' },
+    ]);
+    function onQyAppClick(item) {
+      if (item.target === 'redeem') {
+        currentPage.value = 'redeem';
+        activeTab.value = 'redeem';
+        const screen = document.querySelector('.phone-screen');
+        if (screen) screen.scrollTop = 0;
+      } else {
+        toast(item.label + ' - 仅演示入口');
+      }
+    }
 
     // Kingkong items
     const kingkongItems = ref([
@@ -1230,6 +1361,7 @@ createApp({
 
     return {
       currentPage, activeTab, dashTime, toastMsg, toast, goHome,
+      qyApps, salesApps, onQyAppClick,
       kingkongItems, onKkClick,
       snInput, snStatus, snValidating, snFeedback, snStatusText, validateSn, mockScanSn,
       couponInput, couponStatus, couponValidating, couponFeedback, couponStatusText, validateCoupon, mockScanCoupon,
