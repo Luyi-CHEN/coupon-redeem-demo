@@ -707,7 +707,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 
             <div class="coupon-head">
               <span class="title">券码列表</span>
-              <button class="add-coupon-btn" @click="addCoupon" :disabled="snStatus!=='pass'">+ 添加券码</button>
+              <button class="add-coupon-btn" @click="addCoupon">+ 添加券码</button>
             </div>
 
             <div class="coupon-list" v-if="coupons.length">
@@ -717,8 +717,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
                   <span class="del" @click="removeCoupon(i)">&#10005;</span>
                 </div>
                 <div class="input-row">
-                  <input v-model="c.code" placeholder="点击手动录入券码" @click="openManualDialog('coupon',i)" readonly :disabled="c.status==='pass' || snStatus!=='pass'" />
-                  <button class="scan-btn" @click="mockScanCoupon(i)" :disabled="c.status==='pass' || snStatus!=='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
+                  <input v-model="c.code" placeholder="点击手动录入券码" @click="openManualDialog('coupon',i)" readonly :disabled="c.status==='pass'" />
+                  <button class="scan-btn" @click="mockScanCoupon(i)" :disabled="c.status==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
                 </div>
                 <div class="feedback" :class="c.feedback.type" v-if="c.feedback.msg">
                   <span v-if="c.feedback.type==='info'" class="loading-spin"></span>
@@ -1381,7 +1381,6 @@ createApp({
     }
 
     function addCoupon() {
-      if (snStatus.value !== 'pass') { toast('请先完成SN/IMEI校验'); return; }
       coupons.value.push({ id: Date.now() + Math.random(), code:'', status:'pending', validating:false, feedback:{type:'',msg:''} });
     }
     function removeCoupon(index) {
