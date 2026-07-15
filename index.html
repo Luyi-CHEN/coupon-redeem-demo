@@ -21,13 +21,13 @@
   --white: #FFFFFF;
   --box: #F0F0F0;
   --divider: #DCDEE0;
-  --shadow-card: 0px 2px 12px rgba(0,0,0,0.06);
+  --shadow-card: 0px 20px 35px -6px rgba(255,100,100,0.06);
   --shadow-bottom: 0px -4px 10px rgba(0,0,0,0.04);
   --shadow-popup: 0px 8px 24px rgba(0,0,0,0.12);
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"PingFang SC","Microsoft Yahei",sans-serif; background:#222; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:20px 0; }
-.phone-frame { width:390px; height:844px; background:#F5F7FA; border-radius:48px; border:12px solid #1a1a1a; overflow:hidden; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+.phone-frame { width:390px; height:844px; background:var(--bg); border-radius:48px; border:12px solid #1a1a1a; overflow:hidden; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
 .phone-screen { width:100%; height:100%; overflow-y:auto; overflow-x:hidden; position:relative; }
 .phone-screen::-webkit-scrollbar { display:none; }
 
@@ -49,7 +49,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .home-top .switch-row .switch-store { display:flex; align-items:center; gap:4px; font-size:14px; color:var(--text); cursor:pointer; }
 .home-top .switch-row .switch-store .arrow { font-size:10px; color:var(--sub); }
 .home-top .switch-row .msg-icon { position:relative; cursor:pointer; font-size:20px; }
-.home-top .switch-row .msg-icon .msg-badge { position:absolute; top:-6px; right:-8px; background:var(--danger); color:#fff; font-size:9px; padding:1px 5px; border-radius:8px; font-weight:600; line-height:1.3; }
+.home-top .switch-row .msg-icon .msg-badge { position:absolute; top:-6px; right:-8px; background:#FF3141; color:#fff; font-size:9px; padding:1px 5px; border-radius:100px; font-weight:600; line-height:1.3; }
 .home-top .store-identity { display:flex; align-items:center; gap:10px; margin-top:12px; }
 .home-top .store-identity .avatar { width:44px; height:44px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:600; flex-shrink:0; }
 .home-top .store-identity .store-info .store-name { font-size:17px; font-weight:600; color:var(--title); line-height:1.3; }
@@ -79,7 +79,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .kk-item { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; }
 .kk-icon { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; position:relative; }
 .kk-label { font-size:11px; color:#333; text-align:center; line-height:1.3; }
-.kk-new-tag { position:absolute; top:-5px; right:-5px; background:var(--danger); color:#fff; font-size:7px; padding:1px 4px; border-radius:6px; font-weight:600; line-height:1.3; }
+.kk-new-tag { position:absolute; top:-5px; right:-5px; background:#FF3141; color:#fff; font-size:9px; padding:1px 5px; border-radius:100px; font-weight:600; line-height:1.3; min-width:16px; text-align:center; }
 .kk-page-dots { display:flex; justify-content:center; gap:4px; margin-top:14px; }
 .kk-page-dots .dot { width:5px; height:5px; border-radius:50%; background:var(--divider); }
 .kk-page-dots .dot.active { background:var(--primary); }
@@ -90,7 +90,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .dash-head .dash-title-l .dash-icon { width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:16px; }
 .dash-head .dash-title-l .title-text { font-size:15px; font-weight:600; color:var(--title); }
 .dash-head .dash-title-l .help-icon { font-size:14px; color:var(--tertiary); cursor:pointer; }
-.dash-head .dash-date { font-size:11px; color:var(--sub); }
+.dash-head .dash-date { font-size:15px; color:var(--sub); }
 .dash-time-row { display:flex; align-items:center; gap:6px; margin-top:10px; }
 .dash-time-btn { padding:3px 14px; border-radius:14px; font-size:12px; border:1px solid var(--divider); background:var(--white); color:var(--sub); cursor:pointer; }
 .dash-time-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
@@ -101,30 +101,29 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .dash-cell:nth-child(3n) { border-right:none; }
 .dash-cell:nth-child(n+16) { border-bottom:none; }
 .dash-cell.empty { justify-content:center; align-items:center; }
-.dash-cell .c-label { font-size:11px; color:var(--sub); line-height:1.3; }
-.dash-cell.arrow .c-label::after { content:' ›'; color:var(--sub); }
-.dash-cell .c-value { font-size:18px; font-weight:600; color:var(--title); margin-top:4px; line-height:1.2; }
-.dash-cell .c-sub { font-size:11px; color:var(--sub); margin-top:2px; }
-.dash-cell.empty .c-value { color:var(--sub); font-weight:400; }
+.dash-cell .c-label { font-size:15px; color:var(--sub); line-height:1.3; }
+.dash-cell .c-value { font-size:15px; font-weight:600; color:var(--title); margin-top:4px; line-height:1.2; }
+.dash-cell .c-sub { font-size:15px; color:var(--sub); margin-top:2px; }
 
 /* TabBar */
 .tabbar { position:absolute; bottom:0; left:0; right:0; height:50px; background:var(--white); display:flex; border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); z-index:100; }
-.tabbar-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:var(--tertiary); cursor:pointer; }
+.tabbar-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:#999999; cursor:pointer; }
 .tabbar-item.active { color:var(--primary); }
 .tabbar-item .icon { width:22px; height:22px; display:flex; align-items:center; justify-content:center; position:relative; }
 .tabbar-item .text { font-size:10px; margin-top:2px; }
 .icon-workbench { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2px; }
 .icon-workbench i { background:currentColor; border-radius:1px; }
 .icon-inventory { width:20px; height:18px; position:relative; }
-.icon-inventory::before { content:''; position:absolute; bottom:0; left:2px; width:16px; height:10px; background:currentColor; border-radius:1px; }
-.icon-inventory::after { content:''; position:absolute; top:1px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-bottom:8px solid currentColor; }
-.icon-pos { width:18px; height:12px; border:2px solid currentColor; border-radius:2px; position:relative; }
+.icon-inventory::before { content:''; position:absolute; bottom:0; left:3px; width:14px; height:9px; background:currentColor; border-radius:1px; }
+.icon-inventory::after { content:''; position:absolute; top:2px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-bottom:8px solid currentColor; }
+.icon-pos { width:20px; height:14px; border:2px solid currentColor; border-radius:2px; position:relative; display:flex; align-items:center; justify-content:center; }
+.icon-pos::before { content:'POS'; font-size:7px; font-weight:700; color:currentColor; line-height:1; }
 .icon-pos::after { content:''; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%); width:8px; height:3px; background:currentColor; border-radius:0 0 2px 2px; }
 .icon-person { width:16px; height:16px; position:relative; }
 .icon-person::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:7px; height:7px; border-radius:50%; background:currentColor; }
 .icon-person::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:14px; height:7px; border-radius:7px 7px 0 0; background:currentColor; }
 .icon-ai { width:18px; height:16px; border:2px solid currentColor; border-radius:8px 8px 8px 2px; position:relative; }
-.icon-ai::before { content:''; position:absolute; top:4px; left:3px; width:2px; height:2px; border-radius:50%; background:currentColor; box-shadow:4px 0 0 currentColor, 2px 4px 0 currentColor; }
+.icon-ai::before { content:''; position:absolute; top:4px; left:4px; width:3px; height:3px; border-radius:50%; background:currentColor; box-shadow:6px 0 0 currentColor; }
 
 /* ===== NavBar ===== */
 .navbar { height:44px; display:flex; align-items:center; padding:0 12px; background:var(--white); border-bottom:1px solid var(--divider); position:sticky; top:0; z-index:50; }
@@ -137,7 +136,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 /* ===== Segmented Tabs ===== */
 .seg-tabs { display:flex; background:var(--box); border-radius:23px; margin:12px; padding:3px; }
 .seg-tab { flex:1; text-align:center; padding:10px 0; font-size:14px; color:var(--title); border-radius:20px; cursor:pointer; transition:all .2s; }
-.seg-tab.active { background:var(--white); color:var(--primary); font-weight:600; font-size:16px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+.seg-tab.active { background:var(--white); color:var(--primary); font-weight:500; font-size:16px; box-shadow:0 1px 4px rgba(0,0,0,.08); position:relative; }
+.seg-tab.active::after { content:''; position:absolute; bottom:4px; left:50%; transform:translateX(-50%); width:24px; height:3px; background:var(--primary); border-radius:8px; }
 
 /* ===== Steps ===== */
 .steps-bar { background:var(--white); border-radius:12px; margin:0 12px 12px; padding:16px 12px; box-shadow:var(--shadow-card); }
@@ -149,7 +149,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .step-item.wait .step-circle { background:var(--box); color:var(--sub); }
 .step-line { position:absolute; top:14px; left:50%; width:100%; height:2px; background:var(--box); z-index:1; }
 .step-line.done { background:var(--primary); }
-.step-label { font-size:11px; color:var(--sub); margin-top:6px; text-align:center; line-height:1.3; }
+.step-label { font-size:13px; color:var(--sub); margin-top:6px; text-align:center; line-height:1.3; }
 .step-item.process .step-label { color:var(--primary); font-weight:600; }
 .step-item.finish .step-label { color:var(--text); }
 
@@ -183,19 +183,19 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 @keyframes spin { to { transform:rotate(360deg); } }
 
 /* Notice bar */
-.notice-bar { margin:0 12px 12px; background:rgba(255,149,0,.08); border-radius:8px; padding:10px 12px; display:flex; align-items:flex-start; gap:6px; font-size:12px; color:var(--label); line-height:1.5; }
+.notice-bar { margin:0 12px 12px; background:rgba(255,149,0,.08); border-radius:8px; padding:10px 12px; display:flex; align-items:flex-start; gap:6px; font-size:15px; color:var(--label); line-height:1.5; }
 .notice-bar .icon { flex-shrink:0; font-size:14px; }
 
 /* Bottom submit bar */
 .submit-bar { position:absolute; bottom:0; left:0; right:0; height:68px; background:var(--white); border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); display:flex; align-items:center; padding:0 16px; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
-.submit-btn { flex:1; height:44px; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; transition:all .2s; }
+.submit-btn { flex:1; height:49px; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; transition:all .2s; }
 .submit-btn.enabled { background:var(--primary); color:#fff; }
 .submit-btn.enabled:active { opacity:.85; }
 .submit-btn.disabled { background:var(--box); color:var(--tertiary); cursor:not-allowed; }
 
 /* Result dialog */
-.dialog-mask { position:absolute; inset:0; background:rgba(0,0,0,0.5); z-index:200; display:flex; align-items:center; justify-content:center; }
-.dialog-panel { width:280px; background:var(--white); border-radius:12px; padding:24px 20px 16px; text-align:center; box-shadow:var(--shadow-popup); }
+.dialog-mask { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:200; display:flex; align-items:center; justify-content:center; }
+.dialog-panel { width:279px; background:var(--white); border-radius:8px; padding:24px 20px 16px; text-align:center; box-shadow:var(--shadow-popup); }
 .dialog-icon { width:56px; height:56px; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:28px; }
 .dialog-icon.success { background:rgba(82,196,26,.1); color:var(--success); }
 .dialog-icon.error { background:rgba(255,77,79,.1); color:var(--danger); }
@@ -203,13 +203,13 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .dialog-icon.loading .loading-spin-lg { width:28px; height:28px; border:3px solid var(--primary); border-top-color:transparent; border-radius:50%; animation:spin .6s linear infinite; }
 .dialog-title { font-size:17px; font-weight:600; color:var(--title); margin-bottom:8px; }
 .dialog-msg { font-size:13px; color:var(--sub); line-height:1.5; margin-bottom:16px; }
-.dialog-btn { width:100%; height:42px; border:none; border-radius:8px; font-size:16px; font-weight:500; cursor:pointer; }
+.dialog-btn { width:100%; height:45px; border:none; border-radius:4px; font-size:18px; font-weight:500; cursor:pointer; }
 .dialog-btn.primary { background:var(--primary); color:#fff; }
 .dialog-btn.primary:active { opacity:.85; }
 
 /* Manual input dialog */
-.manual-mask { position:absolute; inset:0; background:rgba(0,0,0,0.5); z-index:250; display:flex; align-items:center; justify-content:center; }
-.manual-dialog { width:300px; background:var(--white); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-popup); }
+.manual-mask { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:250; display:flex; align-items:center; justify-content:center; }
+.manual-dialog { width:279px; background:var(--white); border-radius:8px; overflow:hidden; box-shadow:var(--shadow-popup); }
 .manual-dialog-hd { padding:20px 20px 12px; text-align:center; }
 .manual-dialog-title { font-size:17px; font-weight:600; color:var(--title); margin-bottom:6px; }
 .manual-dialog-subtitle { font-size:13px; color:var(--sub); }
@@ -217,23 +217,24 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .manual-dialog-bd input { width:100%; height:44px; border:1.5px solid var(--divider); border-radius:8px; padding:0 14px; font-size:16px; color:var(--text); outline:none; }
 .manual-dialog-bd input:focus { border-color:var(--primary); }
 .manual-dialog-ft { display:flex; border-top:1px solid var(--divider); }
-.manual-dialog-ft button { flex:1; height:48px; border:none; background:var(--white); font-size:16px; cursor:pointer; }
-.manual-dialog-ft button.cancel { color:var(--text); border-right:1px solid var(--divider); }
+.manual-dialog-ft button { flex:1; height:48px; border:none; background:var(--white); font-size:18px; cursor:pointer; }
+.manual-dialog-ft button.cancel { color:var(--text); border-right:0.5px solid var(--divider); }
 .manual-dialog-ft button.submit { color:var(--primary); font-weight:500; }
 .manual-dialog-ft button:active { background:var(--box); }
 
 /* ===== Records Page ===== */
 .records-search { padding:8px 12px; background:var(--white); display:flex; gap:8px; align-items:center; }
 .records-search .search-wrap { flex:1; position:relative; }
-.records-search .search-input { width:100%; height:36px; background:var(--box); border:none; border-radius:18px; padding:0 16px 0 36px; font-size:14px; color:var(--text); outline:none; position:relative; }
-.search-wrap .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:16px; color:var(--sub); z-index:1; }
-.filter-chip { flex-shrink:0; padding:6px 12px; border-radius:16px; background:var(--box); font-size:12px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:4px; }
+.records-search .search-input { width:100%; height:32px; background:#F5F5F5; border:none; border-radius:6px; padding:0 16px 0 36px; font-size:15px; color:var(--text); outline:none; position:relative; }
+.records-search .search-input::placeholder { color:#999999; }
+.search-wrap .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:16px; color:#CCCCCC; z-index:1; }
+.filter-chip { flex-shrink:0; padding:6px 12px; border-radius:2px; background:#F5F5F5; font-size:15px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:4px; }
 .filter-chip.active { background:rgba(37,99,235,.1); color:var(--primary); }
 .filter-chip.has-filter { background:rgba(37,99,235,.1); color:var(--primary); }
 .filter-chip.filter-btn { position:relative; }
-.filter-chip .filter-badge { position:absolute; top:-5px; right:-5px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--danger); color:#fff; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+.filter-chip .filter-badge { position:absolute; top:-5px; right:-5px; min-width:10px; height:10px; padding:0 2px; border-radius:100px; background:#FF3141; color:#fff; font-size:9px; font-weight:600; display:flex; align-items:center; justify-content:center; }
 .records-list { padding:8px 12px 80px; }
-.record-card { background:var(--white); border-radius:12px; padding:14px; margin-bottom:10px; box-shadow:var(--shadow-card); }
+.record-card { background:var(--white); border-radius:8px; padding:14px; margin-bottom:10px; box-shadow:var(--shadow-card); }
 .record-card .rc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
 .record-card .rc-name { font-size:14px; font-weight:600; color:var(--title); flex:1; }
 .record-card .rc-amount { font-size:18px; font-weight:700; color:var(--danger); margin-left:8px; }
@@ -253,8 +254,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .fade-enter-from,.fade-leave-to { opacity:0; }
 
 /* Filter panel */
-.filter-panel-mask { position:absolute; inset:0; background:rgba(0,0,0,0.4); z-index:220; }
-.filter-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:16px 16px 0 0; max-height:80%; overflow-y:auto; z-index:221; padding:16px; padding-bottom:calc(56px + env(safe-area-inset-bottom)); }
+.filter-panel-mask { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:220; }
+.filter-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:8px 8px 0 0; max-height:80%; overflow-y:auto; z-index:221; padding:16px; padding-bottom:calc(56px + env(safe-area-inset-bottom)); }
 .filter-panel-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .filter-panel-hd .title { font-size:17px; font-weight:600; color:var(--title); }
 .filter-panel-hd .close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--sub); cursor:pointer; border-radius:50%; }
@@ -263,10 +264,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .filter-form .form-item.full { grid-column:1 / -1; }
 .filter-form .form-item.half { grid-column:span 1; }
 .filter-form .form-item label { display:block; font-size:12px; color:var(--sub); margin-bottom:6px; }
-.filter-form .form-item input, .filter-form .form-item .category-trigger { width:100%; height:40px; border:1.5px solid var(--divider); border-radius:8px; padding:0 12px; font-size:14px; color:var(--text); outline:none; background:var(--white); }
+.filter-form .form-item input, .filter-form .form-item .category-trigger { width:100%; height:40px; border:1.5px solid var(--divider); border-radius:8px; padding:0 12px; font-size:17px; color:var(--text); outline:none; background:var(--white); }
 .filter-form .form-item input:focus { border-color:var(--primary); }
+.filter-form .form-item input::placeholder { color:#CCCCCC; }
 .filter-form .form-item .category-trigger { display:flex; align-items:center; justify-content:space-between; cursor:pointer; color:var(--text); }
-.filter-form .form-item .category-trigger.placeholder { color:var(--placeholder); }
+.filter-form .form-item .category-trigger.placeholder { color:#CCCCCC; }
 .filter-form .form-item .category-trigger .arrow { color:var(--sub); font-size:12px; }
 .filter-form .form-item .range-row { display:flex; align-items:center; gap:8px; }
 .filter-form .form-item .range-row input { flex:1; }
@@ -277,12 +279,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .clear-input-wrap .clear:active { opacity:.8; }
 .filter-panel-ft { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); display:flex; align-items:center; padding:0 16px; gap:12px; }
 .filter-panel-ft button { height:40px; border-radius:8px; font-size:15px; font-weight:500; cursor:pointer; border:none; }
-.filter-panel-ft .reset { width:80px; background:var(--box); color:var(--text); }
-.filter-panel-ft .confirm { flex:1; background:var(--primary); color:#fff; }
+.filter-panel-ft .reset { width:80px; background:var(--box); color:var(--text); border-radius:4px; }
+.filter-panel-ft .confirm { flex:1; background:var(--primary); color:#fff; border-radius:4px; }
 
 /* Cascader */
-.cascader-mask { position:absolute; inset:0; background:rgba(0,0,0,0.4); z-index:230; }
-.cascader-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:16px 16px 0 0; max-height:70%; z-index:231; display:flex; flex-direction:column; }
+.cascader-mask { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:230; }
+.cascader-panel { position:absolute; left:0; right:0; bottom:0; background:var(--white); border-radius:8px 8px 0 0; max-height:480px; z-index:231; display:flex; flex-direction:column; }
 .cascader-hd { padding:16px; border-bottom:1px solid var(--divider); display:flex; align-items:center; justify-content:space-between; }
 .cascader-hd .title { font-size:17px; font-weight:600; color:var(--title); }
 .cascader-hd .close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--sub); cursor:pointer; border-radius:50%; }
@@ -290,7 +292,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .cascader-body { display:flex; height:300px; overflow:hidden; }
 .cascader-col { flex:1; overflow-y:auto; border-right:1px solid var(--divider); }
 .cascader-col:last-child { border-right:none; }
-.cascader-item { padding:12px 16px; font-size:14px; color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
+.cascader-item { padding:12px 16px; font-size:17px; color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
 .cascader-item.active { background:rgba(37,99,235,.08); color:var(--primary); font-weight:500; }
 .cascader-item .arrow { color:var(--sub); font-size:12px; }
 .cascader-ft { padding:12px 16px; border-top:1px solid var(--divider); }
@@ -298,6 +300,24 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 
 /* Toast */
 .toast { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,.75); color:#fff; padding:12px 20px; border-radius:8px; font-size:13px; z-index:300; white-space:nowrap; }
+
+/* Scanner overlay */
+.scanner-overlay { position:absolute; inset:0; background:#000; z-index:300; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.scanner-top { position:absolute; top:60px; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:2; }
+.scanner-close { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; cursor:pointer; }
+.scanner-title { color:#fff; font-size:17px; font-weight:500; }
+.scanner-flash { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; cursor:pointer; }
+.scanner-viewfinder { width:240px; height:240px; position:relative; }
+.scanner-corner { position:absolute; width:24px; height:24px; border-color:#fff; border-style:solid; }
+.scanner-corner.tl { top:0; left:0; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
+.scanner-corner.tr { top:0; right:0; border-width:3px 3px 0 0; border-radius:0 4px 0 0; }
+.scanner-corner.bl { bottom:0; left:0; border-width:0 0 3px 3px; border-radius:0 0 0 4px; }
+.scanner-corner.br { bottom:0; right:0; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
+.scanner-line { position:absolute; left:8px; right:8px; height:2px; background:linear-gradient(90deg,transparent,var(--primary),transparent); animation:scanLine 1.8s ease-in-out infinite; box-shadow:0 0 8px rgba(37,99,235,.5); }
+@keyframes scanLine { 0%{top:8px} 50%{top:calc(100% - 10px)} 100%{top:8px} }
+.scanner-hint { color:rgba(255,255,255,.7); font-size:14px; margin-top:24px; text-align:center; line-height:1.5; }
+.scanner-success { position:absolute; bottom:120px; left:50%; transform:translateX(-50%); color:#52C41A; font-size:16px; font-weight:600; display:flex; align-items:center; gap:6px; }
+.scanner-success .check { width:20px; height:20px; border-radius:50%; background:#52C41A; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
 </style>
 </head>
 <body>
@@ -388,7 +408,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
         <div class="dashboard">
           <div class="dash-head">
             <div class="dash-title-l">
-              <span class="dash-icon">&#128201;</span>
+              <span class="dash-icon">&#128202;</span>
               <span class="title-text">我的销售看板</span>
               <span class="help-icon" @click="toast('看板说明仅演示')">&#9432;</span>
             </div>
@@ -432,34 +452,32 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <div class="c-value">-</div>
               <div class="c-sub">-</div>
             </div>
-            <div class="dash-cell arrow">
+            <div class="dash-cell">
               <div class="c-label">PC销售额/占比</div>
               <div class="c-value">0</div>
               <div class="c-sub">0.00</div>
             </div>
-            <div class="dash-cell arrow">
+            <div class="dash-cell">
               <div class="c-label">平板销售额/占比</div>
               <div class="c-value">0</div>
               <div class="c-sub">0.00</div>
             </div>
-            <div class="dash-cell arrow">
+            <div class="dash-cell">
               <div class="c-label">手机销售额/占比</div>
               <div class="c-value">0</div>
               <div class="c-sub">0.00</div>
             </div>
-            <div class="dash-cell arrow">
+            <div class="dash-cell">
               <div class="c-label">服务销售额/占比</div>
               <div class="c-value">0</div>
               <div class="c-sub">0.00</div>
             </div>
-            <div class="dash-cell arrow">
+            <div class="dash-cell">
               <div class="c-label">选件销售额/占比</div>
               <div class="c-value">0</div>
               <div class="c-sub">0.00</div>
             </div>
-            <div class="dash-cell empty">
-              <div class="c-value">-</div>
-            </div>
+            <div class="dash-cell empty"></div>
             <div class="dash-cell">
               <div class="c-label">主品连带率</div>
               <div class="c-value">0.00</div>
@@ -480,9 +498,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <div class="c-label">退单率</div>
               <div class="c-value">0.00</div>
             </div>
-            <div class="dash-cell empty">
-              <div class="c-value">-</div>
-            </div>
+            <div class="dash-cell empty"></div>
           </div>
         </div>
 
@@ -627,6 +643,27 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 
     <!-- Toast -->
     <div class="toast" v-if="toastMsg">{{toastMsg}}</div>
+
+    <!-- Scanner -->
+    <div class="scanner-overlay" v-if="showScanner">
+      <div class="scanner-top">
+        <div class="scanner-close" @click="cancelScan">&#10005;</div>
+        <div class="scanner-title">{{scannerTitle}}</div>
+        <div class="scanner-flash" @click="toast('闪光灯仅演示')">&#9889;</div>
+      </div>
+      <div class="scanner-viewfinder">
+        <div class="scanner-corner tl"></div>
+        <div class="scanner-corner tr"></div>
+        <div class="scanner-corner bl"></div>
+        <div class="scanner-corner br"></div>
+        <div class="scanner-line" v-if="!scanSuccess"></div>
+      </div>
+      <div class="scanner-hint" v-if="!scanSuccess">将{{scannerTarget}}对准框内，即可自动扫描</div>
+      <div class="scanner-success" v-if="scanSuccess">
+        <span class="check">&#10003;</span>
+        <span>扫码成功</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1000,6 +1037,11 @@ createApp({
     const dialog = reactive({ show:false, type:'success', title:'', msg:'' });
     const manualInputRef = ref(null);
     const manualDialog = reactive({ show:false, field:'', title:'', subtitle:'', value:'' });
+    const showScanner = ref(false);
+    const scanSuccess = ref(false);
+    const scannerTarget = ref('');
+    const scannerTitle = ref('');
+    let scanTimer = null;
 
     const currentStep = computed(() => {
       if (snStatus.value === 'pass' && couponStatus.value === 'pass') return 3;
@@ -1046,7 +1088,10 @@ createApp({
       snFeedback.value = { type:'info', msg:'正在校验SN/IMEI，检查锁定/首销/未机码/未PO状态...' };
       setTimeout(() => {
         snValidating.value = false;
-        if (snInput.value.toLowerCase().includes('fail')) {
+        if (snInput.value.toLowerCase() === 'testerror') {
+          snStatus.value = 'fail';
+          snFeedback.value = { type:'error', msg:'这台设备不符合锁定/首销/机码上报/PO有效激活的合规性校验，请您更换设备后重新尝试' };
+        } else if (snInput.value.toLowerCase().includes('fail')) {
           snStatus.value = 'fail';
           snFeedback.value = { type:'error', msg:'校验失败：该SN/IMEI未首销，无法进行核销。请确认SN/IMEI状态后重试。' };
         } else {
@@ -1057,9 +1102,19 @@ createApp({
     }
 
     function mockScanSn() {
-      snInput.value = 'SN/IMEI' + Math.floor(Math.random()*900000+100000);
-      toast('扫码成功');
-      validateSn();
+      document.querySelector('.phone-screen').scrollTop = 0;
+      scannerTarget.value = 'SN/IMEI条码';
+      scannerTitle.value = '扫描SN/IMEI';
+      scanSuccess.value = false;
+      showScanner.value = true;
+      scanTimer = setTimeout(() => {
+        scanSuccess.value = true;
+        snInput.value = 'SN/IMEI' + Math.floor(Math.random()*900000+100000);
+        setTimeout(() => {
+          showScanner.value = false;
+          validateSn();
+        }, 800);
+      }, 2500);
     }
 
     function validateCoupon() {
@@ -1079,9 +1134,25 @@ createApp({
     }
 
     function mockScanCoupon() {
-      couponInput.value = 'MC' + new Date().getFullYear() + String(Math.floor(Math.random()*900+100)).padStart(3,'0') + String(Math.floor(Math.random()*900+100)).padStart(3,'0');
-      toast('扫码成功');
-      validateCoupon();
+      document.querySelector('.phone-screen').scrollTop = 0;
+      scannerTarget.value = '券码条码';
+      scannerTitle.value = '扫描券码';
+      scanSuccess.value = false;
+      showScanner.value = true;
+      scanTimer = setTimeout(() => {
+        scanSuccess.value = true;
+        couponInput.value = 'MC' + new Date().getFullYear() + String(Math.floor(Math.random()*900+100)).padStart(3,'0') + String(Math.floor(Math.random()*900+100)).padStart(3,'0');
+        setTimeout(() => {
+          showScanner.value = false;
+          validateCoupon();
+        }, 800);
+      }, 2500);
+    }
+
+    function cancelScan() {
+      clearTimeout(scanTimer);
+      showScanner.value = false;
+      scanSuccess.value = false;
     }
 
     function submitRedeem() {
@@ -1104,6 +1175,7 @@ createApp({
       couponInput, couponStatus, couponValidating, couponFeedback, couponStatusText, validateCoupon, mockScanCoupon,
       currentStep, stepStatus, canSubmit, submitting, submitRedeem, dialog,
       manualInputRef, manualDialog, openManualDialog, closeManualDialog, confirmManualDialog,
+      showScanner, scanSuccess, scannerTarget, scannerTitle, cancelScan,
     };
   }
 }).mount('#app');

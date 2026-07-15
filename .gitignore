@@ -1,0 +1,15 @@
+# Deployment temp directory
+_deploy_temp/
+
+# Local screenshots (generated during testing)
+*.png
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo

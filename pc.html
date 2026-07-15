@@ -107,6 +107,7 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
 .tag-green { background:rgba(82,196,26,.1); color:var(--success); }
 .tag-orange { background:rgba(250,173,20,.1); color:var(--warning); }
 .tag-gray { background:var(--box); color:var(--sub); }
+.tag-red { background:rgba(255,77,79,.1); color:#FF4D4F; }
 .amount { color:var(--danger); font-weight:600; }
 
 /* Pagination */
@@ -294,6 +295,25 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                   <th>商品分类</th>
                   <th>商品名称</th>
                   <th>核销店员</th>
+                  <th>是否有效销量且PO合规</th>
+                  <th>是否锁定</th>
+                  <th>上报机码标识</th>
+                  <th>上报机码状态</th>
+                  <th>所属通路</th>
+                  <th>产品组</th>
+                  <th>PO是否合规</th>
+                  <th>PO是否合规（地址校验）</th>
+                  <th>战区匹配</th>
+                  <th>省份匹配</th>
+                  <th>城市匹配</th>
+                  <th class="sortable" @click="sortBy('soFiscalYear')">so 财年 {{sortIcon('soFiscalYear')}}</th>
+                  <th>so 财季</th>
+                  <th>so 自然月</th>
+                  <th>so 日期</th>
+                  <th>so 战区</th>
+                  <th>so 省份</th>
+                  <th>so 城市</th>
+                  <th>so 区县</th>
                 </tr>
               </thead>
               <tbody>
@@ -303,17 +323,36 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                   <td>{{row.kName}}</td>
                   <td>{{row.dCode}}</td>
                   <td>{{row.dName}}</td>
-                  <td><span class="tag" :class="row.storeType==='城市专卖店'?'tag-blue':'tag-gray'">{{row.storeType}}</span></td>
+                  <td>{{row.storeType}}</td>
                   <td>{{row.couponId}}</td>
                   <td>{{row.couponCode}}</td>
                   <td>{{row.couponName}}</td>
                   <td>{{row.time}}</td>
-                  <td class="amount">&#165;{{row.amount}}</td>
+                  <td>&#165;{{row.amount}}</td>
                   <td>{{row.sn}}</td>
                   <td>{{row.pn}}</td>
-                  <td><span class="tag tag-orange">{{row.category}}</span></td>
+                  <td>{{row.category}}</td>
                   <td>{{row.productName}}</td>
                   <td>{{row.staff}}</td>
+                  <td><span v-if="row.isValidAndPO==='否'" class="tag tag-red">否</span><span v-else>{{row.isValidAndPO}}</span></td>
+                  <td><span v-if="row.isLocked==='否'" class="tag tag-red">否</span><span v-else>{{row.isLocked}}</span></td>
+                  <td>{{row.reportFlag}}</td>
+                  <td>{{row.reportStatus}}</td>
+                  <td>{{row.channel}}</td>
+                  <td>{{row.productGroup}}</td>
+                  <td><span v-if="row.poCompliant==='否'" class="tag tag-red">否</span><span v-else>{{row.poCompliant}}</span></td>
+                  <td><span v-if="row.poAddrCompliant==='否'" class="tag tag-red">否</span><span v-else>{{row.poAddrCompliant}}</span></td>
+                  <td><span v-if="row.zoneMatch==='否'" class="tag tag-red">否</span><span v-else>{{row.zoneMatch}}</span></td>
+                  <td><span v-if="row.provMatch==='否'" class="tag tag-red">否</span><span v-else>{{row.provMatch}}</span></td>
+                  <td><span v-if="row.cityMatch==='否'" class="tag tag-red">否</span><span v-else>{{row.cityMatch}}</span></td>
+                  <td>{{row.soFiscalYear}}</td>
+                  <td>{{row.soFiscalQuarter}}</td>
+                  <td>{{row.soMonth}}</td>
+                  <td>{{row.soDate}}</td>
+                  <td>{{row.soZone}}</td>
+                  <td>{{row.soProvince}}</td>
+                  <td>{{row.soCity}}</td>
+                  <td>{{row.soDistrict}}</td>
                 </tr>
               </tbody>
             </table>
@@ -391,7 +430,7 @@ createApp({
 
     // Mock data
     const allData = ref([]);
-    const mockNames = ['会员专享满减券','会员生日特惠券','会员新人立减券','会员折扣券8折','会员满赠券','会员积分兑换券'];
+    const mockNames = ['套装券','教育特惠券','以旧换新券'];
     const mockProducts = [
       ['拯救者','拯救者R9000P 2024'],['拯救者','拯救者Y9000X 2024'],['拯救者','拯救者刃7000K'],
       ['ThinkPad','ThinkPad X1 Carbon'],['ThinkPad','ThinkPad T14s'],['ThinkPad','ThinkPad E14'],
@@ -414,10 +453,18 @@ createApp({
       ['华北战区','K0206951','邢台五零科技有限公司','D00000001','联想体验店（邢台万达店）','城市专卖店'],
     ];
     const staffNames = ['张三','李四','王五','赵六','刘七','陈八'];
+    const mockProductGroups = [85,75,96,61,11,88,42,79];
+    const mockChannels = ['999','11','88','66','22'];
+    const mockSoZones = ['华北','华东','华南','华中','西南','西北','东北'];
+    const mockSoProvinces = ['北京','上海','广东','浙江','江苏','四川','湖北','辽宁','陕西','重庆'];
+    const mockSoCities = ['北京','上海','广州','杭州','南京','成都','武汉','沈阳','西安','重庆'];
+    const mockSoDistricts = ['朝阳区','浦东新区','天河区','西湖区','玄武区','武侯区','武昌区','和平区','雁塔区','渝中区'];
+    const yn = () => Math.random() > 0.65 ? '是' : '否';
     for (let i = 0; i < 47; i++) {
       const store = mockStores[i % mockStores.length];
       const prod = mockProducts[i % mockProducts.length];
       const day = String(Math.floor(i/6)+1).padStart(2,'0');
+      const soZoneIdx = i % mockSoZones.length;
       allData.value.push({
         id: i+1,
         warZone: store[0], kCode: store[1], kName: store[2], dCode: store[3], dName: store[4], storeType: store[5],
@@ -430,6 +477,25 @@ createApp({
         pn: 'PN2026' + String(50001+i).padStart(5,'0'),
         category: prod[0], productName: prod[1],
         staff: staffNames[i%staffNames.length],
+        isValidAndPO: yn(),
+        isLocked: Math.random() > 0.85 ? '是' : '否',
+        reportFlag: ['已上报','未上报','已上报','已上报','待上报'][i%5],
+        reportStatus: ['已上报','未上报','已上报','已上报','待上报'][i%5]==='已上报'?'已上报':'未上报',
+        channel: mockChannels[i % mockChannels.length],
+        productGroup: mockProductGroups[i % mockProductGroups.length],
+        poCompliant: yn(),
+        poAddrCompliant: yn(),
+        zoneMatch: yn(),
+        provMatch: yn(),
+        cityMatch: yn(),
+        soFiscalYear: 'FY2026',
+        soFiscalQuarter: ['Q1','Q2','Q3','Q4'][Math.floor(i/12)%4],
+        soMonth: String(Math.floor(i%12)+1).padStart(2,'0'),
+        soDate: `2026-07-${day}`,
+        soZone: mockSoZones[soZoneIdx],
+        soProvince: mockSoProvinces[soZoneIdx],
+        soCity: mockSoCities[soZoneIdx],
+        soDistrict: mockSoDistricts[soZoneIdx],
       });
     }
 
