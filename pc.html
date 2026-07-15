@@ -107,6 +107,7 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
 .tag-green { background:rgba(82,196,26,.1); color:var(--success); }
 .tag-orange { background:rgba(250,173,20,.1); color:var(--warning); }
 .tag-gray { background:var(--box); color:var(--sub); }
+.tag-red { background:rgba(255,77,79,.1); color:#FF4D4F; }
 .amount { color:var(--danger); font-weight:600; }
 
 /* Pagination */
@@ -322,7 +323,7 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                   <td>{{row.kName}}</td>
                   <td>{{row.dCode}}</td>
                   <td>{{row.dName}}</td>
-                  <td><span class="tag" :class="row.storeType==='城市专卖店'?'tag-blue':'tag-gray'">{{row.storeType}}</span></td>
+                  <td>{{row.storeType}}</td>
                   <td>{{row.couponId}}</td>
                   <td>{{row.couponCode}}</td>
                   <td>{{row.couponName}}</td>
@@ -330,20 +331,20 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                   <td class="amount">&#165;{{row.amount}}</td>
                   <td>{{row.sn}}</td>
                   <td>{{row.pn}}</td>
-                  <td><span class="tag tag-orange">{{row.category}}</span></td>
+                  <td>{{row.category}}</td>
                   <td>{{row.productName}}</td>
                   <td>{{row.staff}}</td>
-                  <td><span class="tag" :class="row.isValidAndPO==='是'?'tag-green':'tag-gray'">{{row.isValidAndPO}}</span></td>
-                  <td><span class="tag" :class="row.isLocked==='是'?'tag-orange':'tag-gray'">{{row.isLocked}}</span></td>
+                  <td><span v-if="row.isValidAndPO==='否'" class="tag tag-red">否</span><span v-else>{{row.isValidAndPO}}</span></td>
+                  <td><span v-if="row.isLocked==='否'" class="tag tag-red">否</span><span v-else>{{row.isLocked}}</span></td>
                   <td>{{row.reportFlag}}</td>
-                  <td><span class="tag" :class="row.reportStatus==='已上报'?'tag-green':'tag-gray'">{{row.reportStatus}}</span></td>
+                  <td>{{row.reportStatus}}</td>
                   <td>{{row.channel}}</td>
                   <td>{{row.productGroup}}</td>
-                  <td><span class="tag" :class="row.poCompliant==='是'?'tag-green':'tag-gray'">{{row.poCompliant}}</span></td>
-                  <td><span class="tag" :class="row.poAddrCompliant==='是'?'tag-green':'tag-gray'">{{row.poAddrCompliant}}</span></td>
-                  <td><span class="tag" :class="row.zoneMatch==='是'?'tag-green':'tag-gray'">{{row.zoneMatch}}</span></td>
-                  <td><span class="tag" :class="row.provMatch==='是'?'tag-green':'tag-gray'">{{row.provMatch}}</span></td>
-                  <td><span class="tag" :class="row.cityMatch==='是'?'tag-green':'tag-gray'">{{row.cityMatch}}</span></td>
+                  <td><span v-if="row.poCompliant==='否'" class="tag tag-red">否</span><span v-else>{{row.poCompliant}}</span></td>
+                  <td><span v-if="row.poAddrCompliant==='否'" class="tag tag-red">否</span><span v-else>{{row.poAddrCompliant}}</span></td>
+                  <td><span v-if="row.zoneMatch==='否'" class="tag tag-red">否</span><span v-else>{{row.zoneMatch}}</span></td>
+                  <td><span v-if="row.provMatch==='否'" class="tag tag-red">否</span><span v-else>{{row.provMatch}}</span></td>
+                  <td><span v-if="row.cityMatch==='否'" class="tag tag-red">否</span><span v-else>{{row.cityMatch}}</span></td>
                   <td>{{row.soFiscalYear}}</td>
                   <td>{{row.soFiscalQuarter}}</td>
                   <td>{{row.soMonth}}</td>
