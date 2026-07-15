@@ -1088,7 +1088,10 @@ createApp({
       snFeedback.value = { type:'info', msg:'正在校验SN/IMEI，检查锁定/首销/未机码/未PO状态...' };
       setTimeout(() => {
         snValidating.value = false;
-        if (snInput.value.toLowerCase().includes('fail')) {
+        if (snInput.value.toLowerCase() === 'testerror') {
+          snStatus.value = 'fail';
+          snFeedback.value = { type:'error', msg:'这台设备不符合锁定/首销/机码上报/PO有效激活的合规性校验，请您更换设备后重新尝试' };
+        } else if (snInput.value.toLowerCase().includes('fail')) {
           snStatus.value = 'fail';
           snFeedback.value = { type:'error', msg:'校验失败：该SN/IMEI未首销，无法进行核销。请确认SN/IMEI状态后重试。' };
         } else {
