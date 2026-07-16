@@ -1075,6 +1075,22 @@ const RecordsView = defineComponent({
             <div class="close" @click="showFilterPanel=false">&#10005;</div>
           </div>
           <div class="filter-form">
+            <div class="form-item full">
+              <label>核销状态</label>
+              <div class="btn-group">
+                <button :class="{active:filterForm.redeemStatus===''}" @click="filterForm.redeemStatus=''">全部</button>
+                <button :class="{active:filterForm.redeemStatus==='核销成功'}" @click="filterForm.redeemStatus='核销成功'">核销成功</button>
+                <button :class="{active:filterForm.redeemStatus==='核销失败'}" @click="filterForm.redeemStatus='核销失败'">核销失败</button>
+              </div>
+            </div>
+            <div class="form-item full">
+              <label>上报机码状态</label>
+              <div class="btn-group">
+                <button :class="{active:filterForm.machineCodeStatus===''}" @click="filterForm.machineCodeStatus=''">全部</button>
+                <button :class="{active:filterForm.machineCodeStatus==='上报成功'}" @click="filterForm.machineCodeStatus='上报成功'">上报成功</button>
+                <button :class="{active:filterForm.machineCodeStatus==='上报失败'}" @click="filterForm.machineCodeStatus='上报失败'">上报失败</button>
+              </div>
+            </div>
             <div class="form-item half">
               <label>核销券码</label>
               <div class="clear-input-wrap">
@@ -1131,22 +1147,6 @@ const RecordsView = defineComponent({
               <div class="clear-input-wrap">
                 <input v-model="filterForm.product" placeholder="请输入商品名称" />
                 <span class="clear" v-if="filterForm.product" @click="clearField('product')">&#10005;</span>
-              </div>
-            </div>
-            <div class="form-item full">
-              <label>核销状态</label>
-              <div class="btn-group">
-                <button :class="{active:filterForm.redeemStatus===''}" @click="filterForm.redeemStatus=''">全部</button>
-                <button :class="{active:filterForm.redeemStatus==='核销成功'}" @click="filterForm.redeemStatus='核销成功'">核销成功</button>
-                <button :class="{active:filterForm.redeemStatus==='核销失败'}" @click="filterForm.redeemStatus='核销失败'">核销失败</button>
-              </div>
-            </div>
-            <div class="form-item full">
-              <label>上报机码状态</label>
-              <div class="btn-group">
-                <button :class="{active:filterForm.machineCodeStatus===''}" @click="filterForm.machineCodeStatus=''">全部</button>
-                <button :class="{active:filterForm.machineCodeStatus==='上报成功'}" @click="filterForm.machineCodeStatus='上报成功'">上报成功</button>
-                <button :class="{active:filterForm.machineCodeStatus==='上报失败'}" @click="filterForm.machineCodeStatus='上报失败'">上报失败</button>
               </div>
             </div>
           </div>
