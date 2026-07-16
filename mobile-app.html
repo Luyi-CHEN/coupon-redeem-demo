@@ -280,6 +280,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .record-card .rc-item { font-size:12px; line-height:1.4; display:flex; align-items:flex-start; }
 .record-card .rc-item .lbl { color:var(--sub); flex-shrink:0; width:84px; }
 .record-card .rc-item .val { color:var(--text); flex:1; margin-left:4px; word-break:break-all; }
+.record-card .rc-item.machine-code-status { align-items:center; }
+.record-card .rc-item.machine-code-status .val { flex:0 0 auto; }
+.record-card .rc-item .val.fail { color:var(--danger); }
+.record-card .retry-report-btn { margin-left:8px; padding:3px 8px; border:1px solid var(--primary); border-radius:4px; background:#fff; color:var(--primary); font-size:11px; cursor:pointer; }
+.record-card .retry-report-btn:active { opacity:0.8; }
 .export-btn { position:absolute; bottom:0; left:0; right:0; height:56px; background:var(--white); border-top:1px solid var(--divider); box-shadow:var(--shadow-bottom); display:flex; align-items:center; justify-content:center; z-index:100; }
 .export-btn button { width:calc(100% - 32px); height:40px; border:1.5px solid var(--primary); background:rgba(37,99,235,.05); color:var(--primary); border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
 
@@ -751,7 +756,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 
         <!-- Records Tab -->
         <div v-else>
-          <records-view></records-view>
+          <records-view :on-toast="toast"></records-view>
         </div>
       </div>
     </div>
@@ -827,10 +832,20 @@ const { createApp, ref, computed, reactive, defineComponent, nextTick } = Vue;
 
 // Records component
 const RecordsView = defineComponent({
-  setup() {
+  props: { onToast: Function },
+  setup(props) {
     const searchKey = ref('');
     const showFilterPanel = ref(false);
     const showCascader = ref(false);
+
+    function retryReport(r) {
+      if (r.machineCodeStatus === '上报中...') return;
+      r.machineCodeStatus = '上报中...';
+      setTimeout(() => {
+        r.machineCodeStatus = '上报成功';
+        if (props.onToast) props.onToast('机码重新上报成功');
+      }, 1500);
+    }
 
     const filterForm = reactive({
       couponCode: '',
@@ -866,12 +881,12 @@ const RecordsView = defineComponent({
     const cascaderColumns = ref([categoryOptions]);
 
     const records = ref([
-      { id:'R001', couponCode:'2206691443454343', couponName:'教育优惠券-联想moto指定手机', time:'2026-07-13 10:23:15', amount:200, sn:'SN/IMEI123456789', pn:'PN202605001', categoryPath:['PC','笔记本','拯救者'], product:'拯救者R9000P 2024', staff:'张三' },
-      { id:'R002', couponCode:'2206691443454344', couponName:'教育优惠券-联想XXX指定笔记本', time:'2026-07-13 09:15:42', amount:500, sn:'SN/IMEI987654321', pn:'PN202604008', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad X1 Carbon', staff:'李四' },
-      { id:'R003', couponCode:'2206691443454343', couponName:'套装券', time:'2026-07-12 16:48:30', amount:100, sn:'SN/IMEI567890123', pn:'PN202603015', categoryPath:['PC','笔记本','小新'], product:'小新Pro 16 2024', staff:'张三' },
-      { id:'R004', couponCode:'2206691443454344', couponName:'以旧换新券', time:'2026-07-12 14:20:08', amount:200, sn:'SN/IMEI345678901', pn:'PN202605002', categoryPath:['PC','笔记本','拯救者'], product:'拯救者Y9000X', staff:'王五' },
-      { id:'R005', couponCode:'2206691443454343', couponName:'教育优惠券-联想moto指定手机', time:'2026-07-11 11:05:55', amount:500, sn:'SN/IMEI234567890', pn:'PN202604009', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad T14s', staff:'李四' },
-      { id:'R006', couponCode:'2206691443454344', couponName:'套装券', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', categoryPath:['PC','笔记本','YOGA'], product:'YOGA Air 14', staff:'张三' },
+      { id:'R001', couponCode:'2206691443454343', couponName:'教育优惠券-联想moto指定手机', time:'2026-07-13 10:23:15', amount:200, sn:'SN/IMEI123456789', pn:'PN202605001', categoryPath:['PC','笔记本','拯救者'], product:'拯救者R9000P 2024', staff:'张三', machineCodeStatus:'上报失败' },
+      { id:'R002', couponCode:'2206691443454344', couponName:'教育优惠券-联想XXX指定笔记本', time:'2026-07-13 09:15:42', amount:500, sn:'SN/IMEI987654321', pn:'PN202604008', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad X1 Carbon', staff:'李四', machineCodeStatus:'上报失败' },
+      { id:'R003', couponCode:'2206691443454343', couponName:'套装券', time:'2026-07-12 16:48:30', amount:100, sn:'SN/IMEI567890123', pn:'PN202603015', categoryPath:['PC','笔记本','小新'], product:'小新Pro 16 2024', staff:'张三', machineCodeStatus:'上报失败' },
+      { id:'R004', couponCode:'2206691443454344', couponName:'以旧换新券', time:'2026-07-12 14:20:08', amount:200, sn:'SN/IMEI345678901', pn:'PN202605002', categoryPath:['PC','笔记本','拯救者'], product:'拯救者Y9000X', staff:'王五', machineCodeStatus:'上报失败' },
+      { id:'R005', couponCode:'2206691443454343', couponName:'教育优惠券-联想moto指定手机', time:'2026-07-11 11:05:55', amount:500, sn:'SN/IMEI234567890', pn:'PN202604009', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad T14s', staff:'李四', machineCodeStatus:'上报失败' },
+      { id:'R006', couponCode:'2206691443454344', couponName:'套装券', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', categoryPath:['PC','笔记本','YOGA'], product:'YOGA Air 14', staff:'张三', machineCodeStatus:'上报失败' },
     ]);
 
     const filteredRecords = computed(() => {
@@ -974,9 +989,9 @@ const RecordsView = defineComponent({
 
     function exportRecords() {
       const list = filteredRecords.value;
-      const headers = ['核销券码','券名称','核销时间','核销金额','核销SN/IMEI','核销PN','商品分类','商品名称','核销店员'];
+      const headers = ['核销券码','券名称','核销时间','核销金额','核销SN/IMEI','核销PN','商品分类','商品名称','核销店员','上报机码状态'];
       const rows = list.map(r => [
-        r.couponCode, r.couponName, r.time, r.amount, r.sn, r.pn, r.categoryPath.join('/'), r.product, r.staff
+        r.couponCode, r.couponName, r.time, r.amount, r.sn, r.pn, r.categoryPath.join('/'), r.product, r.staff, r.machineCodeStatus
       ]);
       const csvContent = '\ufeff' + [headers, ...rows].map(row => row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',')).join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -990,7 +1005,7 @@ const RecordsView = defineComponent({
       URL.revokeObjectURL(url);
     }
 
-    return { searchKey, filterForm, filteredRecords, showFilterPanel, showCascader, filterCount, resetFilters, clearField, openCascader, onCascaderSelect, confirmCascader, categoryText, cascaderColumns, categoryOptions, exportRecords };
+    return { searchKey, filterForm, filteredRecords, showFilterPanel, showCascader, filterCount, resetFilters, clearField, openCascader, onCascaderSelect, confirmCascader, categoryText, cascaderColumns, categoryOptions, exportRecords, retryReport };
   },
   template: `
     <div>
@@ -1018,6 +1033,7 @@ const RecordsView = defineComponent({
             <div class="rc-item"><span class="lbl">核销PN:</span><span class="val">{{r.pn}}</span></div>
             <div class="rc-item"><span class="lbl">商品分类:</span><span class="val">{{r.categoryPath.join(' / ')}}</span></div>
             <div class="rc-item"><span class="lbl">商品名称:</span><span class="val">{{r.product}}</span></div>
+            <div class="rc-item machine-code-status"><span class="lbl">上报机码状态:</span><span class="val fail">{{r.machineCodeStatus}}</span><button class="retry-report-btn" @click="retryReport(r)">重新上报</button></div>
           </div>
         </div>
         <div v-if="filteredRecords.length===0" style="text-align:center;padding:40px 0;color:var(--sub);font-size:14px;">暂无核销记录</div>
