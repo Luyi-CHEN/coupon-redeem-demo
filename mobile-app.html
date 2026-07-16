@@ -833,7 +833,6 @@ const RecordsView = defineComponent({
     const showCascader = ref(false);
 
     const filterForm = reactive({
-      id: '',
       couponCode: '',
       couponName: '',
       timeStart: '',
@@ -867,12 +866,12 @@ const RecordsView = defineComponent({
     const cascaderColumns = ref([categoryOptions]);
 
     const records = ref([
-      { id:'R001', couponCode:'MC20260701001', couponName:'会员专享满减券', time:'2026-07-13 10:23:15', amount:200, sn:'SN/IMEI123456789', pn:'PN202605001', categoryPath:['PC','笔记本','拯救者'], product:'拯救者R9000P 2024', staff:'张三' },
-      { id:'R002', couponCode:'MC20260701002', couponName:'会员生日特惠券', time:'2026-07-13 09:15:42', amount:500, sn:'SN/IMEI987654321', pn:'PN202604008', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad X1 Carbon', staff:'李四' },
-      { id:'R003', couponCode:'MC20260701003', couponName:'会员新人立减券', time:'2026-07-12 16:48:30', amount:100, sn:'SN/IMEI567890123', pn:'PN202603015', categoryPath:['PC','笔记本','小新'], product:'小新Pro 16 2024', staff:'张三' },
-      { id:'R004', couponCode:'MC20260701004', couponName:'会员专享满减券', time:'2026-07-12 14:20:08', amount:200, sn:'SN/IMEI345678901', pn:'PN202605002', categoryPath:['PC','笔记本','拯救者'], product:'拯救者Y9000X', staff:'王五' },
-      { id:'R005', couponCode:'MC20260701005', couponName:'会员生日特惠券', time:'2026-07-11 11:05:55', amount:500, sn:'SN/IMEI234567890', pn:'PN202604009', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad T14s', staff:'李四' },
-      { id:'R006', couponCode:'MC20260701006', couponName:'会员折扣券8折', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', categoryPath:['PC','笔记本','YOGA'], product:'YOGA Air 14', staff:'张三' },
+      { id:'R001', couponCode:'2206691443454343', couponName:'教育优惠券-联想moto指定手机', time:'2026-07-13 10:23:15', amount:200, sn:'SN/IMEI123456789', pn:'PN202605001', categoryPath:['PC','笔记本','拯救者'], product:'拯救者R9000P 2024', staff:'张三' },
+      { id:'R002', couponCode:'2206691443454344', couponName:'教育优惠券-联想XXX指定笔记本', time:'2026-07-13 09:15:42', amount:500, sn:'SN/IMEI987654321', pn:'PN202604008', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad X1 Carbon', staff:'李四' },
+      { id:'R003', couponCode:'2206691443454343', couponName:'套装券', time:'2026-07-12 16:48:30', amount:100, sn:'SN/IMEI567890123', pn:'PN202603015', categoryPath:['PC','笔记本','小新'], product:'小新Pro 16 2024', staff:'张三' },
+      { id:'R004', couponCode:'2206691443454344', couponName:'以旧换新券', time:'2026-07-12 14:20:08', amount:200, sn:'SN/IMEI345678901', pn:'PN202605002', categoryPath:['PC','笔记本','拯救者'], product:'拯救者Y9000X', staff:'王五' },
+      { id:'R005', couponCode:'2206691443454343', couponName:'教育优惠券-联想moto指定手机', time:'2026-07-11 11:05:55', amount:500, sn:'SN/IMEI234567890', pn:'PN202604009', categoryPath:['PC','笔记本','ThinkPad'], product:'ThinkPad T14s', staff:'李四' },
+      { id:'R006', couponCode:'2206691443454344', couponName:'套装券', time:'2026-07-11 09:30:12', amount:350, sn:'SN/IMEI890123456', pn:'PN202603020', categoryPath:['PC','笔记本','YOGA'], product:'YOGA Air 14', staff:'张三' },
     ]);
 
     const filteredRecords = computed(() => {
@@ -882,7 +881,6 @@ const RecordsView = defineComponent({
           const fields = [r.couponName, r.product];
           if (!fields.some(f => f.toLowerCase().includes(k))) return false;
         }
-        if (filterForm.id && !r.id.toLowerCase().includes(filterForm.id.toLowerCase())) return false;
         if (filterForm.couponCode && !r.couponCode.toLowerCase().includes(filterForm.couponCode.toLowerCase())) return false;
         if (filterForm.couponName && !r.couponName.includes(filterForm.couponName)) return false;
         if (filterForm.timeStart && r.time < filterForm.timeStart + ' 00:00:00') return false;
@@ -903,7 +901,6 @@ const RecordsView = defineComponent({
 
     const filterCount = computed(() => {
       let count = 0;
-      if (filterForm.id) count++;
       if (filterForm.couponCode) count++;
       if (filterForm.couponName) count++;
       if (filterForm.timeStart || filterForm.timeEnd) count++;
@@ -916,7 +913,6 @@ const RecordsView = defineComponent({
     });
 
     function resetFilters() {
-      filterForm.id = '';
       filterForm.couponCode = '';
       filterForm.couponName = '';
       filterForm.timeStart = '';
@@ -978,9 +974,9 @@ const RecordsView = defineComponent({
 
     function exportRecords() {
       const list = filteredRecords.value;
-      const headers = ['核销券id','核销券码','券名称','核销时间','核销金额','核销SN/IMEI','核销PN','商品分类','商品名称','核销店员'];
+      const headers = ['核销券码','券名称','核销时间','核销金额','核销SN/IMEI','核销PN','商品分类','商品名称','核销店员'];
       const rows = list.map(r => [
-        r.id, r.couponCode, r.couponName, r.time, r.amount, r.sn, r.pn, r.categoryPath.join('/'), r.product, r.staff
+        r.couponCode, r.couponName, r.time, r.amount, r.sn, r.pn, r.categoryPath.join('/'), r.product, r.staff
       ]);
       const csvContent = '\ufeff' + [headers, ...rows].map(row => row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',')).join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1001,7 +997,7 @@ const RecordsView = defineComponent({
       <div class="records-search">
         <div class="search-wrap">
           <span class="search-icon">&#128269;</span>
-          <input class="search-input" v-model="searchKey" placeholder="搜索优惠券名称/商品名称" />
+          <input class="search-input" v-model="searchKey" placeholder="搜索核销券名称/商品名称" />
         </div>
         <div class="filter-chip filter-btn" :class="{active:showFilterPanel,'has-filter':filterCount>0}" @click="showFilterPanel=true">
           &#9881; 筛选
@@ -1015,7 +1011,6 @@ const RecordsView = defineComponent({
             <div class="rc-amount">&#165;{{r.amount}}</div>
           </div>
           <div class="rc-grid">
-            <div class="rc-item"><span class="lbl">核销券id:</span><span class="val">{{r.id}}</span></div>
             <div class="rc-item"><span class="lbl">核销券码:</span><span class="val">{{r.couponCode}}</span></div>
             <div class="rc-item"><span class="lbl">核销时间:</span><span class="val">{{r.time}}</span></div>
             <div class="rc-item"><span class="lbl">核销店员:</span><span class="val">{{r.staff}}</span></div>
@@ -1042,13 +1037,6 @@ const RecordsView = defineComponent({
             <div class="close" @click="showFilterPanel=false">&#10005;</div>
           </div>
           <div class="filter-form">
-            <div class="form-item half">
-              <label>核销券id</label>
-              <div class="clear-input-wrap">
-                <input v-model="filterForm.id" placeholder="请输入" />
-                <span class="clear" v-if="filterForm.id" @click="clearField('id')">&#10005;</span>
-              </div>
-            </div>
             <div class="form-item half">
               <label>核销券码</label>
               <div class="clear-input-wrap">
