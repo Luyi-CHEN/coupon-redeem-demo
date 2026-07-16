@@ -317,6 +317,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .filter-form .form-item .range-row { display:flex; align-items:center; gap:8px; }
 .filter-form .form-item .range-row input { flex:1; }
 .filter-form .form-item .range-row .range-sep { color:var(--sub); font-size:12px; flex-shrink:0; }
+.filter-form .form-item .btn-group { display:flex; flex-wrap:wrap; gap:8px; }
+.filter-form .form-item .btn-group button { flex:1; min-width:70px; height:34px; border:1.5px solid var(--divider); border-radius:6px; background:var(--white); color:var(--text); font-size:13px; cursor:pointer; }
+.filter-form .form-item .btn-group button.active { border-color:var(--primary); background:rgba(37,99,235,.08); color:var(--primary); font-weight:500; }
 .clear-input-wrap { position:relative; }
 .clear-input-wrap input { padding-right:30px; }
 .clear-input-wrap .clear { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:18px; height:18px; border-radius:50%; background:var(--tertiary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; }
@@ -867,7 +870,9 @@ const RecordsView = defineComponent({
       sn: '',
       pn: '',
       category: [],
-      product: ''
+      product: '',
+      redeemStatus: '',
+      machineCodeStatus: ''
     });
 
     const categoryOptions = [
@@ -915,6 +920,8 @@ const RecordsView = defineComponent({
         if (filterForm.sn && !r.sn.toLowerCase().includes(filterForm.sn.toLowerCase())) return false;
         if (filterForm.pn && !r.pn.toLowerCase().includes(filterForm.pn.toLowerCase())) return false;
         if (filterForm.product && !r.product.includes(filterForm.product)) return false;
+        if (filterForm.redeemStatus && r.redeemStatus !== filterForm.redeemStatus) return false;
+        if (filterForm.machineCodeStatus && r.machineCodeStatus !== filterForm.machineCodeStatus) return false;
         if (filterForm.category.length) {
           const catStr = filterForm.category.join('/');
           const rCatStr = r.categoryPath.slice(0, filterForm.category.length).join('/');
@@ -934,6 +941,8 @@ const RecordsView = defineComponent({
       if (filterForm.pn) count++;
       if (filterForm.product) count++;
       if (filterForm.category.length) count++;
+      if (filterForm.redeemStatus) count++;
+      if (filterForm.machineCodeStatus) count++;
       return count;
     });
 
@@ -948,6 +957,8 @@ const RecordsView = defineComponent({
       filterForm.pn = '';
       filterForm.category = [];
       filterForm.product = '';
+      filterForm.redeemStatus = '';
+      filterForm.machineCodeStatus = '';
     }
 
     function clearField(key) {
@@ -1120,6 +1131,22 @@ const RecordsView = defineComponent({
               <div class="clear-input-wrap">
                 <input v-model="filterForm.product" placeholder="请输入商品名称" />
                 <span class="clear" v-if="filterForm.product" @click="clearField('product')">&#10005;</span>
+              </div>
+            </div>
+            <div class="form-item full">
+              <label>核销状态</label>
+              <div class="btn-group">
+                <button :class="{active:filterForm.redeemStatus===''}" @click="filterForm.redeemStatus=''">全部</button>
+                <button :class="{active:filterForm.redeemStatus==='核销成功'}" @click="filterForm.redeemStatus='核销成功'">核销成功</button>
+                <button :class="{active:filterForm.redeemStatus==='核销失败'}" @click="filterForm.redeemStatus='核销失败'">核销失败</button>
+              </div>
+            </div>
+            <div class="form-item full">
+              <label>上报机码状态</label>
+              <div class="btn-group">
+                <button :class="{active:filterForm.machineCodeStatus===''}" @click="filterForm.machineCodeStatus=''">全部</button>
+                <button :class="{active:filterForm.machineCodeStatus==='上报成功'}" @click="filterForm.machineCodeStatus='上报成功'">上报成功</button>
+                <button :class="{active:filterForm.machineCodeStatus==='上报失败'}" @click="filterForm.machineCodeStatus='上报失败'">上报失败</button>
               </div>
             </div>
           </div>
