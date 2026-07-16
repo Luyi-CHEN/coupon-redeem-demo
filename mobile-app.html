@@ -1382,11 +1382,9 @@ createApp({
       scanTimer = setTimeout(() => {
         scanSuccess.value = true;
         snInput.value = 'SN/IMEI' + Math.floor(Math.random()*900000+100000);
-        setTimeout(() => {
-          showScanner.value = false;
-          validateSn();
-        }, 800);
-      }, 2500);
+        showScanner.value = false;
+        validateSn();
+      }, 1500);
     }
 
     function validateCoupon(index) {
@@ -1418,11 +1416,9 @@ createApp({
         if (coupons.value[index]) {
           coupons.value[index].code = 'MC' + new Date().getFullYear() + String(Math.floor(Math.random()*900+100)).padStart(3,'0') + String(Math.floor(Math.random()*900+100)).padStart(3,'0');
         }
-        setTimeout(() => {
-          showScanner.value = false;
-          validateCoupon(index);
-        }, 800);
-      }, 2500);
+        showScanner.value = false;
+        validateCoupon(index);
+      }, 1500);
     }
 
     function addCoupon() {
