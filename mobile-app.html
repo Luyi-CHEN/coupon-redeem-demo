@@ -756,7 +756,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 
         <!-- Records Tab -->
         <div v-else>
-          <records-view :on-toast="toast"></records-view>
+          <records-view @toast="toast($event)"></records-view>
         </div>
       </div>
     </div>
@@ -832,8 +832,8 @@ const { createApp, ref, computed, reactive, defineComponent, nextTick } = Vue;
 
 // Records component
 const RecordsView = defineComponent({
-  props: { onToast: Function },
-  setup(props) {
+  emits: ['toast'],
+  setup(props, { emit }) {
     const searchKey = ref('');
     const showFilterPanel = ref(false);
     const showCascader = ref(false);
@@ -843,7 +843,7 @@ const RecordsView = defineComponent({
       r.machineCodeStatus = '上报中...';
       setTimeout(() => {
         r.machineCodeStatus = '上报成功';
-        if (props.onToast) props.onToast('机码重新上报成功');
+        emit('toast', '机码重新上报成功');
       }, 1500);
     }
 
