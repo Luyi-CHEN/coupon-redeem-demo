@@ -295,10 +295,12 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                   <th class="sortable" @click="sortBy('time')">核销时间 {{sortIcon('time')}}</th>
                   <th class="sortable" @click="sortBy('amount')">核销金额 {{sortIcon('amount')}}</th>
                   <th>核销SN</th>
+                  <th>核销状态</th>
                   <th>核销PN</th>
                   <th>商品分类</th>
                   <th>商品名称</th>
                   <th>核销店员</th>
+                  <th>核销店员手机号</th>
                   <th>是否有效核销且PO合规</th>
                   <th>是否锁定</th>
                   <th>上报机码标识</th>
@@ -339,10 +341,12 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                   <td>{{row.time}}</td>
                   <td>&#165;{{row.amount}}</td>
                   <td>{{row.sn}}</td>
+                  <td><span v-if="row.redeemStatus==='核销失败'" class="tag tag-red">{{row.redeemStatus}}</span><span v-else>{{row.redeemStatus}}</span></td>
                   <td>{{row.pn}}</td>
                   <td>{{row.category}}</td>
                   <td>{{row.productName}}</td>
                   <td>{{row.staff}}</td>
+                  <td>{{row.staffPhone}}</td>
                   <td><span v-if="row.isValidAndPO==='否'" class="tag tag-red">否</span><span v-else>{{row.isValidAndPO}}</span></td>
                   <td><span v-if="row.isLocked==='否'" class="tag tag-red">否</span><span v-else>{{row.isLocked}}</span></td>
                   <td>{{row.reportFlag}}</td>
@@ -490,6 +494,7 @@ createApp({
       ['华北战区','K0206951','邢台五零科技有限公司','D00000001','联想体验店（邢台万达店）','城市专卖店'],
     ];
     const staffNames = ['张三','李四','王五','赵六','刘七','陈八'];
+    const staffPhones = ['13800138001','13800138002','13800138003','13800138004','13800138005','13800138006'];
     const mockProductGroups = [85,75,96,61,11,88,42,79];
     const mockChannels = ['999','11','88','66','22'];
     const mockSoZones = ['华北','华东','华南','华中','西南','西北','东北'];
@@ -519,6 +524,8 @@ createApp({
         pn: 'PN2026' + String(50001+i).padStart(5,'0'),
         category: prod[0], productName: prod[1],
         staff: staffNames[i%staffNames.length],
+        staffPhone: staffPhones[i%staffPhones.length],
+        redeemStatus: i%4 === 0 ? '核销失败' : '核销成功',
         isValidAndPO: yn(),
         isLocked: Math.random() > 0.85 ? '是' : '否',
         reportFlag: ['已上报','未上报','已上报','已上报','待上报'][i%5],
