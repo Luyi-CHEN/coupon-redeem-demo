@@ -174,11 +174,10 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
         <div class="left">
           <span class="hamburger">&#9776;</span>
           <div class="breadcrumb">
-            <span>POS</span>
-            <span class="sep">/</span>
-            <span>数据</span>
-            <span class="sep">/</span>
-            <span class="current">会员券核销历史记录</span>
+            <template v-for="(crumb,i) in breadcrumb" :key="i">
+              <span :class="{current:i===breadcrumb.length-1}">{{crumb}}</span>
+              <span class="sep" v-if="i<breadcrumb.length-1">/</span>
+            </template>
           </div>
         </div>
         <div class="right">
@@ -399,16 +398,21 @@ createApp({
     // Nav menus
     const navMenus = ref([
       { title:'新论坛', icon:'&#128172;', active:false },
-      { title:'POS', icon:'&#128179;', active:false, expanded:true, children:[
-        { title:'营销中心', active:false }, { title:'运维', active:false },
-        { title:'审核', active:false }, { title:'巡店', active:false },
-        { title:'商品', active:false }, { title:'订单', active:false },
-        { title:'素材', active:false }, { title:'库存查看', active:false },
-        { title:'出入库', active:false }, { title:'财务', active:false },
-        { title:'数据', active:true, expanded:true, children:[
-          { title:'销售分析报表', active:false },
-          { title:'库存分析报表', active:false },
-          { title:'会员券核销历史记录', active:true },
+      { title:'POS', icon:'&#128179;', active:false, expanded:true, path:['POS'], children:[
+        { title:'营销中心', active:false, path:['POS','营销中心'] }, { title:'运维', active:false, path:['POS','运维'] },
+        { title:'审核', active:false, path:['POS','审核'] }, { title:'巡店', active:false, path:['POS','巡店'] },
+        { title:'商品', active:false, path:['POS','商品'] }, { title:'订单', active:false, path:['POS','订单'] },
+        { title:'素材', active:false, path:['POS','素材'] }, { title:'库存查看', active:false, path:['POS','库存查看'] },
+        { title:'出入库', active:false, path:['POS','出入库'] }, { title:'财务', active:false, path:['POS','财务'] },
+        { title:'数据', active:true, expanded:true, path:['POS','数据'], children:[
+          { title:'销售分析报表', active:false, path:['POS','数据','销售分析报表'] },
+          { title:'库存分析报表', active:false, path:['POS','数据','库存分析报表'] },
+          { title:'会员券核销历史记录', active:true, path:['POS','数据','会员券核销历史记录'] },
+        ]},
+      ]},
+      { title:'非POS', icon:'&#128194;', active:false, expanded:false, path:['非POS'], children:[
+        { title:'数据', active:false, expanded:false, path:['非POS','数据'], children:[
+          { title:'会员券核销历史记录', active:false, path:['非POS','数据','会员券核销历史记录'] },
         ]},
       ]},
       { title:'营销中心', icon:'&#127881;', active:false },
@@ -418,7 +422,29 @@ createApp({
     ]);
     function toggleNav(nav) {
       if (nav.children) { nav.expanded = !nav.expanded; }
+      else if (nav.path) { setMenuActive(nav.path); }
       else { toast(nav.title + ' - 仅演示'); }
+    }
+    const breadcrumb = ref(['POS','数据','会员券核销历史记录']);
+    function setMenuActive(path) {
+      function reset(items) {
+        items.forEach(item => {
+          item.active = false;
+          if (item.children) reset(item.children);
+        });
+      }
+      reset(navMenus.value);
+      let items = navMenus.value;
+      for (const title of path) {
+        const item = items.find(i => i.title === title);
+        if (!item) break;
+        item.active = true;
+        if (item.children) {
+          item.expanded = true;
+          items = item.children;
+        }
+      }
+      breadcrumb.value = path;
     }
 
     // Filter options
@@ -598,7 +624,7 @@ createApp({
     function exportData() { toast('正在导出数据，请稍候...'); setTimeout(() => toast('导出成功！文件已下载'), 1200); }
 
     return {
-      navMenus, toggleNav, warZones, storeTypes, categories, filters, resetFilters,
+      navMenus, toggleNav, breadcrumb, setMenuActive, warZones, storeTypes, categories, filters, resetFilters,
       filteredData, pagedData, currentPage, pageSize, totalPages, pageNumbers,
       sortKey, sortDir, sortBy, sortIcon, toastMsg, toast, searchData, exportData,
       jumpInput, jumpPage, displayRange,

@@ -753,8 +753,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
             </div>
 
             <div class="coupon-head">
-              <span class="title">券码列表</span>
-              <button class="add-coupon-btn" @click="addCoupon" :disabled="couponLocked">+ 添加券码</button>
+              <span class="title">券码</span>
             </div>
 
             <div class="coupon-locked-tip" v-if="couponLocked">
@@ -765,8 +764,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
             <div class="coupon-list" v-if="coupons.length">
               <div class="coupon-item" v-for="(c,i) in coupons" :key="c.id" :class="c.status">
                 <div class="coupon-item-head">
-                  <span class="label">券码 {{i+1}}</span>
-                  <span class="del" @click="removeCoupon(i)">&#10005;</span>
+                  <span class="label">会员券码</span>
                 </div>
                 <div class="input-row">
                   <input v-model="c.code" placeholder="点击手动录入券码" @click="openManualDialog('coupon',i)" readonly :disabled="c.status==='pass' || couponLocked" />
@@ -1482,11 +1480,10 @@ createApp({
     }
 
     function addCoupon() {
-      coupons.value.push({ id: Date.now() + Math.random(), code:'', status:'pending', validating:false, feedback:{type:'',msg:''} });
+      toast('当前仅支持一次核销一个券码');
     }
     function removeCoupon(index) {
-      if (coupons.value.length <= 1) { toast('至少需要保留1张券码'); return; }
-      coupons.value.splice(index, 1);
+      toast('当前仅支持一次核销一个券码');
     }
 
     function cancelScan() {
