@@ -752,31 +752,19 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
               <div class="status-tag" :class="couponOverallStatus">{{couponOverallStatusText}}</div>
             </div>
 
-            <div class="coupon-head">
-              <span class="title">券码</span>
-            </div>
-
             <div class="coupon-locked-tip" v-if="couponLocked">
               <span class="icon">&#128274;</span>
               <span>请先完成 SN/IMEI 校验，再录入会员券码</span>
             </div>
 
-            <div class="coupon-list" v-if="coupons.length">
-              <div class="coupon-item" v-for="(c,i) in coupons" :key="c.id" :class="c.status">
-                <div class="coupon-item-head">
-                  <span class="label">会员券码</span>
-                </div>
-                <div class="input-row">
-                  <input v-model="c.code" placeholder="点击手动录入券码" @click="openManualDialog('coupon',i)" readonly :disabled="c.status==='pass' || couponLocked" />
-                  <button class="scan-btn" @click="mockScanCoupon(i)" :disabled="c.status==='pass' || couponLocked"><span class="scan-icon"></span><span>扫一扫</span></button>
-                </div>
-                <div class="feedback" :class="c.feedback.type" v-if="c.feedback.msg">
-                  <span v-if="c.feedback.type==='info'" class="loading-spin"></span>
-                  <span>{{c.feedback.msg}}</span>
-                </div>
-              </div>
+            <div class="input-row" v-if="coupons.length">
+              <input v-model="coupons[0].code" placeholder="点击手动录入券码" @click="openManualDialog('coupon',0)" readonly :disabled="coupons[0].status==='pass' || couponLocked" />
+              <button class="scan-btn" @click="mockScanCoupon(0)" :disabled="coupons[0].status==='pass' || couponLocked"><span class="scan-icon"></span><span>扫一扫</span></button>
             </div>
-            <div class="coupon-empty" v-else>暂无券码，点击上方「+添加券码」开始录入</div>
+            <div class="feedback" :class="coupons[0].feedback.type" v-if="coupons.length && coupons[0].feedback.msg">
+              <span v-if="coupons[0].feedback.type==='info'" class="loading-spin"></span>
+              <span>{{coupons[0].feedback.msg}}</span>
+            </div>
           </div>
 
           <div class="notice-bar">
