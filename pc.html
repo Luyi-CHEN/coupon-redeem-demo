@@ -156,7 +156,7 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                 </div>
                 <transition name="expand" v-if="child.children && child.expanded">
                   <div class="nav-sub-2">
-                    <div class="nav-sub-2-item" v-for="sub in child.children" :key="sub.title" :class="{active:sub.active}" @click="toast(sub.title+' - 仅演示')">
+                    <div class="nav-sub-2-item" v-for="sub in child.children" :key="sub.title" :class="{active:sub.active}" @click="sub.path ? setMenuActive(sub.path) : toast(sub.title+' - 仅演示')">
                       {{sub.title}}
                     </div>
                   </div>
