@@ -288,6 +288,11 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                   <th>核销券码ID</th>
                   <th>核销券码</th>
                   <th>券名称</th>
+                  <th>券类型</th>
+                  <th>活动名称</th>
+                  <th>活动ID (TID)</th>
+                  <th>会员手机号</th>
+                  <th>联想会员ID</th>
                   <th class="sortable" @click="sortBy('time')">核销时间 {{sortIcon('time')}}</th>
                   <th class="sortable" @click="sortBy('amount')">核销金额 {{sortIcon('amount')}}</th>
                   <th>核销SN</th>
@@ -327,6 +332,11 @@ tbody tr:hover { background:rgba(37,99,235,.02); }
                   <td>{{row.couponId}}</td>
                   <td>{{row.couponCode}}</td>
                   <td>{{row.couponName}}</td>
+                  <td>{{row.couponType}}</td>
+                  <td>{{row.activityName}}</td>
+                  <td>{{row.activityTid}}</td>
+                  <td>{{row.memberPhone}}</td>
+                  <td>{{row.memberId}}</td>
                   <td>{{row.time}}</td>
                   <td>&#165;{{row.amount}}</td>
                   <td>{{row.sn}}</td>
@@ -430,7 +440,8 @@ createApp({
 
     // Mock data
     const allData = ref([]);
-    const mockNames = ['套装券','教育特惠券','以旧换新券'];
+    const mockNames = ['教育优惠券-联想moto指定手机'];
+    const mockCouponTypes = ['立减券','折扣券'];
     const mockProducts = [
       ['拯救者','拯救者R9000P 2024'],['拯救者','拯救者Y9000X 2024'],['拯救者','拯救者刃7000K'],
       ['ThinkPad','ThinkPad X1 Carbon'],['ThinkPad','ThinkPad T14s'],['ThinkPad','ThinkPad E14'],
@@ -471,6 +482,11 @@ createApp({
         couponId: 'CID' + String(20260700001 + i),
         couponCode: 'MC2026' + String(70001 + i).padStart(5,'0'),
         couponName: mockNames[i % mockNames.length],
+        couponType: mockCouponTypes[i % mockCouponTypes.length],
+        activityName: '正式券消费学生权益',
+        activityTid: '2602',
+        memberPhone: '18511118888',
+        memberId: '10289800988',
         time: `2026-07-${day} ${String(8+(i%10)).padStart(2,'0')}:${String((i*7)%60).padStart(2,'0')}:${String((i*13)%60).padStart(2,'0')}`,
         amount: [100,200,300,500,350,150,800][i%7],
         sn: 'SN' + String(100000000+i*137),
