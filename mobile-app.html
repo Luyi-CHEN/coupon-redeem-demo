@@ -177,6 +177,13 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 
 /* ===== Input Card ===== */
 .input-card { background:var(--white); border-radius:12px; margin:0 12px 12px; padding:16px; box-shadow:var(--shadow-card); }
+.coupon-type-card { background:var(--white); border-radius:12px; margin:0 12px 12px; padding:16px; box-shadow:var(--shadow-card); }
+.coupon-type-card label { display:block; font-size:13px; font-weight:600; color:var(--title); margin-bottom:10px; }
+.coupon-type-card .select-wrap { position:relative; }
+.coupon-type-card select { width:100%; height:44px; border:1.5px solid var(--divider); border-radius:8px; padding:0 36px 0 12px; font-size:15px; color:var(--text); background:var(--white); appearance:none; outline:none; }
+.coupon-type-card select:focus { border-color:var(--primary); }
+.coupon-type-card select:invalid, .coupon-type-card option[value=""] { color:#CCCCCC; }
+.coupon-type-card .select-arrow { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--sub); font-size:12px; pointer-events:none; }
 .input-card .card-head { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
 .input-card .card-head .num { width:22px; height:22px; border-radius:6px; background:var(--primary); color:#fff; font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; }
 .input-card .card-head .title { font-size:15px; font-weight:600; color:var(--title); }
@@ -208,6 +215,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 .coupon-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 .coupon-head .title { font-size:15px; font-weight:600; color:var(--title); }
 .add-coupon-btn { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border:1.5px solid var(--primary); border-radius:6px; color:var(--primary); font-size:12px; font-weight:500; background:#fff; cursor:pointer; }
+.add-coupon-btn:disabled { border-color:var(--divider); color:var(--tertiary); cursor:not-allowed; background:var(--box); }
+.coupon-locked-tip { display:flex; align-items:center; gap:6px; background:rgba(255,193,7,.08); border:1px solid rgba(255,193,7,.3); border-radius:6px; padding:8px 10px; margin-bottom:10px; font-size:12px; color:#d48806; }
+.coupon-locked-tip .icon { font-size:13px; }
 .add-coupon-btn:active { background:rgba(37,99,235,.08); }
 .coupon-list { display:flex; flex-direction:column; gap:10px; }
 .coupon-item { background:var(--white); border:1.5px solid var(--divider); border-radius:10px; padding:12px; position:relative; }
@@ -671,8 +681,23 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 
           <!-- Store Switcher (hidden in APP entry) -->
 
+          <!-- Coupon Type Selector -->
+          <div class="coupon-type-card">
+            <label>券类型</label>
+            <div class="select-wrap">
+              <select v-model="couponType">
+                <option value="" disabled>请选择券类型</option>
+                <option value="立减券">立减券</option>
+                <option value="满减券">满减券</option>
+                <option value="折扣券">折扣券</option>
+                <option value="实物券">实物券</option>
+              </select>
+              <span class="select-arrow">&#9662;</span>
+            </div>
+          </div>
+
           <div class="steps-bar">
-            <div class="steps-row">
+            <div class="steps-row" v-if="needsSn">
               <div class="step-item" :class="stepStatus(1)">
                 <div class="step-line" :class="{done:currentStep>1}"></div>
                 <div class="step-circle">{{currentStep>1?'&#10003;':'1'}}</div>
@@ -688,10 +713,21 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
                 <div class="step-label">提交核销<br>（自动上报机码）</div>
               </div>
             </div>
+            <div class="steps-row" v-else>
+              <div class="step-item" :class="stepStatus(1)">
+                <div class="step-line" :class="{done:currentStep>1}"></div>
+                <div class="step-circle">{{currentStep>1?'&#10003;':'1'}}</div>
+                <div class="step-label">券码校验</div>
+              </div>
+              <div class="step-item" :class="stepStatus(2)">
+                <div class="step-circle">2</div>
+                <div class="step-label">提交核销<br>（自动上报机码）</div>
+              </div>
+            </div>
           </div>
 
           <!-- SN Input Card -->
-          <div class="input-card">
+          <div class="input-card" v-if="needsSn">
             <div class="card-head">
               <div class="num">1</div>
               <div class="title">SN/IMEI编码录入</div>
@@ -711,14 +747,19 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
           <!-- Coupon Input Card -->
           <div class="input-card">
             <div class="card-head">
-              <div class="num">2</div>
+              <div class="num">{{needsSn?'2':'1'}}</div>
               <div class="title">会员券码录入</div>
               <div class="status-tag" :class="couponOverallStatus">{{couponOverallStatusText}}</div>
             </div>
 
             <div class="coupon-head">
               <span class="title">券码列表</span>
-              <button class="add-coupon-btn" @click="addCoupon">+ 添加券码</button>
+              <button class="add-coupon-btn" @click="addCoupon" :disabled="couponLocked">+ 添加券码</button>
+            </div>
+
+            <div class="coupon-locked-tip" v-if="couponLocked">
+              <span class="icon">&#128274;</span>
+              <span>请先完成 SN/IMEI 校验，再录入会员券码</span>
             </div>
 
             <div class="coupon-list" v-if="coupons.length">
@@ -728,8 +769,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
                   <span class="del" @click="removeCoupon(i)">&#10005;</span>
                 </div>
                 <div class="input-row">
-                  <input v-model="c.code" placeholder="点击手动录入券码" @click="openManualDialog('coupon',i)" readonly :disabled="c.status==='pass'" />
-                  <button class="scan-btn" @click="mockScanCoupon(i)" :disabled="c.status==='pass'"><span class="scan-icon"></span><span>扫一扫</span></button>
+                  <input v-model="c.code" placeholder="点击手动录入券码" @click="openManualDialog('coupon',i)" readonly :disabled="c.status==='pass' || couponLocked" />
+                  <button class="scan-btn" @click="mockScanCoupon(i)" :disabled="c.status==='pass' || couponLocked"><span class="scan-icon"></span><span>扫一扫</span></button>
                 </div>
                 <div class="feedback" :class="c.feedback.type" v-if="c.feedback.msg">
                   <span v-if="c.feedback.type==='info'" class="loading-spin"></span>
@@ -744,11 +785,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
             <span class="icon">&#9432;</span>
             <div>
               <div><b>操作指南：</b></div>
-              <div>1. 扫码/手动输入SN/IMEI编码并校验</div>
+              <div>1. 扫码/手动输入 SN/IMEI 编码并校验（实物券不需要）</div>
               <div>2. 扫码/手动输入会员券码并校验</div>
               <div>3. 两项均通过后点击"提交核销（自动上报机码）"</div>
               <div>4. 如需查看或导出历史核销记录，请点击切换【核销记录】TAB页</div>
-              <div style="margin-top:4px;color:var(--sub);">备注：提交核销后，如该SN/IMEI未上报过机码，系统将自动上报；若机码上报失败，可进入核销记录手动触发</div>
+              <div style="margin-top:4px;color:var(--sub);">备注：提交核销后，如该 SN/IMEI 未上报过机码，系统将自动上报；若机码上报失败，可进入核销记录手动触发</div>
             </div>
           </div>
 
@@ -834,7 +875,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,"
 </div>
 
 <script>
-const { createApp, ref, computed, reactive, defineComponent, nextTick } = Vue;
+const { createApp, ref, computed, reactive, defineComponent, nextTick, watch } = Vue;
 
 // Records component
 const RecordsView = defineComponent({
@@ -1255,6 +1296,7 @@ createApp({
     }
 
     // Redeem form state
+    const couponType = ref('');
     const snInput = ref('');
     const snStatus = ref('pending'); // pending, pass, fail
     const snValidating = ref(false);
@@ -1293,10 +1335,16 @@ createApp({
 
     const currentStep = computed(() => {
       const allPass = coupons.value.length > 0 && coupons.value.every(c => c.status === 'pass');
+      if (!needsSn.value) {
+        if (allPass) return 2;
+        return 1;
+      }
       if (snStatus.value === 'pass' && allPass) return 3;
       if (snStatus.value === 'pass') return 2;
       return 1;
     });
+    const needsSn = computed(() => couponType.value !== '实物券');
+    const couponLocked = computed(() => needsSn.value && snStatus.value !== 'pass');
     const snStatusText = computed(() => snStatus.value==='pass'?'已通过':snStatus.value==='fail'?'未通过':'待校验');
     const couponOverallStatus = computed(() => {
       if (coupons.value.length === 0) return 'pending';
@@ -1310,7 +1358,10 @@ createApp({
       if (couponOverallStatus.value === 'fail') return '未通过';
       return '待校验';
     });
-    const canSubmit = computed(() => snStatus.value==='pass' && couponOverallStatus.value==='pass' && !submitting.value);
+    const canSubmit = computed(() => {
+      const snOk = !needsSn.value || snStatus.value === 'pass';
+      return snOk && couponOverallStatus.value === 'pass' && !submitting.value;
+    });
 
     function stepStatus(step) {
       if (step < currentStep.value) return 'finish';
@@ -1324,6 +1375,8 @@ createApp({
       editingCouponIndex.value=-1;
       submitting.value=false;
     }
+
+    watch(couponType, () => { resetForm(); });
 
     function openManualDialog(field, index=-1) {
       if (field === 'sn' && snStatus.value === 'pass') return;
